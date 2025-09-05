@@ -18,8 +18,6 @@
 - `DELETE /mensajes/<int:mensaje_id>`
 - Todos probados en **Postman**.
 
----
-
 ## 🟡 Funcionalidades pendientes / en progreso
 
 ### 1. Conectar mensajes con frontend
@@ -38,8 +36,6 @@
 - Test unitarios y de integración.
 - Configurar servidor para producción (Docker / Flask + Nginx).
 
----
-
 ## 💻 Ejecutar Flask en segundo plano
 
 Si quieres que tu aplicación siga corriendo aunque cierres la terminal, puedes usar `nohup`:
@@ -47,3 +43,30 @@ Si quieres que tu aplicación siga corriendo aunque cierres la terminal, puedes 
 ```bash
 cd /var/www/html/
 nohup python3 app.py > app.log 2>&1 &
+```
+
+**Explicación:**
+- `nohup` → evita que el proceso se detenga al cerrar la sesión.
+- `> app.log 2>&1` → redirige toda la salida a `app.log`.
+- `&` → ejecuta el proceso en segundo plano.
+
+Para **ver los logs** en tiempo real:
+
+```bash
+tail -f app.log
+```
+
+Para **detener el proceso**:
+1. Buscar el PID del proceso:
+```bash
+ps aux | grep app.py
+```
+2. Detenerlo:
+```bash
+kill <PID>
+```
+
+> ⚠️ Tip profesional: también se puede configurar con `systemd` para que Flask corra como un servicio y arranque automáticamente al iniciar el servidor.
+
+## ✍️ Autor
+Juan Manuel Gonzalez
