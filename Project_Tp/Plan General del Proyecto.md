@@ -48,8 +48,6 @@ Test unitarios y de integración.
 
 Configurar servidor para producción (Docker/Flask + Nginx).
 
-
-
 Perfecto, socio. Para ejecutar esos comandos **en segundo plano** y que tu app siga corriendo aunque cierres la terminal, tienes varias opciones. La más sencilla es usar **`nohup`** o **`screen`/`tmux`**. Te doy la versión rápida con `nohup`:
 
 ```bash

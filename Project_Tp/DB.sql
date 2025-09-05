@@ -23,7 +23,7 @@ mysql -h 192.168.0.37 -u juan -p
 -- base de datos
 CREATE DATABASE chat_app;
 
-USE chat_app;
+ 
 
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,

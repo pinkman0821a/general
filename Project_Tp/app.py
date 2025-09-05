@@ -41,11 +41,16 @@ def handle_message(data):
         "INSERT INTO mensajes (user_id, mensaje, fecha, hora) VALUES (%s, %s, %s, %s)",
         (user_id, mensaje, fecha, hora)
     )
+    mensaje_id = cursor.lastrowid  # 👈 capturamos el ID autoincremental
     conn.commit()
     cursor.close()
     conn.close()
 
-    emit('mensaje', data, broadcast=True)
+    # agregamos el id al payload que se emite
+    data['id'] = mensaje_id
+
+    socketio.emit('mensaje', data)
+
 
 
 # 🔥 PÁGINA PRINCIPAL
@@ -60,11 +65,12 @@ def get_mensajes():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("""
-        SELECT m.id, m.mensaje, m.fecha, m.hora, u.username
+        SELECT m.id, m.mensaje, m.fecha, m.hora, m.user_id, u.username
         FROM mensajes m
         JOIN usuarios u ON m.user_id = u.id
-        ORDER BY m.fecha DESC, m.hora DESC
+        ORDER BY m.fecha ASC, m.hora ASC
     """)
+
     mensajes = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -82,12 +88,13 @@ def get_mensajes_by_user(user_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("""
-        SELECT m.id, m.mensaje, m.fecha, m.hora, u.username
+        SELECT m.id, m.mensaje, m.fecha, m.hora, m.user_id, u.username
         FROM mensajes m
         JOIN usuarios u ON m.user_id = u.id
         WHERE m.user_id = %s
-        ORDER BY m.fecha DESC, m.hora DESC
+        ORDER BY m.fecha ASC, m.hora ASC
     """, (user_id,))
+
     mensajes = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -121,21 +128,64 @@ def create_mensaje():
     return jsonify({"success": True, "mensaje": mensaje}), 201
 
 
-# 🗑️ BORRAR MENSAJE
+# 🗑️ BORRAR MENSAJE ESPECIFICO
 @app.route('/mensajes/<int:mensaje_id>', methods=['DELETE'])
 def delete_mensaje(mensaje_id):
+    data = request.get_json(silent=True) or {}
+    requester_id = data.get('user_id')  # viene del frontend (localStorage)
+
+    if requester_id is None:
+        return jsonify({"success": False, "error": "Falta user_id autenticado."}), 400
+
     conn = get_db_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
+
+    # 1) Verificar que el mensaje exista y quién es el autor
+    cursor.execute("SELECT user_id FROM mensajes WHERE id = %s", (mensaje_id,))
+    row = cursor.fetchone()
+    if not row:
+        cursor.close(); conn.close()
+        return jsonify({"success": False, "error": "Mensaje no encontrado."}), 404
+
+    # 2) Validar autor
+    if int(row['user_id']) != int(requester_id):
+        cursor.close(); conn.close()
+        return jsonify({"success": False, "error": "No puedes borrar el mensaje; tú no lo escribiste."}), 403
+
+    # 3) Borrar
     cursor.execute("DELETE FROM mensajes WHERE id = %s", (mensaje_id,))
     conn.commit()
-    cursor.close()
-    conn.close()
+    cursor.close(); conn.close()
+
+    # 4) Avisar en tiempo real a los demás clientes
+    socketio.emit('mensaje_eliminado', {"id": mensaje_id})
+
     return jsonify({"success": True, "mensaje": f"Mensaje {mensaje_id} eliminado"})
+
+
+# BORRAR TODOS LOS MENSAJES
+@app.route('/mensajes', methods=['DELETE'])
+def delete_all_mensajes():
+    data = request.get_json(silent=True) or {}
+    requester_id = data.get('user_id')
+
+    # Solo el admin (id = 1) puede borrar todo
+    if requester_id == 1:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM mensajes")  # elimina todos los registros
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return jsonify({"success": True, "mensaje": "Todos los mensajes fueron eliminados correctamente"})
+    else:
+        return jsonify({"success": False, "error": "No tienes permisos, solo el admin puede borrar todos los mensajes"}), 403
 
 # 💬 PÁGINA DEL CHAT
 @app.route('/chat')
 def chat():
     return render_template('chat.html')
+
 
 # 🚀 INICIO DEL SERVIDOR
 if __name__ == '__main__':

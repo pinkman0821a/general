@@ -3,19 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Chat App</title>
+    <title>El Caldero - Login</title>
     <link rel="stylesheet" href="/static/login.css">
 </head>
 <body>
-    <div class="login-container">
-        <h2>Iniciar sesión</h2>
-        <form id="loginForm">
-            <input type="text" id="username" placeholder="Usuario" required>
-            <input type="password" id="password" placeholder="Contraseña" required>
-            <button type="submit">Entrar</button>
-        </form>
-        <p id="error" style="color:red;"></p>
+    <div class="login-wrapper">
+        <div class="login-container">
+            <h1>Ingresar al Caldero 🔥</h1>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="Usuario" required>
+                <input type="password" id="password" placeholder="Contraseña" required>
+                <button type="submit">Entrar</button>
+            </form>
+            <p id="error"></p>
+        </div>
+
+        <!-- Fondo decorativo de emojis -->
+        <div class="background-decor">
+            <span>😈</span>
+            <span>👹</span>
+            <span>💃</span>
+            <span>🕺</span>
+            <span>👀</span>
+        </div>
     </div>
+
     <script src="/static/login.js"></script>
 </body>
 </html>
