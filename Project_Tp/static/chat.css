@@ -1,0 +1,102 @@
+/* ===== Estilo general ===== */
+body {
+    font-family: 'Arial', sans-serif;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+/* ===== Contenedor de mensajes ===== */
+#mensajes-container {
+    display: flex;
+    flex-direction: column-reverse; /* <--- los últimos mensajes abajo */
+    gap: 10px;
+    overflow-y: auto;
+    height: 400px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    scroll-behavior: smooth;
+}
+
+/* ===== Cada mensaje ===== */
+.mensaje {
+    max-width: 70%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    word-wrap: break-word;
+    line-height: 1.4;
+    font-size: 15px;
+    transition: background-color 0.3s;
+}
+
+/* Mensajes de otros */
+.mensaje.otros {
+    background-color: #e0f7fa;
+    color: #00796b;
+    align-self: flex-start;
+}
+
+/* Mensajes propios */
+.mensaje.propios {
+    background-color: #c8e6c9;
+    color: #2e7d32;
+    align-self: flex-end;
+}
+
+/* ===== Formulario ===== */
+form {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Input de texto */
+input {
+    flex: 1;
+    padding: 12px 15px;
+    border-radius: 25px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+input:focus {
+    border-color: #00796b;
+    box-shadow: 0 0 8px rgba(0, 121, 107, 0.3);
+}
+
+/* Botón de envío */
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    background-color: #00796b;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background-color: #004d40;
+}
+
+/* ===== Scroll estilo moderno ===== */
+#mensajes-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#mensajes-container::-webkit-scrollbar-thumb {
+    background-color: #00796b;
+    border-radius: 4px;
+}
+
+#mensajes-container::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}

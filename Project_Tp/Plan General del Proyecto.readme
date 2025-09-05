@@ -1,0 +1,86 @@
+🟢 Diseñar y crear la base de datos
+
+Tablas usuarios y mensajes creadas.
+
+Relaciones listas.
+
+🟢 Implementar login funcional
+
+Endpoints para login.
+
+Interfaz en HTML/CSS/JS.
+
+Pruebas en Postman y desde el navegador.
+
+🟢 Endpoints de mensajes
+
+GET /mensajes
+
+GET /mensajes/<int:user_id>
+
+POST /mensajes
+
+DELETE /mensajes/<int:mensaje_id>
+
+Probados en Postman.
+
+🟡 Conectar mensajes con frontend
+
+Mostrar mensajes en la web.
+
+Formulario para enviar mensajes.
+
+Botón para eliminar mensajes.
+
+🟡 Autenticación/Autorización avanzada
+
+Proteger endpoints con token/sesión.
+
+Restringir que cada usuario solo vea sus mensajes.
+
+🟡 Diseño frontend mejorado
+
+UI/UX (CSS avanzado, responsive).
+
+🟡 Pruebas finales y despliegue
+
+Test unitarios y de integración.
+
+Configurar servidor para producción (Docker/Flask + Nginx).
+
+
+
+Perfecto, socio. Para ejecutar esos comandos **en segundo plano** y que tu app siga corriendo aunque cierres la terminal, tienes varias opciones. La más sencilla es usar **`nohup`** o **`screen`/`tmux`**. Te doy la versión rápida con `nohup`:
+
+```bash
+cd /var/www/html/
+nohup python3 app.py > app.log 2>&1 &
+```
+
+Explicación:
+
+* `nohup` → hace que el proceso no se detenga al cerrar la sesión.
+* `> app.log 2>&1` → redirige **toda la salida** (stdout y stderr) a un archivo llamado `app.log`.
+* `&` → ejecuta el proceso en segundo plano.
+
+Después puedes ver los logs con:
+
+```bash
+tail -f app.log
+```
+
+Si quieres **detenerlo**, primero busca el PID:
+
+```bash
+ps aux | grep app.py
+```
+
+Y luego:
+
+```bash
+kill <PID>
+```
+
+Si quieres, te puedo dar **una versión todavía más “profesional”** usando `systemd` para que tu Flask corra como un servicio que arranca automáticamente con el servidor.
+
+¿Quieres que haga eso también?
