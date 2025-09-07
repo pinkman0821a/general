@@ -1,15 +1,97 @@
-const socket = io(); // Conecta al backend Socket.IO
+// ============================
+// 🔥 CONEXIÓN SOCKET.IO
+// ============================
+const socket = io();
+
+// ============================
+// 🎯 ELEMENTOS DEL DOM
+// ============================
 const formMensaje = document.getElementById("form-mensaje");
 const inputMensaje = document.getElementById("mensaje-input");
 const chatList = document.getElementById("chat");
 
-// Obtener user_id y username del localStorage
+// ============================
+// 👤 DATOS DEL USUARIO
+// ============================
 const currentUserId = Number(localStorage.getItem("user_id"));
 const username = localStorage.getItem("username");
 
-// ---------------------------
-// Función para renderizar mensaje
-// ---------------------------
+// ============================
+// 🔄 UTILIDADES
+// ============================
+const scrollToBottom = () => chatList.scrollTop = chatList.scrollHeight;
+
+const showAlert = (msg) => alert(msg);
+
+// ============================
+// 💬 RENDER DE MENSAJES
+// ============================
+function crearMenuMensaje(data) {
+  // Si es admin (userId = 1)
+  if (currentUserId === 1) {
+    return `
+      <div class="relative inline-block text-left">
+        <button class="kebab px-2 py-1 rounded-full hover:bg-gray-700 transition">
+          ⋯
+        </button>
+        <div class="menu-list hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 z-10">
+          <button class="delete-btn block w-full px-4 py-2 text-sm text-red-400 hover:bg-gray-700 transition">
+            Eliminar mensaje
+          </button>
+          <button id="btnDeleteAll" class="block w-full px-4 py-2 text-sm text-red-500 hover:bg-gray-700 transition">
+            Eliminar todos los mensajes
+          </button>
+        </div>
+      </div>`;
+  }
+
+  // Si es el dueño del mensaje
+  if (data.user_id === currentUserId) {
+    return `
+      <div class="relative inline-block text-left">
+        <button class="kebab px-2 py-1 rounded-full hover:bg-gray-700 transition">
+          ⋯
+        </button>
+        <div class="menu-list hidden absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 z-10">
+          <button class="delete-btn block w-full px-4 py-2 text-sm text-red-400 hover:bg-gray-700 transition">
+            Eliminar mensaje
+          </button>
+        </div>
+      </div>`;
+  }
+
+  // Otros usuarios no ven menú
+  return "";
+}
+
+
+// helper: smooth scroll con fallback
+function smoothScrollToBottom(container, duration = 320) {
+  if (!container) return;
+  // si el navegador soporta scrollBehavior
+  try {
+    container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    return;
+  } catch (e) {
+    // si no soporta, hacemos un fallback animado
+  }
+
+  const start = container.scrollTop;
+  const end = container.scrollHeight;
+  const startTime = performance.now();
+
+  function easeInOut(t) { return 0.5 - Math.cos(Math.PI * t) / 2; }
+
+  function tick(now) {
+    const elapsed = now - startTime;
+    const t = Math.min(1, elapsed / duration);
+    container.scrollTop = start + (end - start) * easeInOut(t);
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// función principal
 function mostrarMensaje(data) {
   const li = document.createElement("li");
   li.classList.add("message");
@@ -17,174 +99,98 @@ function mostrarMensaje(data) {
   li.dataset.id = data.id;
   li.dataset.userId = data.user_id;
 
-  // Menú contextual (⋯)
-  let menuHtml = "";
-
-  if (data.user_id === currentUserId) {
-    // Opción de eliminar solo tu mensaje
-    menuHtml = `
-      <div class="menu">
-        <button class="kebab" aria-haspopup="true" aria-expanded="false">⋯</button>
-        <div class="menu-list hidden">
-          <button class="delete-btn">Eliminar mensaje</button>
-        </div>
-      </div>`;
-  }
-
-  // Si el usuario autenticado es el admin (id = 1), mostrar también "Eliminar todos"
-  if (currentUserId === 1) {
-    menuHtml += `
-      <div class="menu">
-        <button class="kebab" aria-haspopup="true" aria-expanded="false">⋯</button>
-        <div class="menu-list hidden">
-          <button class="delete-btn">Eliminar mensaje</button>
-          <button id="btnDeleteAll">Eliminar todos los mensajes</button>
-        </div>
-      </div>`;
-  }
+  // Mapa de colores por usuario
+  const userColors = {
+    2: "text-red-400",
+    3: "text-green-400",
+    4: "text-purple-400"
+  };
+  const colorClass = userColors[data.user_id] || "text-white";
 
   li.innerHTML = `
-    <span class="text">
-      <strong>@${data.username}</strong> ${data.mensaje}
-    </span>
-    ${menuHtml}
+    <div class="flex flex-col bg-gray-800 rounded-lg p-3 shadow-md relative hover:bg-gray-700 transition">
+      <span class="text-sm font-semibold italic ${colorClass} mb-1">@${data.username}</span>
+      <span class="text-base font-medium italic text-gray-200 break-words">${data.mensaje}</span>
+      <span class="text-[0.65rem] italic text-gray-400 text-right mt-1">${data.fecha} ${data.hora}</span>
+      <div class="absolute top-2 right-2">${crearMenuMensaje(data)}</div>
+    </div>
   `;
 
+  // append
   chatList.appendChild(li);
+
+  // -> el contenedor scrollable real (asegúrate que este id exista en tu HTML)
+  const scrollContainer = document.getElementById('mensajes-container') || chatList.parentElement;
+
+  // Esperar a que el navegador calcule layout y luego hacer scroll suave
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      smoothScrollToBottom(scrollContainer);
+    });
+  });
 }
 
-// ---------------------------
-// Cargar mensajes iniciales desde la base de datos
-// ---------------------------
+
+
+
+// ============================
+// 📥 CARGAR MENSAJES
+// ============================
 async function cargarMensajes() {
   try {
     const res = await fetch("/mensajes");
     const mensajes = await res.json();
     chatList.innerHTML = "";
-    mensajes.forEach((m) => mostrarMensaje(m));
-
-    // Siempre bajar al final
-    chatList.scrollTop = chatList.scrollHeight;
+    mensajes.forEach(mostrarMensaje);
+    scrollToBottom();
   } catch (err) {
     console.error("Error cargando mensajes:", err);
   }
 }
 
-// ---------------------------
-// Enviar mensaje
-// ---------------------------
-formMensaje.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const mensaje = inputMensaje.value.trim();
-  if (!mensaje) return;
+// ============================
+// 📝 ENVIAR MENSAJE
+// ============================
+async function enviarMensaje(mensaje) {
+  if (!mensaje.trim()) return;
 
   const data = {
     user_id: currentUserId,
-    username: username,
-    mensaje: mensaje,
+    username,
+    mensaje: mensaje.trim(),
     fecha: new Date().toISOString().split("T")[0],
     hora: new Date().toLocaleTimeString(),
   };
 
-  socket.emit("mensaje", data); // enviar al servidor
-  inputMensaje.value = "";
-});
+  socket.emit("mensaje", data);
+}
 
-// ---------------------------
-// Escuchar mensajes enviados por otros usuarios
-// ---------------------------
-socket.on("mensaje", (data) => {
-  mostrarMensaje(data);
-
-  // Siempre bajar al final cuando llega uno nuevo
-  chatList.scrollTop = chatList.scrollHeight;
-});
-
-// ---------------------------
-// Escuchar cuando un mensaje es eliminado por alguien
-// ---------------------------
-socket.on("mensaje_eliminado", ({ id }) => {
-  const li = document.getElementById(`msg-${id}`);
-  if (li) li.remove();
-});
-
-// ---------------------------
-// Manejo de menús y botones (delegación de eventos en chatList)
-// ---------------------------
-
-// Cerrar menús al hacer click fuera
-document.addEventListener("click", () => {
-  document
-    .querySelectorAll(".menu-list")
-    .forEach((menu) => menu.classList.add("hidden"));
-});
-
-chatList.addEventListener("click", (e) => {
-  // Abrir/cerrar menú de 3 puntos
-  const kebab = e.target.closest(".kebab");
-  if (kebab) {
-    e.stopPropagation();
-    const menu = kebab.nextElementSibling;
-    menu.classList.toggle("hidden");
-    return;
-  }
-
-  // Click en "Eliminar mensaje"
-  const delBtn = e.target.closest(".delete-btn");
-  if (delBtn) {
-    const li = delBtn.closest("li.message");
-    const msgId = Number(li.dataset.id);
-    const authorId = Number(li.dataset.userId);
-
-    if (authorId !== currentUserId) {
-      alert("No puedes borrar el mensaje; tú no lo escribiste.");
-      return;
-    }
-
-    if (!confirm("¿Eliminar este mensaje?")) return;
-
-    fetch(`/mensajes/${msgId}`, {
+// ============================
+// 🗑️ BORRAR MENSAJES
+// ============================
+async function borrarMensaje(msgId, li) {
+  try {
+    const resp = await fetch(`/mensajes/${msgId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: currentUserId }),
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        if (!data.success) {
-          alert(data.error || "Error al eliminar.");
-          return;
-        }
-        li.remove(); // eliminar localmente
-      })
-      .catch((err) => {
-        console.error("Error de red eliminando el mensaje:", err);
-        alert("Error de red eliminando el mensaje.");
-      });
+    });
+    const data = await resp.json();
+
+    if (!data.success) showAlert(data.error || "Error al eliminar mensaje");
+    else li.remove();
+  } catch (err) {
+    console.error("Error eliminando mensaje:", err);
+    showAlert("Error de red eliminando mensaje");
   }
+}
 
-  // Click en "Eliminar todos los mensajes" (solo admin)
-  if (e.target && e.target.id === "btnDeleteAll") {
-    handleDeleteAll(e);
-  }
-});
+async function borrarTodosLosMensajes(btn) {
+  if (!confirm("¿Eliminar todos los mensajes? Esta acción es irreversible.")) return;
 
-// ---------------------------
-// Función para eliminar todos los mensajes
-// ---------------------------
-async function handleDeleteAll(event) {
-  event.preventDefault();
-
-  const currentUserId = Number(localStorage.getItem("user_id"));
-
-  const ok = confirm(
-    "¿Estás seguro? Esta acción eliminará todos los mensajes de forma permanente."
-  );
-  if (!ok) return;
-
-  const btnDeleteAll = event.target;
-  btnDeleteAll.disabled = true;
-  const originalText = btnDeleteAll.textContent;
-  btnDeleteAll.textContent = "Eliminando...";
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = "Eliminando...";
 
   try {
     const resp = await fetch("/mensajes", {
@@ -192,30 +198,74 @@ async function handleDeleteAll(event) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: currentUserId }),
     });
-
     const data = await resp.json();
 
-    if (!resp.ok) {
-      alert(data.error || "Error eliminando los mensajes (respuesta no OK).");
-      return;
-    }
-
     if (data.success) {
-      chatList.innerHTML = ""; // limpiar lista
-      alert(data.mensaje || "Todos los mensajes fueron eliminados.");
-    } else {
-      alert(data.error || "No se pudo eliminar todos los mensajes.");
-    }
+      chatList.innerHTML = "";
+      showAlert(data.mensaje || "Todos los mensajes fueron eliminados");
+    } else showAlert(data.error || "No se pudieron eliminar los mensajes");
   } catch (err) {
-    console.error("Error en delete all:", err);
-    alert("Error de red al intentar eliminar todos los mensajes. Revisa la consola.");
+    console.error("Error eliminando todos los mensajes:", err);
+    showAlert("Error de red eliminando mensajes");
   } finally {
-    btnDeleteAll.disabled = false;
-    btnDeleteAll.textContent = originalText;
+    btn.disabled = false;
+    btn.textContent = originalText;
   }
 }
 
-// ---------------------------
-// Cargar mensajes al inicio
-// ---------------------------
+// ============================
+// ⚙️ EVENTOS
+// ============================
+
+// Enviar mensaje
+formMensaje.addEventListener("submit", (e) => {
+  e.preventDefault();
+  enviarMensaje(inputMensaje.value);
+  inputMensaje.value = "";
+});
+
+// Delegación de eventos en chatList
+chatList.addEventListener("click", (e) => {
+  const kebab = e.target.closest(".kebab");
+  if (kebab) {
+    e.stopPropagation();
+    kebab.nextElementSibling.classList.toggle("hidden");
+    return;
+  }
+
+  const delBtn = e.target.closest(".delete-btn");
+  if (delBtn) {
+    const li = delBtn.closest("li.message");
+    const msgId = Number(li.dataset.id);
+    const authorId = Number(li.dataset.userId);
+
+    if (authorId !== currentUserId && currentUserId !== 1) {
+      showAlert("No puedes borrar este mensaje");
+      return;
+    }
+    if (!confirm("¿Eliminar este mensaje?")) return;
+
+    borrarMensaje(msgId, li);
+  }
+
+  if (e.target && e.target.id === "btnDeleteAll") borrarTodosLosMensajes(e.target);
+});
+
+// Cerrar menús al hacer click fuera
+document.addEventListener("click", () => {
+  document.querySelectorAll(".menu-list").forEach(menu => menu.classList.add("hidden"));
+});
+
+// ============================
+// 🔄 SOCKET.IO
+// ============================
+socket.on("mensaje", mostrarMensaje);
+socket.on("mensaje_eliminado", ({ id }) => {
+  const li = document.getElementById(`msg-${id}`);
+  if (li) li.remove();
+});
+
+// ============================
+// 🚀 INICIALIZACIÓN
+// ============================
 cargarMensajes();

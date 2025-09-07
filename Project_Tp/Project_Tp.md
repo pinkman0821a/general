@@ -68,5 +68,23 @@ kill <PID>
 
 > ⚠️ Tip profesional: también se puede configurar con `systemd` para que Flask corra como un servicio y arranque automáticamente al iniciar el servidor.
 
+
+clonar git
+
+instalar git
+sudo apt update
+sudo apt install git -y
+
+git clone https://github.com/pinkman0821a/general.git
+
+
+cd ~/general/Project_Tp
+
+sudo cp -r . /var/www/html/
+
+sudo chown -R www-data:www-data /var/www/html
+sudo chmod -R 755 /var/www/html
+
+
 ## ✍️ Autor
 Juan Manuel Gonzalez

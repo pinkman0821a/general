@@ -1,38 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat - El Caldero</title>
-    <link rel="stylesheet" href="/static/chat.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Caldero</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-gray-950 text-white min-h-screen flex items-center justify-center p-4">
 
-<body>
-    <div class="chat-container">
-        <!-- Título con vibes de chismes -->
-        <header class="chat-header">
-            <h1>🔥 El Caldero 🔥</h1>
-            <p>¡Aquí se cocinan todos los chismes!</p>
-        </header>
+  <!-- Contenedor principal -->
+  <div class="chat-container w-full max-w-2xl bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-xl flex flex-col h-[90vh] overflow-hidden">
 
-        <!-- Contenedor de mensajes -->
-        <div id="mensajes-container" class="mensajes">
-            <ul id="chat"></ul>
-        </div>
+    <!-- Header -->
+    <header class="chat-header bg-gray-800 px-6 py-4 text-center border-b border-gray-700">
+      <h1 class="text-2xl font-bold">🔥 El Caldero 🔥</h1>
+      <p class="text-sm text-gray-400">¡Aquí se cocinan todos los chismes!</p>
+    </header>
 
-        <!-- Formulario para enviar mensaje -->
-        <form id="form-mensaje">
-            <input type="text" id="mensaje-input" placeholder="Escribe un chisme..." autocomplete="off" required>
-            <button type="submit">💬 Enviar</button>
-        </form>
+    <!-- Mensajes -->
+    <div id="mensajes-container" class="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900">
+      <ul id="chat" class="space-y-2"></ul>
     </div>
 
-    <!-- Socket.IO oficial -->
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <!-- Formulario -->
+    <form id="form-mensaje" class="flex items-center gap-2 p-4 border-t border-gray-700 bg-gray-800">
+      <input type="text" id="mensaje-input" placeholder="Escribe un chisme..." autocomplete="off" required
+        class="flex-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-400 
+               focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300" />
+      <button type="submit"
+        class="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 
+               text-white font-semibold shadow-md transition duration-300">
+        💬 Enviar
+      </button>
+    </form>
+  </div>
 
-    <!-- Tu script principal de chat -->
-    <script src="/static/chat.js"></script>
+  <!-- Socket.IO -->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <!-- Script del chat -->
+  <script src="/static/chat.js"></script>
 </body>
-
 </html>
