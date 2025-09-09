@@ -18,34 +18,13 @@ from datetime import datetime
 import mysql.connector  
 # Para interactuar con MySQL (aunque en tu código usamos get_db_connection)
 
+import dashboard_utils as du
+
  # Inicializamos la aplicación Flask
 app = Flask(__name__)  
 
 # Inicializamos SocketIO y permitimos CORS desde cualquier origen
 socketio = SocketIO(app, cors_allowed_origins="*")
-
-#🔑 LOGIN
-# Ruta POST /login para iniciar sesión
-@app.route('/login', methods=['POST'])
-def login():
-    data = request.json  # Obtenemos los datos enviados en formato JSON
-    username = data['username']  # Nombre de usuario recibido
-    password = data['password']  # Contraseña recibida
-
-    conn = get_db_connection()  # Abrimos conexión a la base de datos
-    cursor = conn.cursor(dictionary=True)  # Creamos un cursor que devuelve diccionarios
-    cursor.execute("SELECT * FROM usuarios WHERE username=%s", (username,))
-    # Buscamos al usuario por username
-    user = cursor.fetchone()  # Obtenemos el primer resultado
-    cursor.close()
-    conn.close()  # Cerramos la conexión
-
-    # Verificamos si el usuario existe y la contraseña coincide
-    if user and password == user['password_hash']:
-        return jsonify({"success": True, "user_id": user['id']})  
-        # Retornamos éxito y el id del usuario
-    return jsonify({"success": False}), 401  
-    # Si falla login, devolvemos 401 Unauthorized
 
 # 🔥 PÁGINA PRINCIPAL
 @app.route('/')
@@ -58,6 +37,52 @@ def index():
 def chat():
     return render_template('chat.html')  
     # Renderiza la página de chat
+
+# 🔑 Página del admin
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
+
+# 📊 PÁGINA DEL DASHBOARD
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')  
+    # Renderiza la página del dashboard
+
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.json  # Datos enviados en JSON
+    username = data['username']
+    password = data['password']
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM usuarios WHERE username=%s", (username,))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    if user and password == user['password_hash']:
+        # Diferenciar admin por ID o por rol en la DB
+        if user['id'] == 1:
+            return jsonify({"success": True, "redirect": "/admin", "user_id": user['id']})
+        else:
+            return jsonify({"success": True, "redirect": "/chat", "user_id": user['id']})
+    
+    return jsonify({"success": False}), 401
+
+# 📊 ESTADO DEL SISTEMA PARA EL DASHBOARD
+@app.route("/api/dashboard/status")
+def get_status():
+    data = {
+        "cpu": du.get_cpu_info(),
+        "memory": du.get_memory_usage(),
+        "disk": du.get_disk_usage(),
+        "disk_active": du.get_disk_active_percent(),
+        "users": du.get_connected_users()
+        
+    }
+    return jsonify(data)
 
 # 🔥 SOCKET.IO MENSAJES
 # Evento de SocketIO para recibir mensajes en tiempo real

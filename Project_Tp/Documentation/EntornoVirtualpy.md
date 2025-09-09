@@ -60,7 +60,7 @@
     ```powershell
     Flask                  3.1.2
 
-### flask-socketio
+## flask-socketio
 
 1. **instala Flask dentro del entorno virtual:**
 
@@ -75,6 +75,22 @@
 
     ```powershell
     Flask-SocketIO         5.5.1 
+
+## psutil
+
+1. **instala Flask dentro del entorno virtual:**
+
+    ```powershell
+    pip install psutil
+2. **Verifica que se instaló correctamente**
+
+    ```powershell
+    pip list
+
+- Ejemplo de salida:
+
+    ```powershell
+    psutil  7.0.0
 
 ## ✅ Verificación de la conexión a la base de datos
 

@@ -25,7 +25,11 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             localStorage.setItem('username', username);
 
             // Redirigimos al usuario a la página del chat
-            window.location.href = '/chat';
+            if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    window.location.href = '/chat'; // fallback si no viene redirect
+                }
         } else {
             // Si las credenciales son incorrectas, mostramos un mensaje de error
             document.getElementById('error').innerText = "Usuario o contraseña incorrectos";

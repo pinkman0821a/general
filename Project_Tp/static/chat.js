@@ -27,24 +27,6 @@ const showAlert = (msg) => alert(msg);
 // 💬 RENDER DE MENSAJES
 // ============================
 function crearMenuMensaje(data) {
-  // Si es admin (userId = 1)
-  if (currentUserId === 1) {
-    return `
-      <div class="relative inline-block text-left">
-        <button class="kebab px-2 py-1 rounded-full hover:bg-gray-700 transition">
-          ⋯
-        </button>
-        <div class="menu-list hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 z-10">
-          <button class="delete-btn block w-full px-4 py-2 text-sm text-red-400 hover:bg-gray-700 transition">
-            Eliminar mensaje
-          </button>
-          <button id="btnDeleteAll" class="block w-full px-4 py-2 text-sm text-red-500 hover:bg-gray-700 transition">
-            Eliminar todos los mensajes
-          </button>
-        </div>
-      </div>`;
-  }
-
   // Si es el dueño del mensaje
   if (data.user_id === currentUserId) {
     return `
