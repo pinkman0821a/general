@@ -8,13 +8,13 @@ Se requiere el desarrollo de una aplicación web de chat en tiempo real que perm
 
 El proyecto deberá incluir, como mínimo, las siguientes funcionalidades:
 
-1. Gestión de Usuarios
+1. ✅Gestión de Usuarios
 
-   - Registro de nuevos usuarios con validación de datos.
+   - ✅Registro de nuevos usuarios con validación de datos.
 
-   - Inicio de sesión con autenticación segura (mínimo JWT o sesiones).
+   - ✅Inicio de sesión con autenticación segura (mínimo JWT o sesiones).
 
-   - Control de usuarios conectados (lista visible en la interfaz).
+   - ✅Control de usuarios conectados (lista visible en la interfaz).
 
 2. Mensajería en Tiempo Real
 

@@ -14,6 +14,10 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         const data = await response.json();
 
         if (response.status === 200) {
+
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user_id', data.user.id);
+            localStorage.setItem('username', data.user.username);
             window.location.href = '/chat';
         }
  

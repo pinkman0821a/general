@@ -30,3 +30,31 @@ def get_user_by_username(username):
         cursor.close()
         conn.close()
 
+# Update the last seen timestamp for a user
+def last_seen(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("UPDATE users SET last_seen = NOW() WHERE id = %s", (user_id,))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error updating last seen: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+        
+# Fetch users who have been active in the last 2 minutes
+def onlineUsers():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT id, username, last_seen FROM users WHERE last_seen >= NOW() - INTERVAL 2 MINUTE")
+        return cursor.fetchall()
+    except Exception as e:
+        print(f"Error fetching online users: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()

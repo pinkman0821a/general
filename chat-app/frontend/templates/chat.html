@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chat</title>
+</head>
+<body>
+    <h1>Chat Page</h1>
+    <div id="chat-container">
+        <div id="messages" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">
+            <!-- Messages will appear here -->
+        </div>
+        <input type="text" id="message-input" placeholder="Type your message..." style="width: 80%;">
+        <button id="send-button">Send</button>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    </div>
+    <div>
+        <h3>Usuarios conectados</h3>
+        <ul id="userList">
+            <!-- User list will appear here -->
+        </ul>
+    </div>
+</body>
+</html>

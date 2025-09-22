@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from ..utils.auth import validate_registration, hash_password, check_password, create_jwt
-from ..models import create_user, get_user_by_username
+from ..models import create_user, get_user_by_username, last_seen, onlineUsers
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -57,6 +57,4 @@ def login():
     response.status_code = 200
     response.set_cookie('token', token, httponly=True, samesite='Lax')
     return response
-    
-
 
