@@ -206,6 +206,8 @@ formMensaje.addEventListener("submit", (e) => {
   inputMensaje.value = "";
 });
 
+
+
 // Delegación de eventos en chatList
 chatList.addEventListener("click", (e) => {
   const kebab = e.target.closest(".kebab");
