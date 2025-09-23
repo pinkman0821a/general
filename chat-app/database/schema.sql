@@ -40,7 +40,13 @@ CREATE TABLE user_halls (
     UNIQUE (user_id, hall_id)
 );
 
+
+
+USE chat_app;
+
 Show TABLES;
 
 select * from users;
-select * from halls;    
+select * from halls;   
+select * from user_halls;
+select * from messages;

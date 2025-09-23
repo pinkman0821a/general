@@ -3,23 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>chat</title>
+    <title>Chat</title>
+    <!-- Cliente SocketIO -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <!-- TailwindCSS CDN (solo para pruebas rápidas, en prod lo ideal es compilarlo) -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Chat Page</h1>
-    <div id="chat-container">
-        <div id="messages" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">
-            <!-- Messages will appear here -->
+<body class="bg-gray-100 h-screen flex flex-col">
+    <!-- Header -->
+    <h1 class="text-2xl font-bold text-center p-4 bg-purple-600 text-white shadow-md">
+        Chat Page
+    </h1>
+    
+    <!-- Cuerpo principal: Sidebar + Chat + Usuarios -->
+    <div class="flex flex-1">
+        <!-- Sidebar Halls -->
+        <div id="sidebar-halls" 
+            class="w-1/4 bg-white border-r border-gray-200 p-4 space-y-2 overflow-y-auto">
         </div>
-        <input type="text" id="message-input" placeholder="Type your message..." style="width: 80%;">
-        <button id="send-button">Send</button>
+
+        <!-- Área principal de chat -->
+        <div class="flex flex-col flex-1">
+            <!-- Mensajes -->
+            <div id="chat-area" class="flex-1 bg-gray-100 p-4 overflow-y-auto">
+                <!-- Aquí se cargan los mensajes -->
+            </div>
+
+            <!-- Input y botón (ahora sí abajo) -->
+            <div class="flex p-4 bg-white border-t border-gray-200">
+                <input type="text" id="message-input" 
+                    class="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                    placeholder="Type your message...">
+                <button id="send-button" 
+                        class="bg-purple-600 text-white px-4 py-2 rounded-r-lg hover:bg-purple-700 transition">
+                    Send
+                </button>
+            </div>
+        </div>
+
+        <!-- Lista de usuarios conectados -->
+        <div class="w-1/4 bg-white border-l border-gray-200 p-4">
+            <h3 class="font-semibold mb-2">Usuarios conectados</h3>
+            <ul id="userList" class="space-y-1"></ul>
+        </div>
+    </div>
+
+    <!-- Script JS principal -->
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
-    </div>
-    <div>
-        <h3>Usuarios conectados</h3>
-        <ul id="userList">
-            <!-- User list will appear here -->
-        </ul>
-    </div>
 </body>
+
 </html>

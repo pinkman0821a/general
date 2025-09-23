@@ -18,11 +18,11 @@ El proyecto deberá incluir, como mínimo, las siguientes funcionalidades:
 
 2. Mensajería en Tiempo Real
 
-   - Envío y recepción de mensajes instantáneos entre usuarios.
+   - 🟡Envío y recepción de mensajes instantáneos entre usuarios.
 
-   - Actualización en tiempo real sin necesidad de recargar la página.
+   - 🔴Actualización en tiempo real sin necesidad de recargar la página.
 
-   - Posibilidad de eliminar mensajes propios (opcional, con confirmación).
+   - 🔴Posibilidad de eliminar mensajes propios (opcional, con confirmación).
 
 3. Salas de Chat
 
@@ -103,3 +103,52 @@ El desarrollador deberá entregar junto con el proyecto la siguiente documentaci
 3. Scripts para crear la base de datos y poblarla con datos de prueba.
 
 4. Aplicación funcionando en un servidor de pruebas (demo online).
+
+```
+chat-app/ 
+│ 
+├── backend/ # Lógica del servidor (Flask / FastAPI) 
+│ ├── app.py # Punto de entrada de la app (inicia Flask y Socket.IO) 
+│ ├── config.py # Configuración (DB, claves secretas, etc.) 
+│ ├── models.py # Modelos ORM (SQLAlchemy) 
+│ ├── routes/ # Rutas HTTP 
+│ │ ├── __init__.py 
+│ │ ├── auth_routes.py # Registro e inicio de sesión 
+│ │ └── chat_routes.py # Endpoints para historial, etc. 
+│ ├── sockets/ # Eventos de Socket.IO 
+│ │ ├── __init__.py 
+│ │ └── chat_socket.py # Manejo de mensajes en tiempo real 
+│ ├── utils/ # Funciones auxiliares (JWT, validaciones) 
+│ │ ├── auth.py 
+│ │ └── helpers.py 
+│ └── tests/ # Pruebas unitarias 
+│ ├── test_auth.py 
+│ └── test_chat.py 
+│ ├── frontend/ # Interfaz del usuario 
+│ ├── index.html # Página principal (login/chat) 
+│ ├── chat.html # Vista del chat 
+│ ├── static/ 
+│ │ ├── css/ 
+│ │ │ ├── styles.css # Estilos generales 
+│ │ │ └── chat.css # Estilos específicos del chat 
+│ │ ├── js/ 
+│ │ │ ├── auth.js # Lógica de login y registro 
+│ │ │ ├── chat.js # Manejo de mensajes en tiempo real 
+│ │ │ └── utils.js # Funciones de apoyo frontend 
+│ │ └── img/ # Imágenes e íconos 
+│ └── templates/ # (Opcional si usas Jinja2) 
+│ ├── base.html 
+│ ├── login.html 
+│ └── chat.html 
+│ ├── docs/ # Documentación del proyecto 
+│ ├── manual_tecnico.md 
+│ ├── manual_usuario.md 
+│ ├── arquitectura.png 
+│ └── modelo_db.png 
+│ ├── database/ # Scripts SQL 
+│ ├── schema.sql # Creación de tablas 
+│ └── seed.sql # Datos de prueba 
+│ ├── .env # Variables de entorno (claves, DB URL) 
+├── requirements.txt # Dependencias de Python 
+├── README.md # Documentación principal 
+└── run.sh # Script para ejecutar el proyecto

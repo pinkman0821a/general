@@ -89,38 +89,43 @@
         layout: dagre
         ---
         erDiagram
-        direction TB
-        USERS {
-        int id PK "Identificador único"  
-        varchar username  "Nombre de usuario"  
-        varchar password_hash  "Contraseña en hash"  
-        timestamp created_at  "Fecha de registro"  
-        boolean online_status  "Conectado?"  
-        boolean active_status  "Activo?"  
-        }
-        USER_HALLS {
-        int id PK "Identificador único"  
-        int user_id FK "Usuario"  
-        int hall_id FK "Sala"  
-        timestamp joined_at  "Fecha de unión"  
-        }
-        HALLS {
-        int id PK "Identificador único"  
-        varchar name  "Nombre de la sala"  
-        timestamp created_at  "Fecha de creación"  
-        }
-        MESSAGES {
-        int id PK "Identificador único"  
-        int sender_id FK "Usuario que envía"  
-        int hall_id FK "Sala destino"  
-        text content  "Mensaje"  
-        timestamp created_at  "Fecha de envío"  
-        boolean deleted  "Eliminado?"  
-        }
-        USERS||--o{USER_HALLS:"participa"
-        HALLS||--o{USER_HALLS:"tiene"
-        USERS||--o{MESSAGES:"envía"
-        HALLS||--o{MESSAGES:"contiene"
+            direction RL
+
+            USER_HALLS {
+                int id PK "Identificador único"
+                int user_id FK "Usuario"
+                int hall_id FK "Sala"
+                timestamp joined_at "Fecha de unión"
+            }
+
+            USERS {
+                int id PK "Identificador único"
+                varchar username "Nombre de usuario"
+                varchar password_hash "Contraseña en hash"
+                timestamp created_at "Fecha de registro"
+                boolean online_status "Conectado?"
+                boolean last_seen "ultima conexion"
+            }
+
+            MESSAGES {
+                int id PK "Identificador único"
+                int sender_id FK "Usuario que envía"
+                int hall_id FK "Sala destino"
+                text content "Mensaje"
+                timestamp created_at "Fecha de envío"
+                boolean deleted "Eliminado?"
+            }
+            HALLS {
+                int id PK "Identificador único"
+                varchar name "Nombre de la sala"
+                timestamp created_at "Fecha de creación"
+                int Users "Numero de personas"
+            }
+
+            USERS ||--o{ USER_HALLS : "participa"
+            HALLS ||--o{ USER_HALLS : "tiene"
+            USERS ||--o{ MESSAGES : "envía"
+            HALLS ||--o{ MESSAGES : "contiene"
     ```
 
 ## Entorno virtual de Python
@@ -256,12 +261,12 @@
     Flask-SocketIO         5.5.1 
     ```
 
-## psutil
+## flask-jwt-extended
 
 1. **instala Flask dentro del entorno virtual:**
 
     ```powershell
-    pip install psutil
+    pip install flask-jwt-extended
     ```
 
 2. **Verifica que se instaló correctamente**
@@ -273,7 +278,7 @@
 - Ejemplo de salida:
 
     ```powershell
-    psutil  7.0.0
+    Flask-JWT-Extended     4.7.1
     ```
 
 ## ✅ Verificación de la conexión a la base de datos

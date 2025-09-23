@@ -1,11 +1,58 @@
-function ping() {
+const socket = io();
+const user_id = localStorage.getItem('user_id');
 
+socket.on('user_halls', (halls) => {
+    const sidebar = document.getElementById('sidebar-halls');
+    sidebar.innerHTML = '';
+
+    halls.forEach(hall => {
+        const button = document.createElement('button');
+        button.textContent = hall.name;
+        button.dataset.hallId = hall.id;
+
+        button.className = "w-full text-left px-3 py-2 rounded-md hover:bg-gray-200 focus:outline-none";
+
+        button.addEventListener('click', () => {
+            document.querySelectorAll('#sidebar-halls button').forEach(b => {
+                b.classList.remove('bg-gray-300');
+            });
+            button.classList.add('bg-gray-300');
+            
+            loadHallMessages(hall.id);
+        });
+        sidebar.appendChild(button);
+    });
+});
+
+async function loadHallMessages(hallId) {
+    try {
+        const response = await fetch(`/chat/messages/${hallId}`);
+        const data = await response.json();
+        const chatArea = document.getElementById('chat-area');
+        chatArea.innerHTML = '';
+        
+        data.messages.forEach(msg => {
+            const div = document.createElement('div');
+            div.className = 'mb-2';
+            div.innerHTML = `
+                <span class="font-bold">${msg.username}</span>:
+                <span>${msg.content}</span>
+                <span class="text-xs text-gray-400 ml-2">${new Date(msg.created_at).toLocaleTimeString()}</span>
+            `;
+            chatArea.appendChild(div);
+        });
+    } catch (error) {
+        console.error('Error loading messages:', error);
+    }
+}
+
+// ------------------------------
+// Funciones para usuarios online y ping
+// ------------------------------
+function ping() {
     const token = localStorage.getItem('token');
     const user_id = localStorage.getItem('user_id');
-    if (!token) {
-        console.error('No token found in localStorage.');
-        return;
-    }
+    if (!token) return;
 
     fetch('/chat/ping', {
         method: 'POST',
@@ -13,57 +60,41 @@ function ping() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ user_id:user_id })
+        body: JSON.stringify({ user_id: user_id })
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error failed: ' + response.status);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Ping successful:', data);
-    })
-    .catch(error => {
-        console.error('Error during ping:', error);
-    });
+    .then(response => response.json())
+    .then(data => console.log('Ping successful:', data))
+    .catch(error => console.error('Ping error:', error));
 }
 
 function fetchOnlineUsers() {
     const token = localStorage.getItem('token');
-    if (!token) {
-        console.error('No token found in localStorage.');
-        return;
-    }
+    if (!token) return;
+
     fetch('/chat/online-users', {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error fetching online users: ' + response.status);
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
-        console.log('Online users:', data.online_users);
-
-        const userList = document.getElementById('userList');
         userList.innerHTML = '';
         data.online_users.forEach(user => {
-            const listItem = document.createElement('li');
-            listItem.textContent = user.username;
-            userList.appendChild(listItem);
+            const li = document.createElement('li');
+            li.textContent = user.username;
+            userList.appendChild(li);
         });
     })
-    .catch(error => {
-        console.error('Error during fetching online users:', error);
-    });
+    .catch(error => console.error('Fetch online users error:', error));
 }
 
-setInterval(fetchOnlineUsers,30000);
-setInterval(ping,60000);
-window.onload = fetchOnlineUsers;
-window.onload = ping;
+// ------------------------------
+// Ejecutar al cargar página y cada cierto tiempo
+// ------------------------------
+window.onload = () => {
+    fetchOnlineUsers();
+    ping();
+    socket.emit('get_user_halls', { user_id: user_id });
+};
+setInterval(fetchOnlineUsers, 30000); // actualizar cada 30s
+setInterval(ping, 60000);             // enviar ping cada 60s
+ 

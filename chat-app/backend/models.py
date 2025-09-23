@@ -58,3 +58,82 @@ def onlineUsers():
     finally:
         cursor.close()
         conn.close()
+        
+def create_hall(hall_name):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT INTO halls (name) VALUES (%s)", (hall_name,))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error creating hall: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+        
+def add_user_to_hall(user_id, hall_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT INTO user_halls (user_id, hall_id) VALUES (%s, %s)", (user_id, hall_id))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error adding user to hall: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+        
+def create_message(sender_id, hall_id, content):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT INTO messages (sender_id, hall_id, content, created_at) VALUES (%s, %s, %s, NOW())", (sender_id, hall_id, content))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error creating message: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+        
+def get_messages_by_hall(hall_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("""
+            SELECT m.id, m.sender_id, u.username, m.hall_id, m.content, m.created_at
+            FROM messages m
+            JOIN users u ON m.sender_id = u.id
+            WHERE m.hall_id = %s
+            ORDER BY m.created_at DESC
+        """, (hall_id,))
+        return cursor.fetchall()
+    except Exception as e:
+        print(f"Error fetching messages: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_user_halls(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("""
+            SELECT h.id, h.name
+            FROM halls h
+            JOIN user_halls uh ON h.id = uh.hall_id
+            WHERE uh.user_id = %s
+        """, (user_id,))
+        return cursor.fetchall()
+    except Exception as e:
+        print(f"Error fetching user halls: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()
