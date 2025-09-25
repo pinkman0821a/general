@@ -18,35 +18,35 @@ El proyecto deberá incluir, como mínimo, las siguientes funcionalidades:
 
 2. Mensajería en Tiempo Real
 
-   - 🟡Envío y recepción de mensajes instantáneos entre usuarios.
+   - ✅Envío y recepción de mensajes instantáneos entre usuarios.
 
-   - 🔴Actualización en tiempo real sin necesidad de recargar la página.
+   - ✅Actualización en tiempo real sin necesidad de recargar la página.
 
    - 🔴Posibilidad de eliminar mensajes propios (opcional, con confirmación).
 
 3. Salas de Chat
 
-    - Sala general (pública) para todos los usuarios conectados.
+    - 🔴Sala general (pública) para todos los usuarios conectados.
 
-    - Salas privadas entre dos o más usuarios (chat privado).
+    - ✅Salas privadas entre dos o más usuarios (chat privado).
 
-    - Visualización de qué usuarios están en cada sala.
+    - 🔴Visualización de qué usuarios están en cada sala.
 
 4. Historial de Conversaciones
 
-    - Almacenamiento de mensajes en base de datos.
+    - ✅Almacenamiento de mensajes en base de datos.
 
-    - Posibilidad de consultar historial por sala o por usuario.
+    - 🔴Posibilidad de consultar historial por sala o por usuario.
 
-    - Mensajes ordenados por fecha y hora.
+    - ✅Mensajes ordenados por fecha y hora.
 
 5. Interfaz de Usuario
 
-    - Diseño responsivo (adaptable a móvil y escritorio).
+    - 🔴Diseño responsivo (adaptable a móvil y escritorio).
 
-    - Interfaz intuitiva y moderna.
+    - 🔴Interfaz intuitiva y moderna.
 
-    - Diferenciación visual de mensajes enviados y recibidos.
+    - 🔴Diferenciación visual de mensajes enviados y recibidos.
 
 ## Documentación Requerida
 

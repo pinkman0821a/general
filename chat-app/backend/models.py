@@ -91,15 +91,55 @@ def create_message(sender_id, hall_id, content):
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
-        cursor.execute("INSERT INTO messages (sender_id, hall_id, content, created_at) VALUES (%s, %s, %s, NOW())", (sender_id, hall_id, content))
+        cursor.execute(
+            "INSERT INTO messages (sender_id, hall_id, content, created_at) VALUES (%s, %s, %s, NOW())",
+            (sender_id, hall_id, content)
+        )
         conn.commit()
-        return True
+        return cursor.lastrowid  # devolvemos el ID del mensaje insertado
     except Exception as e:
         print(f"Error creating message: {e}")
-        return False
+        return None
     finally:
         cursor.close()
         conn.close()
+        
+def create_message(sender_id, hall_id, content):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            "INSERT INTO messages (sender_id, hall_id, content, created_at) VALUES (%s, %s, %s, NOW())",
+            (sender_id, hall_id, content)
+        )
+        conn.commit()
+        return cursor.lastrowid  # devolvemos el ID del mensaje insertado
+    except Exception as e:
+        print(f"Error creating message: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_message_by_id(message_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("""
+            SELECT m.id, m.sender_id, u.username, m.hall_id, m.content, m.created_at
+            FROM messages m
+            JOIN users u ON m.sender_id = u.id
+            WHERE m.id = %s
+        """, (message_id,))
+        return cursor.fetchone()
+    except Exception as e:
+        print(f"Error fetching message by id: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
         
 def get_messages_by_hall(hall_id):
     conn = get_db_connection()
@@ -110,7 +150,7 @@ def get_messages_by_hall(hall_id):
             FROM messages m
             JOIN users u ON m.sender_id = u.id
             WHERE m.hall_id = %s
-            ORDER BY m.created_at DESC
+            ORDER BY m.created_at ASC
         """, (hall_id,))
         return cursor.fetchall()
     except Exception as e:

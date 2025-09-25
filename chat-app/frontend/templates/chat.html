@@ -16,25 +16,25 @@
     </h1>
     
     <!-- Cuerpo principal: Sidebar + Chat + Usuarios -->
-    <div class="flex flex-1">
+    <div class="flex flex-1 overflow-hidden">
         <!-- Sidebar Halls -->
         <div id="sidebar-halls" 
-            class="w-1/4 bg-white border-r border-gray-200 p-4 space-y-2 overflow-y-auto">
+            class="w-1/4 bg-white border-r border-gray-200 p-4 space-y-2 overflow-y-auto h-full">
         </div>
 
         <!-- Área principal de chat -->
         <div class="flex flex-col flex-1">
             <!-- Mensajes -->
-            <div id="chat-area" class="flex-1 bg-gray-100 p-4 overflow-y-auto">
+            <div id="chat-area" class="flex-1 bg-gray-100 p-4 overflow-y-auto h-full">
                 <!-- Aquí se cargan los mensajes -->
             </div>
 
-            <!-- Input y botón (ahora sí abajo) -->
+            <!-- Input y botón -->
             <div class="flex p-4 bg-white border-t border-gray-200">
                 <input type="text" id="message-input" 
                     class="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" 
                     placeholder="Type your message...">
-                <button id="send-button" 
+                <button id="send-btn" 
                         class="bg-purple-600 text-white px-4 py-2 rounded-r-lg hover:bg-purple-700 transition">
                     Send
                 </button>
@@ -42,14 +42,17 @@
         </div>
 
         <!-- Lista de usuarios conectados -->
-        <div class="w-1/4 bg-white border-l border-gray-200 p-4">
+        <div class="w-1/4 bg-white border-l border-gray-200 p-4 flex flex-col">
             <h3 class="font-semibold mb-2">Usuarios conectados</h3>
-            <ul id="userList" class="space-y-1"></ul>
+            <ul id="user-list" class="flex-1 space-y-1 overflow-y-auto"></ul>
         </div>
     </div>
 
     <!-- Script JS principal -->
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/halls.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/users.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
-
 </html>
