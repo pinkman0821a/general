@@ -16,16 +16,19 @@
     </h1>
     
     <!-- Cuerpo principal: Sidebar + Chat + Usuarios -->
-    <div class="flex flex-1 overflow-hidden">
+    <div class="flex flex-1 overflow-hidden h-[calc(100vh-64px)]">
         <!-- Sidebar Halls -->
         <div id="sidebar-halls" 
-            class="w-1/4 bg-white border-r border-gray-200 p-4 space-y-2 overflow-y-auto h-full">
+            class="w-1/4 bg-white border-r border-gray-200 p-4 space-y-2 overflow-y-auto">
         </div>
 
         <!-- Área principal de chat -->
-        <div class="flex flex-col flex-1">
+        <div class="flex flex-col flex-1 h-full">
             <!-- Mensajes -->
-            <div id="chat-area" class="flex-1 bg-gray-100 p-4 overflow-y-auto h-full">
+             <div id="halls-information" class="bg-purple-600">
+                <h1>Cargando...</h1>
+             </div>
+            <div id="chat-area" class="flex-1 bg-gray-100 p-4 overflow-y-auto">
                 <!-- Aquí se cargan los mensajes -->
             </div>
 
@@ -47,6 +50,7 @@
             <ul id="user-list" class="flex-1 space-y-1 overflow-y-auto"></ul>
         </div>
     </div>
+
 
     <!-- Script JS principal -->
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>

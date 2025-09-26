@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from ..models import last_seen, onlineUsers, create_hall, add_user_to_hall, create_message, get_messages_by_hall, get_user_halls
+from ..models import last_seen, onlineUsers, create_hall, add_user_to_hall, create_message, get_messages_by_hall, get_user_halls, delete_message, get_hall_info
 
 # Define a Blueprint for chat routes
 chat_bp = Blueprint('chat', __name__)
@@ -71,3 +71,28 @@ def get_messages(hall_id):
 def get_user(user_id):
     halls = get_user_halls(user_id)
     return jsonify({"halls": halls}), 200
+
+@chat_bp.route('/delete-message', methods=['POST'])
+def delete_message_route():
+    data = request.get_json(silent=True)  # evita error si no viene JSON válido
+    if not data or "message_id" not in data:
+        return jsonify({"success": False, "error": "Message ID is required."}), 400
+
+    try:
+        message_id = int(data.get("message_id"))
+    except (ValueError, TypeError):
+        return jsonify({"success": False, "error": "Message ID must be an integer."}), 400
+
+    deleted = delete_message(message_id)
+
+    if deleted is None:
+        return jsonify({"success": False, "error": "Database error while deleting message."}), 500
+    elif deleted is False:
+        return jsonify({"success": False, "error": f"No message found with id {message_id}."}), 404
+    else:
+        return jsonify({"success": True, "message": "Message deleted successfully."}), 200
+
+@chat_bp.route('/info-halls/<int:hall_id>', methods=['GET'])
+def hall_info(hall_id):
+    info = get_hall_info(hall_id)
+    return jsonify({"info":info}),200

@@ -121,7 +121,6 @@ def create_message(sender_id, hall_id, content):
         cursor.close()
         conn.close()
 
-
 def get_message_by_id(message_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -139,14 +138,13 @@ def get_message_by_id(message_id):
     finally:
         cursor.close()
         conn.close()
-
-        
+      
 def get_messages_by_hall(hall_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
         cursor.execute("""
-            SELECT m.id, m.sender_id, u.username, m.hall_id, m.content, m.created_at
+            SELECT m.id, m.sender_id, u.username, m.hall_id, m.content, m.created_at, m.deleted
             FROM messages m
             JOIN users u ON m.sender_id = u.id
             WHERE m.hall_id = %s
@@ -177,3 +175,45 @@ def get_user_halls(user_id):
     finally:
         cursor.close()
         conn.close()
+        
+def delete_message(message_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("UPDATE messages SET deleted = TRUE WHERE id = %s", (message_id,))
+        conn.commit()
+
+        # rowcount = cuántas filas fueron afectadas
+        if cursor.rowcount == 0:
+            return False   # no se encontró el mensaje
+        return True        # se marcó como eliminado
+    except Exception as e:
+        print(f"Error deleting message: {e}")
+        return None        # error de base de datos
+    finally:
+        cursor.close()
+        conn.close()
+        
+def get_hall_info(hall_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("""
+            SELECT 
+                h.name AS hall_name,
+                h.created_at AS hall_created_at,
+                GROUP_CONCAT(u.username ORDER BY u.username SEPARATOR ', ') AS users
+            FROM user_halls uh
+            JOIN users u ON u.id = uh.user_id
+            JOIN halls h ON h.id = uh.hall_id
+            WHERE h.id = %s
+            GROUP BY h.id, h.name, h.created_at;
+        """, (hall_id,))
+        return cursor.fetchall()
+    except Exception as e:
+        print(f"Error fetching information hall: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+        

@@ -22,7 +22,7 @@ El proyecto deberá incluir, como mínimo, las siguientes funcionalidades:
 
    - ✅Actualización en tiempo real sin necesidad de recargar la página.
 
-   - 🔴Posibilidad de eliminar mensajes propios (opcional, con confirmación).
+   - ✅Posibilidad de eliminar mensajes propios (opcional, con confirmación).
 
 3. Salas de Chat
 
@@ -30,7 +30,7 @@ El proyecto deberá incluir, como mínimo, las siguientes funcionalidades:
 
     - ✅Salas privadas entre dos o más usuarios (chat privado).
 
-    - 🔴Visualización de qué usuarios están en cada sala.
+    - ✅Visualización de qué usuarios están en cada sala.
 
 4. Historial de Conversaciones
 
@@ -42,11 +42,11 @@ El proyecto deberá incluir, como mínimo, las siguientes funcionalidades:
 
 5. Interfaz de Usuario
 
-    - 🔴Diseño responsivo (adaptable a móvil y escritorio).
+    - 🟡Diseño responsivo (adaptable a móvil y escritorio).
 
-    - 🔴Interfaz intuitiva y moderna.
+    - 🟡Interfaz intuitiva y moderna.
 
-    - 🔴Diferenciación visual de mensajes enviados y recibidos.
+    - ✅Diferenciación visual de mensajes enviados y recibidos.
 
 ## Documentación Requerida
 
