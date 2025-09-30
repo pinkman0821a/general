@@ -26,7 +26,7 @@ El proyecto deberá incluir, como mínimo, las siguientes funcionalidades:
 
 3. Salas de Chat
 
-    - 🔴Sala general (pública) para todos los usuarios conectados.
+    - ✅Sala general (pública) para todos los usuarios conectados.
 
     - ✅Salas privadas entre dos o más usuarios (chat privado).
 
@@ -36,7 +36,7 @@ El proyecto deberá incluir, como mínimo, las siguientes funcionalidades:
 
     - ✅Almacenamiento de mensajes en base de datos.
 
-    - 🔴Posibilidad de consultar historial por sala o por usuario.
+    - ✅Posibilidad de consultar historial por sala o por usuario.
 
     - ✅Mensajes ordenados por fecha y hora.
 

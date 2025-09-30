@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from ..models import last_seen, onlineUsers, create_hall, add_user_to_hall, create_message, get_messages_by_hall, get_user_halls, delete_message, get_hall_info
+from ..models import last_seen, onlineUsers, create_hall, add_user_to_hall, create_message, get_messages_by_hall, get_user_halls, delete_message, get_hall_info, add_user_to_hall_name, fetch_users
 
 # Define a Blueprint for chat routes
 chat_bp = Blueprint('chat', __name__)
@@ -95,4 +95,22 @@ def delete_message_route():
 @chat_bp.route('/info-halls/<int:hall_id>', methods=['GET'])
 def hall_info(hall_id):
     info = get_hall_info(hall_id)
+    return jsonify({"info":info}),200
+
+@chat_bp.route('/add-user-to-hall-name', methods=['POST'])
+def add_user_to_hall_name_route ():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    hall_name = data.get('hall_name')
+    
+    if not user_id or not hall_name:
+        return jsonify({"error": "User ID and Name Hall are required."}), 400
+    added = add_user_to_hall_name(user_id, hall_name)
+    if not added:
+        return jsonify({"error": "Failed to add user to hall."}), 500
+    return jsonify({"message": "User added to hall successfully."}), 200
+
+@chat_bp.route('/get-users', methods=['GET'])
+def get_users():
+    info = fetch_users()
     return jsonify({"info":info}),200

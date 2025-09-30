@@ -1,6 +1,5 @@
 from .config import get_db_connection # Import the database connection function from config.py
 
-
 # Create a new user in the database
 def create_user(username, password_hash):
     conn = get_db_connection()
@@ -58,7 +57,7 @@ def onlineUsers():
     finally:
         cursor.close()
         conn.close()
-        
+   
 def create_hall(hall_name):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -217,3 +216,34 @@ def get_hall_info(hall_id):
         cursor.close()
         conn.close()
         
+def add_user_to_hall_name(sender_id, hall_name):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT id FROM halls WHERE name = %s", (hall_name,))
+        hall = cursor.fetchone()
+        if hall:
+            hall_id = hall[0]  # Extraer el ID de la tupla
+            return add_user_to_hall(sender_id, hall_id)
+        else:
+            print(f"Hall '{hall_name}' no encontrado.")
+            return False
+    except Exception as e:
+        print(f"Error adding user to hall: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+def fetch_users():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT id, username FROM users;")
+        return cursor.fetchall()
+    except Exception as e:
+        print(f"Error fetching users: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()

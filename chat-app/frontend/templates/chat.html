@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,36 +10,47 @@
     <!-- TailwindCSS CDN (solo para pruebas rápidas, en prod lo ideal es compilarlo) -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 h-screen flex flex-col">
     <!-- Header -->
     <h1 class="text-2xl font-bold text-center p-4 bg-purple-600 text-white shadow-md">
         Chat Page
     </h1>
-    
+
     <!-- Cuerpo principal: Sidebar + Chat + Usuarios -->
     <div class="flex flex-1 overflow-hidden h-[calc(100vh-64px)]">
         <!-- Sidebar Halls -->
-        <div id="sidebar-halls" 
-            class="w-1/4 bg-white border-r border-gray-200 p-4 space-y-2 overflow-y-auto">
+        <div class="w-1/4 bg-white border-r border-gray-200 p-4 space-y-2 overflow-y-auto">
+            <!-- Botón fijo para crear sala -->
+            <button id="create-hall"
+                class="w-full text-left px-3 py-2 rounded-md hover:bg-green-200 focus:outline-none">
+                Crear Sala
+            </button>
+            <!-- Aquí se va a renderizar el form -->
+            <div id="form-container" class="mt-4"></div>
+
+            <!-- Aquí el renderHalls seguirá pintando los botones de salas -->
+            <div id="sidebar-halls" class="space-y-2"></div>
         </div>
+
 
         <!-- Área principal de chat -->
         <div class="flex flex-col flex-1 h-full">
             <!-- Mensajes -->
-             <div id="halls-information" class="bg-purple-600">
+            <div id="halls-information" class="bg-purple-600">
                 <h1>Cargando...</h1>
-             </div>
+            </div>
             <div id="chat-area" class="flex-1 bg-gray-100 p-4 overflow-y-auto">
                 <!-- Aquí se cargan los mensajes -->
             </div>
 
             <!-- Input y botón -->
             <div class="flex p-4 bg-white border-t border-gray-200">
-                <input type="text" id="message-input" 
-                    class="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                <input type="text" id="message-input"
+                    class="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="Type your message...">
-                <button id="send-btn" 
-                        class="bg-purple-600 text-white px-4 py-2 rounded-r-lg hover:bg-purple-700 transition">
+                <button id="send-btn"
+                    class="bg-purple-600 text-white px-4 py-2 rounded-r-lg hover:bg-purple-700 transition">
                     Send
                 </button>
             </div>
@@ -50,6 +62,47 @@
             <ul id="user-list" class="flex-1 space-y-1 overflow-y-auto"></ul>
         </div>
     </div>
+    <!-- Modal oculto por defecto -->
+    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 class="text-xl font-bold mb-4 text-center">Crear nueva Sala</h2>
+
+            <input type="text" id="hall-name" placeholder="Nombre de la sala"
+                class="w-full mb-3 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+
+            <div class="flex justify-between">
+                <button id="close-modal" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">
+                    Cancelar
+                </button>
+                <button id="submit-hall" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+                    Crear Hall
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Agregar Usuario -->
+    <div id="modal-add-user" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-gray-900 text-white rounded-lg shadow-lg w-96 p-6">
+
+            <h1 class="text-xl font-bold mb-4 text-center">Selecciona tu usuario</h1>
+
+            <select id="select-user" name="user" autocomplete="off" class="w-full mb-4 rounded-md bg-white/5 py-2 pr-8 pl-3 text-base text-white outline-1 
+             -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 
+             focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm">
+                <option disabled selected>-- Selecciona un usuario --</option>
+            </select>
+
+            <div class="flex justify-end gap-3">
+                <button id="close-add-user" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-md">
+                    Cancelar
+                </button>
+                <button id="submit-add-user" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md">
+                    Agregar
+                </button>
+            </div>
+
+        </div>
+    </div>
 
 
     <!-- Script JS principal -->
@@ -59,4 +112,5 @@
     <script src="{{ url_for('static', filename='js/users.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
+
 </html>

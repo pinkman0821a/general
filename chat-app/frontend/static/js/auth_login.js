@@ -28,3 +28,4 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         document.getElementById('error').innerText = 'An error occurred. Please try again.';
     }   
 });
+
