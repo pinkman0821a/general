@@ -7,21 +7,32 @@ function renderHalls(halls) {
         button.textContent = hall.name;
         button.dataset.hallId = hall.id;
 
-        button.className = "w-full text-left px-3 py-2 rounded-md hover:bg-gray-200 focus:outline-none";
+        // 🎨 Estilo oscuro con glass y hover
+        button.className = `
+            w-full text-left px-3 py-2 rounded-lg
+            bg-gray-700/50 border border-gray-600/40
+            text-gray-200 hover:bg-indigo-600/50 hover:text-white
+            transition focus:outline-none
+        `;
 
         button.addEventListener('click', () => {
+            // Quitar highlight previo
             document.querySelectorAll('#sidebar-halls button').forEach(b => {
-                b.classList.remove('bg-gray-300');
+                b.classList.remove('bg-indigo-600/70', 'text-white', 'shadow-md');
             });
-            button.classList.add('bg-gray-300');
+
+            // Marcar el botón seleccionado
+            button.classList.add('bg-indigo-600/70', 'text-white', 'shadow-md');
 
             currentHallId = hall.id;
             joinHall(currentHallId);
             loadHallMessages(currentHallId);
         });
+
         sidebar.appendChild(button);
     });
 }
+
 
 function joinHall(hallId) {
     socket.emit('join_hall', { hall_id: hallId });
@@ -62,28 +73,29 @@ async function loadHallInfo(hallId) {
             const hall = data.info[0];
 
             infoDiv.innerHTML = `
-                <div class="p-4 bg-white rounded-lg shadow-md border border-gray-200">
-                    <h2 class="text-xl font-bold mb-3 text-gray-800">
+                <div class="p-2 bg-gray-800/70 backdrop-blur-md rounded-lg border border-gray-700/50 shadow-md text-sm">
+                    <h2 class="text-lg font-semibold mb-2 text-indigo-300">
                         ${hall.hall_name}
                     </h2>
 
-                    <p class="text-sm text-gray-700 mb-1">
-                        <span class="font-semibold">Usuarios:</span> ${hall.users}
+                    <p class="text-xs text-gray-300 mb-1">
+                        <span class="font-medium text-indigo-400">👥 Usuarios:</span> ${hall.users}
                     </p>
 
-                    <p class="text-sm text-gray-500 mb-4">
-                        <span class="font-semibold">Creada:</span> ${hall.hall_created_at}
+                    <p class="text-xs text-gray-400 mb-2">
+                        <span class="font-medium text-indigo-400">📅 Creada:</span> ${hall.hall_created_at}
                     </p>
 
                     <button 
                         id="add-user-btn"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        class="px-3 py-1.5 text-xs bg-indigo-600 text-white rounded-md hover:bg-indigo-500 transition focus:outline-none focus:ring-1 focus:ring-indigo-400">
                         ➕ Agregar Usuario
                     </button>
                 </div>
             `;
 
-            // ✅ agregar el listener aquí
+
+            // ✅ Listener para abrir modal
             const openAddUserBtn = document.getElementById("add-user-btn");
             const modalAddUser = document.getElementById("modal-add-user");
 
@@ -91,12 +103,12 @@ async function loadHallInfo(hallId) {
                 modalAddUser.classList.remove("hidden");
             });
         } else {
-            infoDiv.innerHTML = `<p class="text-gray-500">No hay información de esta sala.</p>`;
+            infoDiv.innerHTML = `<p class="text-gray-400">No hay información de esta sala.</p>`;
         }
     } catch (error) {
         console.error('Error cargando información del hall:', error);
         document.getElementById('halls-information').innerHTML =
-            `<p class="text-red-500">Error al cargar la información.</p>`;
+            `<p class="text-red-400">Error al cargar la información.</p>`;
     }
 }
 
@@ -186,44 +198,44 @@ async function addHall(user_id, hall_name) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const hallsInfo = document.getElementById('halls-information');
-  const modalAddUser = document.getElementById('modal-add-user');
+    const hallsInfo = document.getElementById('halls-information');
+    const modalAddUser = document.getElementById('modal-add-user');
 
-  // Delegación: escucha clicks dentro de halls-information
-  hallsInfo.addEventListener('click', (e) => {
-    const btn = e.target.closest('button');
-    if (!btn) return;
+    // Delegación: escucha clicks dentro de halls-information
+    hallsInfo.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
 
-    if (btn.id === 'add-user-btn') {
-      loadUsers(); // carga usuarios dinámicamente
-      modalAddUser.classList.remove('hidden');
-    }
-  });
+        if (btn.id === 'add-user-btn') {
+            loadUsers(); // carga usuarios dinámicamente
+            modalAddUser.classList.remove('hidden');
+        }
+    });
 
-  // Delegación global para cerrar/submit del modal (funciona aunque botones sean dinámicos)
-  document.addEventListener('click', async (e) => {
-    if (e.target && e.target.id === 'close-add-user') {
-      modalAddUser.classList.add('hidden');
-    }
-    if (e.target && e.target.id === 'submit-add-user') {
-      const selectedUser = document.getElementById('select-user').value;
-      console.log('Usuario seleccionado:', selectedUser, 'Hall actual:', currentHallId);
+    // Delegación global para cerrar/submit del modal (funciona aunque botones sean dinámicos)
+    document.addEventListener('click', async (e) => {
+        if (e.target && e.target.id === 'close-add-user') {
+            modalAddUser.classList.add('hidden');
+        }
+        if (e.target && e.target.id === 'submit-add-user') {
+            const selectedUser = document.getElementById('select-user').value;
+            console.log('Usuario seleccionado:', selectedUser, 'Hall actual:', currentHallId);
 
-      // 👉 Llamar tu función para agregar usuario al hall actual
-      const added = await adduserhall(selectedUser, currentHallId);
-      loadHallInfo(currentHallId);
+            // 👉 Llamar tu función para agregar usuario al hall actual
+            const added = await adduserhall(selectedUser, currentHallId);
+            loadHallInfo(currentHallId);
 
-      if (added) {
-        console.log("Usuario agregado al hall correctamente ✅");
-        // refrescar info del hall para ver usuarios actualizados
-        loadHallInfo(currentHallId);
-      } else {
-        console.error("No se pudo agregar el usuario ❌");
-      }
+            if (added) {
+                console.log("Usuario agregado al hall correctamente ✅");
+                // refrescar info del hall para ver usuarios actualizados
+                loadHallInfo(currentHallId);
+            } else {
+                console.error("No se pudo agregar el usuario ❌");
+            }
 
-      modalAddUser.classList.add('hidden');
-    }
-  });
+            modalAddUser.classList.add('hidden');
+        }
+    });
 });
 
 async function loadUsers() {
@@ -235,17 +247,20 @@ async function loadUsers() {
 
         const data = await response.json();
 
-        if (response.ok) {
+        if (response.ok && data.info) {
             const select = document.getElementById("select-user");
-            
+
             // Reiniciar opciones
             select.innerHTML = '<option disabled selected>-- Selecciona un usuario --</option>';
 
             // Recorrer usuarios
             data.info.forEach(user => {
                 const option = document.createElement("option");
-                option.value = user.id;        // 👈 acá estaba mal
-                option.textContent = user.username; // 👈 acá también
+
+                // ⚡ Ajusta según tu API real
+                option.value = user.user_id || user.id;
+                option.textContent = user.username || user.name;
+
                 select.appendChild(option);
             });
         } else {
@@ -255,6 +270,7 @@ async function loadUsers() {
         console.error("Error cargando usuarios:", error);
     }
 }
+
 
 async function adduserhall(idUserLoad, hall_id) {
     try {

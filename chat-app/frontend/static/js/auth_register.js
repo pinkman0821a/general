@@ -55,7 +55,7 @@ async function login(username,password) {
 const currentUserId = localStorage.getItem('user_id');
 
 async function general(user_id) {
-    const hall_id = 3;
+    const hall_id = 1;
     try {
         const response = await fetch('/chat/add-user-to-hall', {
             method: 'POST',
