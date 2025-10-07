@@ -1,0 +1,81 @@
+DROP DATABASE IF EXISTS Equilibrio;
+CREATE DATABASE Equilibrio;
+USE Equilibrio;
+
+CREATE TABLE Moneda (
+    IdMoneda INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(50) NOT NULL,
+    PrecioDolar DECIMAL(12,10) NOT NULL
+);
+
+CREATE TABLE Usuario (
+    IdUsuario INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Correo VARCHAR(100) UNIQUE NOT NULL,
+    Contrasena VARCHAR(255) NOT NULL,
+    FechaRegistro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    MonedaId INT,
+    FOREIGN KEY (MonedaId) REFERENCES Moneda(IdMoneda)
+        ON DELETE SET NULL
+);
+
+CREATE TABLE Categoria (
+    IdCategoria INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    FechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UsuarioId INT NOT NULL,
+    FOREIGN KEY (UsuarioId) REFERENCES Usuario(IdUsuario)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE Cuenta (
+    IdCuenta INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    SaldoInicial DECIMAL(12,2) DEFAULT 0,
+    SaldoActual DECIMAL(12,2) DEFAULT 0,
+    FechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UsuarioId INT NOT NULL,
+    FOREIGN KEY (UsuarioId) REFERENCES Usuario(IdUsuario)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE Movimiento (
+    IdMovimiento INT AUTO_INCREMENT PRIMARY KEY,
+    Valor DECIMAL(12,2) NOT NULL,
+    FechaMovimiento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Tipo ENUM('SALE', 'ENTRA') NOT NULL,
+    CuentaId INT NOT NULL,
+    UsuarioId INT NOT NULL,
+    FOREIGN KEY (CuentaId) REFERENCES Cuenta(IdCuenta)
+        ON DELETE CASCADE,
+    FOREIGN KEY (UsuarioId) REFERENCES Usuario(IdUsuario)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE Gasto (
+    IdGasto INT AUTO_INCREMENT PRIMARY KEY,
+    Valor DECIMAL(12,2) NOT NULL,
+    FechaGasto TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Descripcion VARCHAR(255),
+    CuentaId INT NOT NULL,
+    CategoriaId INT,
+    UsuarioId INT NOT NULL,
+    FOREIGN KEY (CuentaId) REFERENCES Cuenta(IdCuenta)
+        ON DELETE CASCADE,
+    FOREIGN KEY (CategoriaId) REFERENCES Categoria(IdCategoria)
+        ON DELETE SET NULL,
+    FOREIGN KEY (UsuarioId) REFERENCES Usuario(IdUsuario)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE Ingreso (
+    IdIngreso INT AUTO_INCREMENT PRIMARY KEY,
+    Valor DECIMAL(12,2) NOT NULL,
+    FechaIngreso TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CuentaId INT NOT NULL,
+    UsuarioId INT NOT NULL,
+    FOREIGN KEY (CuentaId) REFERENCES Cuenta(IdCuenta)
+        ON DELETE CASCADE,
+    FOREIGN KEY (UsuarioId) REFERENCES Usuario(IdUsuario)
+        ON DELETE CASCADE
+);
