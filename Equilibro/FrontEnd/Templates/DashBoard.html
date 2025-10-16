@@ -1,1 +1,267 @@
-<h1>prueba</h1>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+
+<body style="margin: 10px;">
+    <!-- logo -->
+    <div class="container" style="  display: flex; gap: 0; max-width: 500px;">
+        <div style="width: 100px;   align-content: center; text-align: center;">
+            <nav class="navbar bg-body-tertiary fixed-top">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/Dashboard">logo</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                        aria-labelledby="offcanvasNavbarLabel">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">logo</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Historico Gastos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Detalles Cuentas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Categorias</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Historico movimientos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Presupuesto</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Ajustes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Cambiar Clave</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Salir</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- contenido -->
+    <div class="container mt-5 p-4 border rounded-3 shadow" style="max-width: 500px;">
+        <!-- saludo -->
+        <div class="container" style="  display: flex; gap: 0; max-width: 500px;">
+            <h3 id="saludo">¡Hola!</h3>
+        </div>
+        <!-- gastos mes -->
+        <div class="container" style="  display: flex; gap: 0; max-width: 500px;">
+            <div style="width: 400px;   align-content: center; border: 1px solid #000000;">
+                <p id="GastosMes"><b>Gastos mes: </b></p>
+            </div>
+            <div style="width: 100px;   align-content: center; text-align: right; border: 1px solid #000000;">
+                <div>
+                    <button type="button" class="btn btn-primary"
+                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                        Historico
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        <!-- saldo total -->
+        <div class="container" style="  display: flex; gap: 0; max-width: 500px;">
+            <div style="width: 400px;   align-content: center; border: 1px solid #000000;">
+                <p id="SaldoTotal"><b>Saldo total: </b></p>
+            </div>
+            <div style="width: 100px;   align-content: center; text-align: right; border: 1px solid #000000;">
+                <div>
+                    <button type="button" class="btn btn-primary"
+                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                        Detalles
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        <!-- botones -->
+        <div class="container" style="  display: flex; gap: 0; max-width: 500px;">
+            <div style="width: 166px;   align-content: center; text-align: center; border: 1px solid #000000;">
+                <button type="button" class="btn btn-primary"
+                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+                    data-bs-target="#AddGastomodal" data-bs-toggle="modal">
+                    Add Gasto
+                </button>
+            </div>
+            <div style="width: 166px;   align-content: center; text-align: center; border: 1px solid #000000;">
+                <button type="button" class="btn btn-primary"
+                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+                    data-bs-target="#moverPlataModal" data-bs-toggle="modal">
+                    Mover Plata
+                </button>
+            </div>
+            <div style="width: 166px;   align-content: center; text-align: center; border: 1px solid #000000;">
+                <button type="button" class="btn btn-primary"
+                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+                    data-bs-target="#Ingresarplatamodal" data-bs-toggle="modal">
+                    Ingresar Plata
+                </button>
+            </div>
+        </div>
+        <!-- contenedor principal -->
+        <div class="container" style="display: flex; gap: 0; max-width: 500px; overflow-x: auto; white-space: nowrap;">
+            <table class="table table-hover" style="border: 1px solid #000000;" id="tablaGastos">
+                <thead>
+                    <tr>
+                        <th scope="col">Descripcion</th>
+                        <th scope="col">Monto</th>
+                        <th scope="col">Cuenta</th>
+                        <th scope="col">Categoria</th>
+                        <th scope="col">Fecha</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyGastos">
+                    <tr>
+                        <td>Cargando...</td>
+                        <td>Cargando...</td>
+                        <td>Cargando...</td>
+                        <td>Cargando...</td>
+                        <td>Cargando...</td>
+                    </tr>
+                    <tr>
+                        <td>Cargando...</td>
+                        <td>Cargando...</td>
+                        <td>Cargando...</td>
+                        <td>Cargando...</td>
+                        <td>Cargando...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- modal  agregar gasto -->
+    <div class="modal fade" id="AddGastomodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar Gasto</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="Valor" class="col-form-label">Valor:</label>
+                            <input type="number" class="form-control" id="Valor">
+                        </div>
+                        <div class="mb-3">
+                            <label for="Descripcion" class="col-form-label">Descripcion:</label>
+                            <input type="text" class="form-control" id="Descripcion">
+                        </div>
+                        <div class="mb-3">
+                            <p>Selecciona una cuenta:</p>
+                            <select class="form-select" id="inputGroupSelect01"></select>
+                        </div>
+                        <div class="mb-3">
+                            <p>Selecciona una Categoria:</p>
+                            <select class="form-select" id="inputGroupSelect05"></select>
+                        </div>
+                        <span id="error-message" class="form-text text-danger"></span>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnAgregarGasto">Add Gasto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal mover plata -->
+    <div class="modal fade" id="moverPlataModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Mover Plata</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="Valor2" class="col-form-label">Valor:</label>
+                            <input type="number" class="form-control" id="Valor2">
+                        </div>
+                        <div class="mb-3">
+                            <p>Selecciona una cuenta:</p>
+                            <select class="form-select" id="inputGroupSelect02"></select>
+                        </div>
+                        <div class="mb-3">
+                            <p>Selecciona una cuenta:</p>
+                            <select class="form-select" id="inputGroupSelect03"></select>
+                        </div>
+                        <span id="error-message-movimiento" class="form-text text-danger"></span>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnAgregarMovimiento">Add Movimiento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Ingresar plata modal -->
+    <div class="modal fade" id="Ingresarplatamodal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ingresar Plata</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="Valor" class="col-form-label">Valor:</label>
+                            <input type="number" class="form-control" id="Valor3">
+                        </div>
+                        <div class="mb-3">
+                            <p>Selecciona una cuenta:</p>
+                            <select class="form-select" id="inputGroupSelect04"></select>
+                        </div>
+                        <span id="error-message-ingreso" class="form-text text-danger"></span>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnIngresarPlata">Ingresar Plata</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- footer -->
+    <footer class="container"
+        style="text-align: center; padding: 10px; background-color: #f1f1f1; color: #333; max-width: 500px;">
+        © 2025 Todos los derechos reservados.
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/Dashboard.js') }}"></script>
+</body>
+
+</html>

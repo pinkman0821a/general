@@ -16,15 +16,15 @@ El proyecto deberá incluir, como mínimo, las siguientes funcionalidades:
 
 2. 🔴 **Registro de Transacciones**
 
-   * 🔴 Alta de movimientos: ingresos y gastos (monto, fecha, categoría, cuenta, nota, adjunto opcional).
+   * ✅ Alta de movimientos: ingresos y gastos (monto, fecha, categoría, cuenta, nota, adjunto opcional).
    * 🔴 Soporte para transacciones recurrentes (mensual, semanal, anual).
    * 🔴 Edición y eliminación de transacciones (con confirmación y registro de auditoría).
 
-3. 🔴 **Cuentas y Saldo**
+3. ✅ **Cuentas y Saldo**
 
-   * 🔴 Múltiples cuentas (efectivo, bancos, tarjetas, inversiones) con saldos independientes.
-   * 🔴 Transferencias entre cuentas internas.
-   * 🔴 Cálculo de saldo actualizado y balance general.
+   * ✅ Múltiples cuentas (efectivo, bancos, tarjetas, inversiones) con saldos independientes.
+   * ✅ Transferencias entre cuentas internas.
+   * ✅ Cálculo de saldo actualizado y balance general.
 
 4. 🔴 **Presupuestos y Metas**
 
@@ -50,13 +50,13 @@ El proyecto deberá incluir, como mínimo, las siguientes funcionalidades:
 
 8. 🔴 **Historial y Búsqueda**
 
-   * 🔴 Almacenamiento persistente de transacciones en base de datos.
+   * ✅ Almacenamiento persistente de transacciones en base de datos.
    * 🔴 Buscar y filtrar por fecha, categoría, cuenta, etiqueta o monto.
 
 9. 🔴 **Seguridad y Privacidad**
 
    * ✅ Almacenamiento de contraseñas con hashing seguro (bcrypt/argon2).
-   * 🔴 Validaciones y sanitización de entradas para evitar inyección SQL/XSS.
+   * ✅ Validaciones y sanitización de entradas para evitar inyección SQL/XSS.
    * 🔴 Configuración de roles básicos (usuario, admin) y políticas de acceso.
 
 10. ⚙️ **Extras Opcionales**

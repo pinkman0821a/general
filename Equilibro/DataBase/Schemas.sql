@@ -14,6 +14,7 @@ CREATE TABLE Usuario (
     Correo VARCHAR(100) UNIQUE NOT NULL,
     Contrasena VARCHAR(255) NOT NULL,
     FechaRegistro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Formulario BOOLEAN DEFAULT FALSE,
     MonedaId INT,
     FOREIGN KEY (MonedaId) REFERENCES Moneda(IdMoneda)
         ON DELETE SET NULL

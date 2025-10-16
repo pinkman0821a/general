@@ -55,6 +55,8 @@ def login():
     username = user[1]
     correo = user[2]
     contrasena_hash = user[3]
+    formulario = user[5]
+    
 
     # Verificar contraseña
     if not VerificarContrasena(contrasena, contrasena_hash):
@@ -73,7 +75,9 @@ def login():
         "token": token,
         "user": {
             "id": user_id,
-            "username": username
+            "username": username,
+            "formulario": formulario
+            
         }
     })
     response.status_code = 200

@@ -35,7 +35,7 @@ async function registerUser() {
 
         // Puedes mostrar mensaje o redirigir
         document.getElementById('error-message').innerText = "Usuario registrado con éxito!";
-        window.location.href = '/Dashboard'; // Redirigir al dashboard
+        await iniciarSesion(Email, Contraseña); // Iniciar sesión automáticamente después del registro
     } catch (error) {
         console.error('❌ Error al registrar usuario:', error);
         document.getElementById('error-message').innerText = "Error al registrar usuario: " + error.message;
@@ -53,6 +53,43 @@ function ConfirmarContraseña() {
     else {
         document.getElementById('error-message').innerText = "";
         return true;
+    }
+}
+
+async function iniciarSesion(Email, Contraseña) {
+    const data = {
+        correo: Email,
+        contrasena: Contraseña
+    };
+
+    try {
+        const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include', 
+            body: JSON.stringify(data)
+        });
+
+        if (response.status === 200) {
+            const result = await response.json();
+            console.log('Inicio de sesión exitoso:', result);
+            localStorage.setItem('token', result.token);
+            localStorage.setItem('IdUser', result.user.id);
+            localStorage.setItem('Nombre', result.user.username);
+            localStorage.setItem('Formulario', result.user.formulario);
+            const formularioCompletado = result.user.formulario;
+            if (formularioCompletado == 0) {
+                window.location.href = '/Questions'; // Redirigir a Questions si el formulario no está completado
+            }
+            else {
+                window.location.href = '/Dashboard'; // Redirigir al dashboard si el formulario está completado
+            }
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
     }
 }
 

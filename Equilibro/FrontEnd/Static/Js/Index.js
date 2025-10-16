@@ -20,7 +20,17 @@ async function iniciarSesion() {
         if (response.status === 200) {
             const result = await response.json();
             console.log('Inicio de sesión exitoso:', result);
-            window.location.href = '/Dashboard'; // Redirigir al dashboard
+            localStorage.setItem('token', result.token);
+            localStorage.setItem('IdUser', result.user.id);
+            localStorage.setItem('Nombre', result.user.username);
+            localStorage.setItem('Formulario', result.user.formulario);
+            const formularioCompletado = result.user.formulario;
+            if (formularioCompletado == 0) {
+                window.location.href = '/Questions'; // Redirigir a Questions si el formulario no está completado
+            }
+            else {
+                window.location.href = '/Dashboard'; // Redirigir al dashboard si el formulario está completado
+            }
         }
 
     } catch (error) {
