@@ -1,19 +1,24 @@
-async function registerUser() {
-    const Nombre = document.getElementById('exampleInputName').value.trim();
-    const Email = document.getElementById('exampleInputEmail1').value.trim();
-    const Contraseña = document.getElementById('Password1').value;
+function capitalize(text) {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+}
 
-    if (!ConfirmarContraseña()) {
-        document.getElementById('error-message').innerText = "Las contraseñas no coinciden";
+async function registerUser() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!confirmPassword()) {
+        document.getElementById('errorMessage').innerText = "Passwords do not match";
         return;
     }
 
-    document.getElementById('error-message').innerText = "";
+    document.getElementById('errorMessage').innerText = "";
 
     const data = {
-        nombre: Nombre,
-        correo: Email,
-        contrasena: Contraseña
+        name: capitalize(name),
+        email: email,
+        password: password
     };
 
     try {
@@ -27,39 +32,39 @@ async function registerUser() {
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.error || 'Error en la solicitud');
+            throw new Error(errorData.error || 'Request error');
         }
 
         const result = await response.json();
-        console.log('✅ Usuario registrado correctamente:', result);
+        console.log('✅ User registered successfully:', result);
 
-        // Puedes mostrar mensaje o redirigir
-        document.getElementById('error-message').innerText = "Usuario registrado con éxito!";
-        await iniciarSesion(Email, Contraseña); // Iniciar sesión automáticamente después del registro
+        // Show message or redirect
+        document.getElementById('errorMessage').innerText = "User registered successfully!";
+        await login(email, password); // Automatically login after registration
     } catch (error) {
-        console.error('❌ Error al registrar usuario:', error);
-        document.getElementById('error-message').innerText = "Error al registrar usuario: " + error.message;
+        console.error('❌ Error registering user:', error);
+        document.getElementById('errorMessage').innerText = "Error registering user: " + error.message;
     }
 }
 
-function ConfirmarContraseña() {
-    const Contraseña = document.getElementById('Password1').value;
-    const ConfirmarContraseñas = document.getElementById('Password2').value;
+function confirmPassword() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
 
-    if (Contraseña !== ConfirmarContraseñas) {
-        document.getElementById('error-message').innerText = "Las contraseñas no coinciden";
+    if (password !== confirmPassword) {
+        document.getElementById('errorMessage').innerText = "Passwords do not match";
         return false;
     }
     else {
-        document.getElementById('error-message').innerText = "";
+        document.getElementById('errorMessage').innerText = "";
         return true;
     }
 }
 
-async function iniciarSesion(Email, Contraseña) {
+async function login(email, password) {
     const data = {
-        correo: Email,
-        contrasena: Contraseña
+        email: email,
+        password: password
     };
 
     try {
@@ -72,30 +77,35 @@ async function iniciarSesion(Email, Contraseña) {
             body: JSON.stringify(data)
         });
 
+        const result = await response.json();
+
         if (response.status === 200) {
-            const result = await response.json();
-            console.log('Inicio de sesión exitoso:', result);
+            console.log('Login successful:', result);
             localStorage.setItem('token', result.token);
-            localStorage.setItem('IdUser', result.user.id);
-            localStorage.setItem('Nombre', result.user.username);
-            localStorage.setItem('Formulario', result.user.formulario);
-            const formularioCompletado = result.user.formulario;
-            if (formularioCompletado == 0) {
-                window.location.href = '/Questions'; // Redirigir a Questions si el formulario no está completado
+            localStorage.setItem('userId', result.user.id);
+            localStorage.setItem('name', result.user.username);
+            localStorage.setItem('form', result.user.form);
+            const formCompleted = result.user.form;
+            if (formCompleted == 0) {
+                window.location.href = '/questions'; // Redirect to Questions if form is not completed
             }
             else {
-                window.location.href = '/Dashboard'; // Redirigir al dashboard si el formulario está completado
+                window.location.href = '/dashboard'; // Redirect to dashboard if form is completed
             }
+        } else {
+            document.getElementById('errorMessage').innerText = result.error;
+            console.error('Login error:', result.error);
         }
 
     } catch (error) {
+        document.getElementById('errorMessage').innerText = 'Network error. Please try again.';
         console.error('Error:', error);
     }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("Password2").addEventListener("input", ConfirmarContraseña);
-    document.getElementById("register-button").addEventListener("click", async (event) => {
+    document.getElementById("confirmPassword").addEventListener("input", confirmPassword);
+    document.getElementById("registerButton").addEventListener("click", async (event) => {
         event.preventDefault();
         await registerUser();
     });

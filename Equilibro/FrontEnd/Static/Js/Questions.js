@@ -1,20 +1,25 @@
-const IdUser = localStorage.getItem('IdUser');
-const Nombre = localStorage.getItem('Nombre');
+const userId = localStorage.getItem('userId');
+const name = localStorage.getItem('name');
 
-function Saludo() {
-    document.getElementById('saludo').innerText = `¡Hola, ${Nombre}!`;
+function greeting() {
+    document.getElementById('greeting').innerText = `Hello, ${name}!`;
 }
 
-async function CrearCuenta(nombreCuenta, saldoInicial) {
+function capitalize(text) {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+}
+
+async function createAccount(accountName, initialBalance) {
     
     const data = {
-        nombre: nombreCuenta,
-        saldo: parseFloat(saldoInicial),
-        usuario_id: IdUser
+        name: capitalize(accountName),
+        balance: parseFloat(initialBalance),
+        user_id: userId
     };
 
     try {
-        const response = await fetch('/features/CreateAccount', {
+        const response = await fetch('/account/createAccount', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -34,15 +39,15 @@ async function CrearCuenta(nombreCuenta, saldoInicial) {
     }
 }
 
-async function CrearCategoria(nombreCategoria) {
+async function createCategory(categoryName) {
     
     const data = {
-        nombre: nombreCategoria,
-        usuario_id: IdUser
+        name: capitalize(categoryName),
+        user_id: userId
     };
 
     try {
-        const response = await fetch('/features/CreateCategory', {
+        const response = await fetch('/expense/createCategory', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -62,13 +67,13 @@ async function CrearCategoria(nombreCategoria) {
     }
 }
 
-async function FormularioCompletado() {
+async function formCompleted() {
     const data = {
-        usuario_id: IdUser
+        user_id: userId
     };
 
     try {
-        const response = await fetch('/features/UpdateUserFormStatus', {
+        const response = await fetch('/auth/updateUserFormStatus', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -88,20 +93,20 @@ async function FormularioCompletado() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    Saludo();
-    document.getElementById("submit-button").addEventListener("click", async (event) => {
+    greeting();
+    document.getElementById("submitButton").addEventListener("click", async (event) => {
         event.preventDefault();
-        const nombreCuenta = document.getElementById('Question1').value;
-        const saldoInicial = document.getElementById('Question2').value;
-        await CrearCuenta(nombreCuenta, saldoInicial);
-        const nombreCuenta2 = "Efectivo";
-        const saldoInicial2 = document.getElementById('Question3').value;
-        await CrearCuenta(nombreCuenta2, saldoInicial2);
-        const nombreCategoria = document.getElementById('Question4').value;
-        await CrearCategoria(nombreCategoria);
-        const nombreCategoria2 = document.getElementById('Question5').value;
-        await CrearCategoria(nombreCategoria2);
-        await FormularioCompletado();
-        window.location.href = '/dashboard';
+        const accountName = document.getElementById('accountName').value;
+        const initialBalance = document.getElementById('accountBalance').value;
+        await createAccount(accountName, initialBalance);
+        const accountName2 = "Cash";
+        const initialBalance2 = document.getElementById('cashAmount').value;
+        await createAccount(accountName2, initialBalance2);
+        const categoryName = document.getElementById('category1').value;
+        await createCategory(categoryName);
+        const categoryName2 = document.getElementById('category2').value;
+        await createCategory(categoryName2);
+        await formCompleted();
+        window.location.href = '/dashBoard';
     });
 });

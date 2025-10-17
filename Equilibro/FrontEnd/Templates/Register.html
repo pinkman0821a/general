@@ -1,50 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>registro</title>
+    <title>Register</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 <body style="margin: 10px;">
     <div class="container mt-5 p-4 border rounded-3 shadow" style="max-width: 500px;">
-        <h1 class="text-center">Registro</h1>
+        <h1 class="text-center">Register</h1>
         <form>
             <div class="mb-3">
-                <label for="exampleInputName" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="exampleInputName" aria-describedby="nameHelp">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" aria-describedby="nameHelp">
             </div>
             <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Correo electrónico</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                <div id="emailHelp" class="form-text">Nunca compartiremos su correo electrónico con nadie más.</div>
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
             </div>
             <div class="mb-3">
-                <label for="Password1" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="Password1">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password">
             </div>
             <div class="mb-3">
-                <label for="Password2" class="form-label">Confirmar Contraseña</label>
-                <input type="password" class="form-control" id="Password2">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword">
             </div>
             <div class="mb-3">
-                <span id="error-message" class="form-text text-danger"></span>
+                <span id="errorMessage" class="form-text text-danger"></span>
             </div>
             <div class="d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary" id="register-button">Registrarse</button>
+                <button type="submit" class="btn btn-primary" id="registerButton">Register</button>
             </div>
         </form>
         <p class="mt-6 text-center text-sm text-gray-400">
-            ¿Ya tienes cuenta?
-            <a href="/" class="text-indigo-400 hover:text-indigo-300 font-medium">Inicia sesión</a>
+            Already have an account?
+            <a href="/" class="text-indigo-400 hover:text-indigo-300 font-medium">Login</a>
         </p>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='js/Register.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/register.js') }}"></script>
 </body>
-
 </html>

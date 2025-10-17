@@ -80,3 +80,8 @@ CREATE TABLE Ingreso (
     FOREIGN KEY (UsuarioId) REFERENCES Usuario(IdUsuario)
         ON DELETE CASCADE
 );
+
+INSERT INTO
+    Moneda (Nombre, PrecioDolar)
+VALUES
+    ('PESO COLOMBIANO', 0.00026);

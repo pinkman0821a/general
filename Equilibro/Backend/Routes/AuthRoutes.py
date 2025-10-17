@@ -1,7 +1,7 @@
 from flask import jsonify, request, Blueprint
 from dotenv import load_dotenv
 from ..Utils.Auth import HashContrasena, VerificarContrasena, ValidarRegistro, GenerarTokenJWT
-from ..Models import CrearUsuario, ObtenerUsuarioPorCorreo
+from ..Models.Models import CrearUsuario, ObtenerUsuarioPorCorreo
 import os
 
 load_dotenv()

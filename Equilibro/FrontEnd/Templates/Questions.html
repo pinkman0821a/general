@@ -4,71 +4,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuestionario</title>
+    <title>Questionnaire</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 
 <body class="p-4 border rounded-3 shadow" style="margin: 10px;">
     <!-- logo -->
-    <div class="container" style="  display: flex; gap: 0; max-width: 500px;">
-        <div style="width: 400px;   align-content: center; text-align: center;">
+    <div class="container" style="display: flex; gap: 0; max-width: 500px;">
+        <div style="width: 400px; align-content: center; text-align: center;">
             <h1>logo</h1>
         </div>
-        <div style="width: 100px;   align-content: center; text-align: center;">
-            <div style="padding: 20px;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="25px">
-                    <path
-                        d="M96 160C96 142.3 110.3 128 128 128L512 128C529.7 128 544 142.3 544 160C544 177.7 529.7 192 512 192L128 192C110.3 192 96 177.7 96 160zM96 320C96 302.3 110.3 288 128 288L512 288C529.7 288 544 302.3 544 320C544 337.7 529.7 352 512 352L128 352C110.3 352 96 337.7 96 320zM544 480C544 497.7 529.7 512 512 512L128 512C110.3 512 96 497.7 96 480C96 462.3 110.3 448 128 448L512 448C529.7 448 544 462.3 544 480z" />
-                </svg>
-            </div>
-
-        </div>
     </div>
-    <!-- saludo -->
-    <div class="container " style="  display: flex; gap: 0; max-width: 500px;">
-        <h3 id="saludo">¡Hola!</h3>
+    <!-- greeting -->
+    <div class="container" style="display: flex; gap: 0; max-width: 500px;">
+        <h3 id="greeting">Hello!</h3>
     </div>
-    <!-- formulario -->
+    <!-- form -->
     <div id="first-form" style="display: block;">
-        <div class="container " style="   max-width: 500px;">
-            <h1 class="text-center">Cuestionario</h1>
+        <div class="container" style="max-width: 500px;">
+            <h1 class="text-center">Questionnaire</h1>
             <form style="height: 550px; overflow-y: scroll;">
                 <div class="mb-3">
-                    <label for="Question1" class="form-label">ponle un nombre a tu cuenta</label>
-                    <input type="text" class="form-control" id="Question1">
+                    <label for="accountName" class="form-label">Give a name to your account</label>
+                    <input type="text" class="form-control" id="accountName">
                 </div>
                 <div class="mb-3">
-                    <label for="Question2" class="form-label">escribe el saldo actual de tu cuenta sin puntos ni comas</label>
-                    <input type="number" class="form-control" id="Question2" placeholder="ejemplo: 1000000000">
+                    <label for="accountBalance" class="form-label">Write your account's current balance without dots or commas</label>
+                    <input type="number" class="form-control" id="accountBalance" placeholder="example: 1000000000">
                 </div>
                 <div class="mb-3">
-                    <label for="Question2" class="form-label">cuanto dinero tienes en efectivo?</label>
-                    <input type="number" class="form-control" id="Question3" placeholder="ejemplo: 1000000000">
+                    <label for="cashAmount" class="form-label">How much cash do you have?</label>
+                    <input type="number" class="form-control" id="cashAmount" placeholder="example: 1000000000">
                 </div>
                 <div class="mb-3">
-                    <label for="Question2" class="form-label">Escribe una categoria de tus  gastos</label>
-                    <input type="text" class="form-control" id="Question4" placeholder="ejemplo: comida,ropa">
+                    <label for="category1" class="form-label">Write one category of your expenses</label>
+                    <input type="text" class="form-control" id="category1" placeholder="example: food, clothing">
                 </div>
                 <div class="mb-3">
-                    <label for="Question2" class="form-label">Escribe otra categoria de tus gastos</label>
-                    <input type="text" class="form-control" id="Question5" placeholder="ejemplo: comida,ropa">
+                    <label for="category2" class="form-label">Write another category of your expenses</label>
+                    <input type="text" class="form-control" id="category2" placeholder="example: food, clothing">
                 </div>
                 <div class="d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary" id="submit-button">Enviar Respuestas</button>
+                    <button type="submit" class="btn btn-primary" id="submitButton">Submit Answers</button>
                 </div>
             </form>
         </div>
 
         <footer class="container"
             style="text-align: center; padding: 10px; background-color: #f1f1f1; color: #333; max-width: 500px;">
-            © 2025 Todos los derechos reservados.
+            © 2025 All rights reserved.
         </footer>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
             crossorigin="anonymous"></script>
-        <script src="{{ url_for('static', filename='js/Questions.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/questions.js') }}"></script>
 </body>
 
 </html>

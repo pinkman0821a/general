@@ -1,15 +1,15 @@
-const IdUser = localStorage.getItem('IdUser');
-const Nombre = localStorage.getItem('Nombre');
+const userId = localStorage.getItem('userId');
+const userName = localStorage.getItem('name');
 
-function Saludo() {
-    document.getElementById('saludo').innerText = `¡Hola, ${Nombre}!`;
+function greeting() {
+    document.getElementById('greeting').innerText = `Hello, ${userName}!`;
 }
 
-async function obtenerCuentasUsuario(usuarioId) {
-    const payload = { usuario_id: usuarioId };
+async function getUserAccounts(userId) {
+    const payload = { user_id: userId };
 
     try {
-        const response = await fetch('/features/GetUserAccounts', {
+        const response = await fetch('/account/getUserAccounts', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -18,15 +18,15 @@ async function obtenerCuentasUsuario(usuarioId) {
         });
 
         if (!response.ok) {
-            throw new Error('Error al obtener cuentas');
+            throw new Error('Error getting accounts');
         }
 
         const result = await response.json();
         console.log(result);
-        llenarSelect(result.data, 'inputGroupSelect01');
-        llenarSelect(result.data, 'inputGroupSelect02');
-        llenarSelect(result.data, 'inputGroupSelect03');
-        llenarSelect(result.data, 'inputGroupSelect04');
+        fillSelect(result.data, 'expenseAccountSelect');
+        fillSelect(result.data, 'fromAccountSelect');
+        fillSelect(result.data, 'toAccountSelect');
+        fillSelect(result.data, 'incomeAccountSelect');
         return result.data;
     } catch (error) {
         console.error(error);
@@ -34,11 +34,11 @@ async function obtenerCuentasUsuario(usuarioId) {
     }
 }
 
-async function obtenerCategoriasUsuario(usuarioId) {
-    const payload = { usuario_id: usuarioId };
+async function getUserCategories(userId) {
+    const payload = { user_id: userId };
 
     try {
-        const response = await fetch('/features/GetUserCategories', {
+        const response = await fetch('/expense/getUserCategories', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -47,11 +47,11 @@ async function obtenerCategoriasUsuario(usuarioId) {
         });
 
         if (!response.ok) {
-            throw new Error('Error al obtener categorias');
+            throw new Error('Error getting categories');
         }
         const result = await response.json();
         console.log(result);
-        llenarSelect(result.data, 'inputGroupSelect05');
+        fillSelect(result.data, 'expenseCategorySelect');
         return result.data;
     } catch (error) {
         console.error(error);
@@ -59,42 +59,41 @@ async function obtenerCategoriasUsuario(usuarioId) {
     }
 }
 
-function llenarSelect(cuentas, idelement) {
-    const select = document.getElementById(idelement);
+function fillSelect(accounts, elementId) {
+    const select = document.getElementById(elementId);
 
-    // Limpiar opciones anteriores
-    select.innerHTML = '<option selected disabled>Selecciona una cuenta...</option>';
+    // Clear previous options
+    select.innerHTML = '<option selected disabled>Select an account...</option>';
 
-    // Recorrer las cuentas y agregarlas como <option>
-    cuentas.forEach(cuenta => {
-        const id = cuenta[0];
-        const nombre = cuenta[1];
+    // Loop through accounts and add them as <option>
+    accounts.forEach(account => {
+        const id = account[0];
+        const name = account[1];
 
         const option = document.createElement('option');
         option.value = id;
-        option.textContent = nombre;
+        option.textContent = name;
 
         select.appendChild(option);
     });
 }
 
-// 👉 Función para poner la primera letra en mayúscula
-function capitalizar(texto) {
-    if (!texto) return '';
-    return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
+function capitalize(text) {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
 
-async function crearGasto(Valor, Descripcion, CuentaId, CategoriaId, UsuarioId) {
+async function createExpense(amount, description, accountId, categoryId, userId) {
     const payload = {
-        Valor,
-        Descripcion: capitalizar(Descripcion),  // 👈 capitalizamos aquí
-        CuentaId,
-        CategoriaId,
-        UsuarioId
+        value: amount,
+        description: capitalize(description),
+        account_id: accountId,
+        category_id: categoryId,
+        user_id: userId
     };
 
     try {
-        const response = await fetch('/features/CreateExpense', {
+        const response = await fetch('/expense/createExpense', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -104,61 +103,61 @@ async function crearGasto(Valor, Descripcion, CuentaId, CategoriaId, UsuarioId) 
         return { ok: response.ok, data: result };
     } catch (error) {
         console.error(error);
-        return { ok: false, data: { error: "Error al crear gasto." } };
+        return { ok: false, data: { error: "Error creating expense." } };
     }
 }
 
-async function manejarCreacionGasto() {
-    const Valor = document.getElementById('Valor').value.trim();
-    const Descripcion = document.getElementById('Descripcion').value.trim();
-    const CuentaId = document.getElementById('inputGroupSelect01').value;
-    const CategoriaId = document.getElementById('inputGroupSelect05').value;
+async function handleExpenseCreation() {
+    const amount = document.getElementById('expenseAmount').value.trim();
+    const description = document.getElementById('expenseDescription').value.trim();
+    const accountId = document.getElementById('expenseAccountSelect').value;
+    const categoryId = document.getElementById('expenseCategorySelect').value;
 
-    const mensaje = document.getElementById('error-message');
+    const message = document.getElementById('expenseErrorMessage');
 
-    // ✅ Validación antes de enviar
-    if (!Valor || !Descripcion || !CuentaId || !CategoriaId) {
-        mensaje.innerText = "⚠️ Todos los campos son obligatorios.";
-        mensaje.style.color = "orange";
-        setTimeout(() => (mensaje.innerText = ''), 3000);
+    // ✅ Validation before sending
+    if (!amount || !description || !accountId || !categoryId) {
+        message.innerText = "⚠️ All fields are required.";
+        message.style.color = "orange";
+        setTimeout(() => (message.innerText = ''), 3000);
         return;
     }
 
-    const resultado = await crearGasto(Valor, Descripcion, CuentaId, CategoriaId, IdUser);
+    const result = await createExpense(amount, description, accountId, categoryId, userId);
 
-    if (resultado.ok) {
-        mensaje.innerText = "✅ Gasto creado exitosamente.";
-        mensaje.style.color = "green";
+    if (result.ok) {
+        message.innerText = "✅ Expense created successfully.";
+        message.style.color = "green";
 
-        // limpia el formulario pero NO cierra el modal
-        document.getElementById('Valor').value = '';
-        document.getElementById('Descripcion').value = '';
-        document.getElementById('inputGroupSelect01').value = '';
-        document.getElementById('inputGroupSelect05').value = '';
+        // Clear form but do NOT close modal
+        document.getElementById('expenseAmount').value = '';
+        document.getElementById('expenseDescription').value = '';
+        document.getElementById('expenseAccountSelect').value = '';
+        document.getElementById('expenseCategorySelect').value = '';
 
-        await mostrarGastos(IdUser);
+        await showExpenses(userId);
     } else {
-        mensaje.innerText = `❌ ${resultado.data.error || "Error desconocido."}`;
-        mensaje.style.color = "red";
+        message.innerText = `❌ ${result.data.error || "Unknown error."}`;
+        message.style.color = "red";
     }
 
     setTimeout(() => {
-        mensaje.innerText = '';
+        message.innerText = '';
     }, 3000);
 }
 
-async function traerGastos(usuarioId) {
-    const payload = { usuario_id: usuarioId };
+async function getExpenses(userId) {
+    const payload = { user_id: userId };
 
     try {
-        const response = await fetch('/features/GetUserExpenses', {
+        const response = await fetch('/expense/getUserExpenses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
         if (!response.ok) {
-            throw new Error('Error al obtener gastos');
+            throw new Error('Error getting expenses');
         }
 
         const result = await response.json();
@@ -169,66 +168,65 @@ async function traerGastos(usuarioId) {
     }
 }
 
-function formatearFecha(fechaString) {
-    const fecha = new Date(fechaString);
-    const dia = fecha.getDate().toString().padStart(2, '0');
-    const horas = fecha.getHours().toString().padStart(2, '0');
-    const minutos = fecha.getMinutes().toString().padStart(2, '0');
-    return `${dia} ${horas}:${minutos}`;
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${day} ${hours}:${minutes}`;
 }
 
-async function mostrarGastos(usuarioId) {
+async function showExpenses(userId) {
     try {
-        const gastos = await traerGastos(usuarioId);
+        const expenses = await getExpenses(userId);
 
-        if (!gastos || gastos.length === 0) {
-            console.log('No hay gastos para mostrar.');
+        if (!expenses || expenses.length === 0) {
+            console.log('No expenses to show.');
             return;
         }
 
-        // Ordenar por fecha (más recientes primero)
-        gastos.sort((a, b) => new Date(b[1]) - new Date(a[1]));
+        // Sort by date (most recent first)
+        expenses.sort((a, b) => new Date(b[1]) - new Date(a[1]));
 
-        const tbody = document.getElementById('tbodyGastos');
+        const tbody = document.getElementById('expensesTableBody');
         tbody.innerHTML = '';
 
-        gastos.forEach(gasto => {
-            const [Valor, fecha, Descripcion, cuenta, Categoria] = gasto;
-            const fechaFormateada = formatearFecha(fecha);
+        expenses.forEach(expense => {
+            const [amount, date, description, account, category] = expense;
+            const formattedDate = formatDate(date);
 
-            // Colores según tipo
-            let colorMonto = 'red';
-            if (Categoria === 'Movimiento') colorMonto = 'blue';
-            if (Categoria === 'Ingreso') colorMonto = 'green';
+            // Colors by type
+            let amountColor = 'red';
+            if (category === 'Movement') amountColor = 'blue';
+            if (category === 'Income') amountColor = 'green';
 
-            const fila = `
+            const row = `
                 <tr>
-                    <td>${Descripcion}</td>
-                    <td style="color: ${colorMonto}; font-weight: bold;">${Valor}</td>
-                    <td>${cuenta}</td>
-                    <td>${Categoria}</td>
-                    <td>${fechaFormateada}</td>
+                    <td>${description}</td>
+                    <td style="color: ${amountColor}; font-weight: bold;">${amount}</td>
+                    <td>${account}</td>
+                    <td>${category}</td>
+                    <td>${formattedDate}</td>
                 </tr>
             `;
-            tbody.insertAdjacentHTML('beforeend', fila);
+            tbody.insertAdjacentHTML('beforeend', row);
         });
 
     } catch (error) {
-        console.error('Error al mostrar los gastos:', error);
+        console.error('Error showing expenses:', error);
     }
 }
 
-
-async function MoverPlata(Valor, idcuentaA, idcuentab, usuarioId) {
+async function moveMoney(amount, accountIdA, accountIdB, userId) {
     const payload = {
-        usuario_id: usuarioId,
-        idcuentaA: idcuentaA,
-        idcuentaB: idcuentab,
-        monto: Valor
+        user_id: userId,
+        account_id_a: accountIdA,
+        account_id_b: accountIdB,
+        amount: amount
     };
 
     try {
-        const response = await fetch('/features/MakeMovement', {
+        const response = await fetch('/account/makeMovement', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -236,7 +234,7 @@ async function MoverPlata(Valor, idcuentaA, idcuentab, usuarioId) {
             body: JSON.stringify(payload)
         });
         if (!response.ok) {
-            throw new Error('Error al crear Movimiento');
+            throw new Error('Error creating movement');
         }
 
         const result = await response.json();
@@ -246,34 +244,34 @@ async function MoverPlata(Valor, idcuentaA, idcuentab, usuarioId) {
     }
 }
 
-function crearMovimientoExitoso() {
-    const mensaje = document.getElementById('error-message-movimiento');
-    mensaje.innerText = "Movimiento creado exitosamente.";
-    mensaje.style.color = "green";
-    document.getElementById('Valor2').value = '';
-    document.getElementById('inputGroupSelect02').value = '';
-    document.getElementById('inputGroupSelect03').value = '';
-    mostrarGastos(IdUser);
+function movementSuccess() {
+    const message = document.getElementById('moveMoneyErrorMessage');
+    message.innerText = "Movement created successfully.";
+    message.style.color = "green";
+    document.getElementById('moveAmount').value = '';
+    document.getElementById('fromAccountSelect').value = '';
+    document.getElementById('toAccountSelect').value = '';
+    showExpenses(userId);
 
-    const botonCerrar = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
-    if (botonCerrar) {
-        botonCerrar.click(); // Simula el clic
+    const closeButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+    if (closeButton) {
+        closeButton.click();
     }
 
     setTimeout(() => {
-        document.getElementById('error-message-movimiento').innerText = '';
+        document.getElementById('moveMoneyErrorMessage').innerText = '';
     }, 3000);
 }
 
-async function AgregarPlata(usuarioId, idcuenta, monto) {
+async function addIncome(userId, accountId, amount) {
     const payload = {
-        usuario_id: usuarioId,
-        idcuenta: idcuenta,
-        monto: monto
+        user_id: userId,
+        account_id: accountId,
+        amount: amount
     };
 
     try {
-        const response = await fetch('/features/MakeEntry', {
+        const response = await fetch('/account/makeEntry', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -282,7 +280,7 @@ async function AgregarPlata(usuarioId, idcuenta, monto) {
         });
 
         if (!response.ok) {
-            throw new Error('Error al crear Ingreso');
+            throw new Error('Error creating income');
         }
 
         const result = await response.json();
@@ -292,31 +290,31 @@ async function AgregarPlata(usuarioId, idcuenta, monto) {
     }
 }
 
-function crearIngresoExitoso() {
-    const mensaje = document.getElementById('error-message-ingreso');
-    mensaje.innerText = "Ingreso creado exitosamente.";
-    mensaje.style.color = "green";
-    document.getElementById('Valor3').value = '';
-    document.getElementById('inputGroupSelect04').value = '';
-    mostrarGastos(IdUser);
+function incomeSuccess() {
+    const message = document.getElementById('incomeErrorMessage');
+    message.innerText = "Income created successfully.";
+    message.style.color = "green";
+    document.getElementById('incomeAmount').value = '';
+    document.getElementById('incomeAccountSelect').value = '';
+    showExpenses(userId);
 
-    const botonCerrar = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
-    if (botonCerrar) {
-        botonCerrar.click(); // Simula el clic
+    const closeButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+    if (closeButton) {
+        closeButton.click();
     }
 
     setTimeout(() => {
-        document.getElementById('error-message-ingreso').innerText = '';
+        document.getElementById('incomeErrorMessage').innerText = '';
     }, 3000);
 }
 
-async function SaldoTotal(usuarioId) {
+async function getTotalBalance(userId) {
     const payload = {
-        usuario_id: usuarioId
+        user_id: userId
     };
 
     try {
-        const response = await fetch('/features/TotalBalance', {
+        const response = await fetch('/expense/totalBalance', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -325,7 +323,7 @@ async function SaldoTotal(usuarioId) {
         });
 
         if (!response.ok) {
-            throw new Error('Error al traer el saldo total');
+            throw new Error('Error getting total balance');
         }
 
         const result = await response.json();
@@ -336,21 +334,21 @@ async function SaldoTotal(usuarioId) {
     }
 }
 
-async function ImprimirSaldoTotal() {
-    const resultado = await SaldoTotal(IdUser);
-    const saldo = resultado?.data ?? '0';
-    const elemento = document.getElementById('SaldoTotal');
-    elemento.innerText = `Saldo total: ${saldo}`;
-    elemento.style.fontWeight = 'bold';
+async function printTotalBalance() {
+    const result = await getTotalBalance(userId);
+    const balance = result?.data ?? '0';
+    const element = document.getElementById('totalBalance');
+    element.innerText = `Total Balance: ${balance}`;
+    element.style.fontWeight = 'bold';
 }
 
-async function GastosMes(usuarioId) {
+async function getMonthlyExpenses(userId) {
     const payload = {
-        usuario_id: usuarioId
+        user_id: userId
     };
 
     try {
-        const response = await fetch('/features/MonthlyExpenses', {
+        const response = await fetch('/expense/monthlyExpenses', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -359,7 +357,7 @@ async function GastosMes(usuarioId) {
         });
 
         if (!response.ok) {
-            throw new Error('Error al los gastos del mes');
+            throw new Error('Error getting monthly expenses');
         }
 
         const result = await response.json();
@@ -370,37 +368,45 @@ async function GastosMes(usuarioId) {
     }
 }
 
-async function ImprimirGastosMes() {
-    const resultado = await GastosMes(IdUser);
-    const saldo = resultado?.data ?? '0';
-    const elemento = document.getElementById('GastosMes');
-    elemento.innerText = `Gastos mes: ${saldo}`;
-    elemento.style.fontWeight = 'bold';
+async function printMonthlyExpenses() {
+    const result = await getMonthlyExpenses(userId);
+    const expenses = result?.data ?? '0';
+    const element = document.getElementById('monthlyExpenses');
+    element.innerText = `Monthly Expenses: ${expenses}`;
+    element.style.fontWeight = 'bold';
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-    Saludo();
-    await ImprimirSaldoTotal();
-    await ImprimirGastosMes();
-    await obtenerCuentasUsuario(IdUser);
-    await obtenerCategoriasUsuario(IdUser);
-    await mostrarGastos(IdUser);
-    document.getElementById('btnAgregarGasto').addEventListener('click', async () => {
-        await manejarCreacionGasto();  
-        await ImprimirSaldoTotal();   
+    greeting();
+    await printTotalBalance();
+    await printMonthlyExpenses();
+    await getUserAccounts(userId);
+    await getUserCategories(userId);
+    await showExpenses(userId);
+    
+    document.getElementById('addExpenseButton').addEventListener('click', async () => {
+        await handleExpenseCreation();  
+        await printTotalBalance(); 
+        await printMonthlyExpenses();  
     });
-    document.getElementById('btnAgregarMovimiento').addEventListener('click', async () => {
-        const Valor = document.getElementById('Valor2').value;
-        const idcuentaA = document.getElementById('inputGroupSelect02').value;
-        const idcuentaB = document.getElementById('inputGroupSelect03').value;
-        await MoverPlata(Valor, idcuentaA, idcuentaB, IdUser);
-        crearMovimientoExitoso();
+    
+    document.getElementById('addMovementButton').addEventListener('click', async () => {
+        const amount = document.getElementById('moveAmount').value;
+        const accountIdA = document.getElementById('fromAccountSelect').value;
+        const accountIdB = document.getElementById('toAccountSelect').value;
+        await moveMoney(amount, accountIdA, accountIdB, userId);
+        movementSuccess();
     });
-    document.getElementById('btnIngresarPlata').addEventListener('click', async () => {
-        const Valor = document.getElementById('Valor3').value;
-        const idcuenta = document.getElementById('inputGroupSelect04').value;
-        await AgregarPlata(IdUser, idcuenta, Valor);
-        crearIngresoExitoso();
-        await ImprimirSaldoTotal();
+    
+    document.getElementById('addIncomeButton').addEventListener('click', async () => {
+        const amount = document.getElementById('incomeAmount').value;
+        const accountId = document.getElementById('incomeAccountSelect').value;
+        await addIncome(userId, accountId, amount);
+        incomeSuccess();
+        await printTotalBalance();
     });
-})
+
+    document.getElementById('historicalExpenses').addEventListener('click', async () => {
+        window.location.href = '/historicalExpenses';
+    });
+});
