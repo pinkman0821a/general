@@ -4,62 +4,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Questionnaire</title>
+    <title>Setup Your Profile - Equilibro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        .card-shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .questionnaire-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .brand-text {
+            font-weight: 700;
+            color: #667eea;
+        }
+        .form-scroll {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .form-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .form-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .form-scroll::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+        .form-scroll::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .step {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #dee2e6;
+            margin: 0 5px;
+        }
+        .step.active {
+            background-color: #667eea;
+        }
+    </style>
 </head>
 
-<body class="p-4 border rounded-3 shadow" style="margin: 10px;">
-    <!-- logo -->
-    <div class="container" style="display: flex; gap: 0; max-width: 500px;">
-        <div style="width: 400px; align-content: center; text-align: center;">
-            <h1>logo</h1>
+<body class="gradient-bg">
+    <div class="questionnaire-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <!-- Header Brand -->
+                    <div class="text-center mb-4">
+                        <h1 class="brand-text text-white display-4">
+                            <i class="bi bi-graph-up"></i> Equilibro
+                        </h1>
+                        <p class="text-white-50">Let's set up your financial profile</p>
+                    </div>
+
+                    <!-- Progress Indicator -->
+                    <div class="step-indicator">
+                        <div class="step active"></div>
+                        <div class="step"></div>
+                        <div class="step"></div>
+                    </div>
+
+                    <!-- Questionnaire Card -->
+                    <div class="card card-shadow border-0">
+                        <div class="card-body p-4">
+                            <!-- Greeting -->
+                            <div class="text-center mb-4">
+                                <h3 id="greeting" class="fw-bold text-dark mb-2">Hello!</h3>
+                                <p class="text-muted">Complete a few quick steps to start using Equilibro</p>
+                            </div>
+
+                            <!-- Form -->
+                            <form id="questionnaireForm">
+                                <div class="form-scroll">
+                                    <!-- Bank Account Section -->
+                                    <div class="mb-4">
+                                        <h5 class="fw-semibold text-primary mb-3">
+                                            <i class="bi bi-bank"></i> Bank Account
+                                        </h5>
+                                        <div class="mb-3">
+                                            <label for="accountName" class="form-label fw-semibold">Account Name</label>
+                                            <input type="text" class="form-control form-control-lg" id="accountName" 
+                                                   placeholder="e.g., Main Savings, Checking Account" required>
+                                            <div class="form-text">Give a descriptive name to your primary bank account</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="accountBalance" class="form-label fw-semibold">Current Balance</label>
+                                            <input type="number" class="form-control form-control-lg" id="accountBalance" 
+                                                   placeholder="e.g., 1000000" step="0.01" min="0" required>
+                                            <div class="form-text">Enter your current balance without dots or commas</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Cash Section -->
+                                    <div class="mb-4">
+                                        <h5 class="fw-semibold text-primary mb-3">
+                                            <i class="bi bi-cash"></i> Cash
+                                        </h5>
+                                        <div class="mb-3">
+                                            <label for="cashAmount" class="form-label fw-semibold">Cash on Hand</label>
+                                            <input type="number" class="form-control form-control-lg" id="cashAmount" 
+                                                   placeholder="e.g., 500000" step="0.01" min="0" required>
+                                            <div class="form-text">How much physical cash do you currently have?</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Expense Categories -->
+                                    <div class="mb-4">
+                                        <h5 class="fw-semibold text-primary mb-3">
+                                            <i class="bi bi-tags"></i> Expense Categories
+                                        </h5>
+                                        <div class="mb-3">
+                                            <label for="category1" class="form-label fw-semibold">Primary Category</label>
+                                            <input type="text" class="form-control form-control-lg" id="category1" 
+                                                   placeholder="e.g., Food, Transportation, Entertainment" required>
+                                            <div class="form-text">Your most common expense category</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="category2" class="form-label fw-semibold">Secondary Category</label>
+                                            <input type="text" class="form-control form-control-lg" id="category2" 
+                                                   placeholder="e.g., Shopping, Bills, Healthcare" required>
+                                            <div class="form-text">Another important expense category</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Error Message -->
+                                <div class="mb-3">
+                                    <span id="errorMessage" class="form-text text-danger small"></span>
+                                    <span id="successMessage" class="form-text text-success small"></span>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="d-grid mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg" id="submitButton">
+                                        <span class="spinner-border spinner-border-sm me-2" id="submitSpinner" style="display: none;"></span>
+                                        Complete Setup & Start Using Equilibro
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="text-center mt-4">
+                        <p class="text-white-50 small">
+                            &copy; 2025 Equilibro. All rights reserved.<br>
+                            Your personal financial companion
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- greeting -->
-    <div class="container" style="display: flex; gap: 0; max-width: 500px;">
-        <h3 id="greeting">Hello!</h3>
-    </div>
-    <!-- form -->
-    <div id="first-form" style="display: block;">
-        <div class="container" style="max-width: 500px;">
-            <h1 class="text-center">Questionnaire</h1>
-            <form style="height: 550px; overflow-y: scroll;">
-                <div class="mb-3">
-                    <label for="accountName" class="form-label">Give a name to your account</label>
-                    <input type="text" class="form-control" id="accountName">
-                </div>
-                <div class="mb-3">
-                    <label for="accountBalance" class="form-label">Write your account's current balance without dots or commas</label>
-                    <input type="number" class="form-control" id="accountBalance" placeholder="example: 1000000000">
-                </div>
-                <div class="mb-3">
-                    <label for="cashAmount" class="form-label">How much cash do you have?</label>
-                    <input type="number" class="form-control" id="cashAmount" placeholder="example: 1000000000">
-                </div>
-                <div class="mb-3">
-                    <label for="category1" class="form-label">Write one category of your expenses</label>
-                    <input type="text" class="form-control" id="category1" placeholder="example: food, clothing">
-                </div>
-                <div class="mb-3">
-                    <label for="category2" class="form-label">Write another category of your expenses</label>
-                    <input type="text" class="form-control" id="category2" placeholder="example: food, clothing">
-                </div>
-                <div class="d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary" id="submitButton">Submit Answers</button>
-                </div>
-            </form>
-        </div>
 
-        <footer class="container"
-            style="text-align: center; padding: 10px; background-color: #f1f1f1; color: #333; max-width: 500px;">
-            © 2025 All rights reserved.
-        </footer>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-            crossorigin="anonymous"></script>
-        <script src="{{ url_for('static', filename='js/questions.js') }}"></script>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/questions.js') }}"></script>
 </body>
-
 </html>

@@ -3,259 +3,380 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Equilibro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        .card-shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+        }
+
+        .nav-link.active {
+            font-weight: 600;
+            color: #007bff !important;
+        }
+
+        .action-btn {
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .table-responsive-custom {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+    </style>
 </head>
 
-<body style="margin: 10px;">
+<body style="margin: 10px; background-color: #f8f9fa;">
     <!-- Header -->
-    <div class="container" style="display: flex; gap: 0; max-width: 500px;">
-        <div style="width: 100px; align-content: center; text-align: center;">
-            <nav class="navbar bg-body-tertiary fixed-top">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="/dashboard">Logo</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
-                        aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
-                        aria-labelledby="offcanvasNavbarLabel">
-                        <div class="offcanvas-header">
-                            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Logo</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="offcanvas-body">
-                            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                                <li class="nav-item">
-                                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/historicalExpenses">Expense History</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Account Details</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Categories</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Movement History</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Budget</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Settings</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Change Password</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/">Logout</a>
-                                </li>
-                            </ul>
-                        </div>
+    <div class="container" style="max-width: 500px;">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white rounded-3 card-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold text-primary" href="/dashBoard">
+                    <i class="bi bi-graph-up"></i> Equilibro
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                    aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title fw-bold text-primary" id="offcanvasNavbarLabel">
+                            <i class="bi bi-graph-up"></i> Equilibro
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/dashboard">
+                                    <i class="bi bi-house"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/historicalExpenses">
+                                    <i class="bi bi-clock-history"></i> Expense History
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/accountDetails">
+                                    <i class="bi bi-wallet2"></i> Account Details
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <i class="bi bi-tags"></i> Categories
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <i class="bi bi-arrow-left-right"></i> Movement History
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <i class="bi bi-pie-chart"></i> Budget
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <i class="bi bi-gear"></i> Settings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <i class="bi bi-key"></i> Change Password
+                                </a>
+                            </li>
+                            <li class="nav-item mt-3 pt-3 border-top">
+                                <a class="nav-link text-danger" href="#" id="logoutButton">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-            </nav>
-        </div>
+            </div>
+        </nav>
     </div>
+
     <!-- Main Content -->
-    <div class="container mt-5 p-4 border rounded-3 shadow" style="max-width: 500px;">
+    <div class="container mt-4 p-4 rounded-3 card-shadow bg-white" style="max-width: 500px;">
         <!-- Greeting -->
-        <div class="container" style="display: flex; gap: 0; max-width: 500px;">
-            <h3 id="greeting">Hello!</h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 id="greeting" class="fw-bold text-dark">Hello!</h3>
+            <div class="text-muted small" id="currentDate"></div>
         </div>
-        <!-- Monthly Expenses -->
-        <div class="container" style="display: flex; gap: 0; max-width: 500px;">
-            <div style="width: 400px; align-content: center; border: 1px solid #000000;">
-                <p id="monthlyExpenses"><b>Monthly Expenses: </b></p>
+
+        <!-- Summary Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-6">
+                <div class="card summary-card h-100">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 opacity-75">Monthly Expenses</h6>
+                        <h4 class="card-title fw-bold mb-0" id="monthlyExpenses">$0.00</h4>
+                        <small class="opacity-75">Current Month</small>
+                    </div>
+                </div>
             </div>
-            <div style="width: 100px; align-content: center; text-align: right; border: 1px solid #000000;">
-                <div>
-                    <button type="button" class="btn btn-primary history-btn" id="historicalExpenses"
-                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
-                        History
-                    </button>
+            <div class="col-6">
+                <div class="card balance-card h-100">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 opacity-75">Total Balance</h6>
+                        <h4 class="card-title fw-bold mb-0" id="totalBalance">$0.00</h4>
+                        <small class="opacity-75">All Accounts</small>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- Total Balance -->
-        <div class="container" style="display: flex; gap: 0; max-width: 500px;">
-            <div style="width: 400px; align-content: center; border: 1px solid #000000;">
-                <p id="totalBalance"><b>Total Balance: </b></p>
-            </div>
-            <div style="width: 100px; align-content: center; text-align: right; border: 1px solid #000000;">
-                <div>
-                    <button type="button" class="btn btn-primary details-btn"
-                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
-                        Details
-                    </button>
-                </div>
-            </div>
-        </div>
+
         <!-- Action Buttons -->
-        <div class="container" style="display: flex; gap: 0; max-width: 500px;">
-            <div style="width: 166px; align-content: center; text-align: center; border: 1px solid #000000;">
-                <button type="button" class="btn btn-primary add-expense-btn"
-                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
-                    data-bs-target="#addExpenseModal" data-bs-toggle="modal">
-                    Add Expense
+        <div class="row g-2 mb-4">
+            <div class="col-4">
+                <button type="button" class="btn btn-primary w-100 action-btn py-2" data-bs-target="#addExpenseModal"
+                    data-bs-toggle="modal">
+                    <i class="bi bi-plus-circle"></i><br>
+                    <small>Add Expense</small>
                 </button>
             </div>
-            <div style="width: 166px; align-content: center; text-align: center; border: 1px solid #000000;">
-                <button type="button" class="btn btn-primary move-money-btn"
-                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+            <div class="col-4">
+                <button type="button" class="btn btn-info w-100 action-btn py-2 text-white"
                     data-bs-target="#moveMoneyModal" data-bs-toggle="modal">
-                    Move Money
+                    <i class="bi bi-arrow-left-right"></i><br>
+                    <small>Move Money</small>
                 </button>
             </div>
-            <div style="width: 166px; align-content: center; text-align: center; border: 1px solid #000000;">
-                <button type="button" class="btn btn-primary add-income-btn"
-                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
-                    data-bs-target="#addIncomeModal" data-bs-toggle="modal">
-                    Add Income
+            <div class="col-4">
+                <button type="button" class="btn btn-success w-100 action-btn py-2" data-bs-target="#addIncomeModal"
+                    data-bs-toggle="modal">
+                    <i class="bi bi-cash-coin"></i><br>
+                    <small>Add Income</small>
                 </button>
             </div>
         </div>
-        <!-- Expenses Table -->
-        <div class="container" style="max-width: 500px; max-height: 60vh; overflow: auto;">
-            <table class="table table-hover" style="border: 1px solid #000000; width: 200%;" id="expensesTable">
-                <thead>
-                    <tr>
-                        <th scope="col">Description</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Account</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Date</th>
-                    </tr>
-                </thead>
-                <tbody id="expensesTableBody">
-                    <tr>
-                        <td>Loading...</td>
-                        <td>Loading...</td>
-                        <td>Loading...</td>
-                        <td>Loading...</td>
-                        <td>Loading...</td>
-                    </tr>
-                    <tr>
-                        <td>Loading...</td>
-                        <td>Loading...</td>
-                        <td>Loading...</td>
-                        <td>Loading...</td>
-                        <td>Loading...</td>
-                    </tr>
-                </tbody>
-            </table>
+
+        <!-- Recent Transactions -->
+        <div class="card card-shadow border-0">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-clock-history"></i> Recent Transactions
+                </h5>
+                <a href="/historicalExpenses" class="btn btn-outline-primary btn-sm">
+                    View All <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive-custom">
+                    <table class="table table-hover mb-0" id="expensesTable">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th scope="col" class="ps-3">Description</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Account</th>
+                                <th scope="col">Category</th>
+                                <th scope="col" class="pe-3">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expensesTableBody">
+                            <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    <div class="loading-skeleton rounded py-2 mx-3"></div>
+                                    <div class="loading-skeleton rounded py-2 mx-3 mt-2"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
+
     <!-- Add Expense Modal -->
     <div class="modal fade" id="addExpenseModal" tabindex="-1" aria-labelledby="addExpenseModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="addExpenseModalLabel">Add Expense</h1>
+                    <h5 class="modal-title fw-bold" id="addExpenseModalLabel">
+                        <i class="bi bi-plus-circle"></i> Add Expense
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addExpenseForm">
                         <div class="mb-3">
-                            <label for="expenseAmount" class="col-form-label">Amount:</label>
-                            <input type="number" class="form-control" id="expenseAmount">
+                            <label for="expenseAmount" class="form-label fw-semibold">Amount</label>
+                            <input type="number" class="form-control" id="expenseAmount" placeholder="0.00" step="0.01"
+                                min="0">
                         </div>
                         <div class="mb-3">
-                            <label for="expenseDescription" class="col-form-label">Description:</label>
-                            <input type="text" class="form-control" id="expenseDescription">
+                            <label for="expenseDescription" class="form-label fw-semibold">Description</label>
+                            <input type="text" class="form-control" id="expenseDescription"
+                                placeholder="Enter description">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Select an account:</label>
-                            <select class="form-select" id="expenseAccountSelect"></select>
+                            <label for="expenseAccountSelect" class="form-label fw-semibold">Account</label>
+                            <select class="form-select" id="expenseAccountSelect">
+                                <option value="" selected disabled>Select account...</option>
+                            </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Select a category:</label>
-                            <select class="form-select" id="expenseCategorySelect"></select>
+                            <label for="expenseCategorySelect" class="form-label fw-semibold">Category</label>
+                            <select class="form-select" id="expenseCategorySelect">
+                                <option value="" selected disabled>Select category...</option>
+                            </select>
                         </div>
-                        <span id="expenseErrorMessage" class="form-text text-danger"></span>
+                        <div class="mb-3">
+                            <span id="expenseErrorMessage" class="form-text"></span>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="addExpenseButton">Add Expense</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="addExpenseButton">
+                        <span class="spinner-border spinner-border-sm me-2" id="expenseSpinner"
+                            style="display: none;"></span>
+                        Add Expense
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
     <!-- Move Money Modal -->
     <div class="modal fade" id="moveMoneyModal" tabindex="-1" aria-labelledby="moveMoneyModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="moveMoneyModalLabel">Move Money</h1>
+                    <h5 class="modal-title fw-bold" id="moveMoneyModalLabel">
+                        <i class="bi bi-arrow-left-right"></i> Move Money
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="moveMoneyForm">
                         <div class="mb-3">
-                            <label for="moveAmount" class="col-form-label">Amount:</label>
-                            <input type="number" class="form-control" id="moveAmount">
+                            <label for="moveAmount" class="form-label fw-semibold">Amount</label>
+                            <input type="number" class="form-control" id="moveAmount" placeholder="0.00" step="0.01"
+                                min="0">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">From account:</label>
-                            <select class="form-select" id="fromAccountSelect"></select>
+                            <label for="fromAccountSelect" class="form-label fw-semibold">From Account</label>
+                            <select class="form-select" id="fromAccountSelect">
+                                <option value="" selected disabled>Select source account...</option>
+                            </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">To account:</label>
-                            <select class="form-select" id="toAccountSelect"></select>
+                            <label for="toAccountSelect" class="form-label fw-semibold">To Account</label>
+                            <select class="form-select" id="toAccountSelect">
+                                <option value="" selected disabled>Select destination account...</option>
+                            </select>
                         </div>
-                        <span id="moveMoneyErrorMessage" class="form-text text-danger"></span>
+                        <div class="mb-3">
+                            <span id="moveMoneyErrorMessage" class="form-text"></span>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="addMovementButton">Move Money</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-info text-white" id="addMovementButton">
+                        <span class="spinner-border spinner-border-sm me-2" id="movementSpinner"
+                            style="display: none;"></span>
+                        Move Money
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
     <!-- Add Income Modal -->
     <div class="modal fade" id="addIncomeModal" tabindex="-1" aria-labelledby="addIncomeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="addIncomeModalLabel">Add Income</h1>
+                    <h5 class="modal-title fw-bold" id="addIncomeModalLabel">
+                        <i class="bi bi-cash-coin"></i> Add Income
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addIncomeForm">
                         <div class="mb-3">
-                            <label for="incomeAmount" class="col-form-label">Amount:</label>
-                            <input type="number" class="form-control" id="incomeAmount">
+                            <label for="incomeAmount" class="form-label fw-semibold">Amount</label>
+                            <input type="number" class="form-control" id="incomeAmount" placeholder="0.00" step="0.01"
+                                min="0">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Select an account:</label>
-                            <select class="form-select" id="incomeAccountSelect"></select>
+                            <label for="incomeAccountSelect" class="form-label fw-semibold">Account</label>
+                            <select class="form-select" id="incomeAccountSelect">
+                                <option value="" selected disabled>Select account...</option>
+                            </select>
                         </div>
-                        <span id="incomeErrorMessage" class="form-text text-danger"></span>
+                        <div class="mb-3">
+                            <span id="incomeErrorMessage" class="form-text"></span>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="addIncomeButton">Add Income</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="addIncomeButton">
+                        <span class="spinner-border spinner-border-sm me-2" id="incomeSpinner"
+                            style="display: none;"></span>
+                        Add Income
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
     <!-- Footer -->
-    <footer class="container"
-        style="text-align: center; padding: 10px; background-color: #f1f1f1; color: #333; max-width: 500px;">
-        © 2025 All rights reserved.
+    <footer class="container mt-4 text-center" style="max-width: 500px;">
+        <div class="text-muted small">
+            <p class="mb-1">&copy; 2025 Equilibro. All rights reserved.</p>
+            <p class="mb-0">Your personal financial companion</p>
+        </div>
     </footer>
 
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>

@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Expense History - Equilibro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Details - Equilibro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <style>
@@ -19,9 +19,30 @@
             border: none;
         }
 
+        .balance-card {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+        }
+
+        .account-card {
+            background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+            color: white;
+            border: none;
+        }
+
         .nav-link.active {
             font-weight: 600;
             color: #007bff !important;
+        }
+
+        .action-btn {
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .table-responsive-custom {
@@ -45,12 +66,22 @@
             }
         }
 
+        .account-item {
+            border-left: 4px solid #007bff;
+            transition: all 0.3s ease;
+        }
+
+        .account-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
         }
-
+        
         .btn-chart.active {
             background-color: #007bff;
             color: white;
@@ -86,12 +117,12 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" href="/historicalExpenses">
+                                <a class="nav-link" href="/historicalExpenses">
                                     <i class="bi bi-clock-history"></i> Expense History
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/accountDetails">
+                                <a class="nav-link active" href="/accountDetails">
                                     <i class="bi bi-wallet2"></i> Account Details
                                 </a>
                             </li>
@@ -102,7 +133,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">
-                                    <i class="bi bi-arrow-left-right"></i> Movements
+                                    <i class="bi bi-arrow-left-right"></i> Movement History
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -136,85 +167,52 @@
     <div class="container mt-4 p-4 rounded-3 card-shadow bg-white" style="max-width: 500px;">
         <!-- Greeting -->
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 id="userGreeting" class="fw-bold text-dark">Hello!</h3>
-            <div class="text-muted small" id="currentPeriod"></div>
+            <h3 id="greeting" class="fw-bold text-dark">Account Details</h3>
+            <div class="text-muted small" id="currentDate"></div>
         </div>
 
-        <!-- Filter Section -->
-        <div class="card card-shadow border-0 mb-4">
-            <div class="card-body">
-                <h5 class="card-title mb-3">
-                    <i class="bi bi-funnel"></i> Filter Expenses
-                </h5>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="monthSelect" class="form-label fw-semibold">Month</label>
-                        <select class="form-select" id="monthSelect">
-                            <option value="">Select Month</option>
-                            <option value="1">January</option>
-                            <option value="2">February</option>
-                            <option value="3">March</option>
-                            <option value="4">April</option>
-                            <option value="5">May</option>
-                            <option value="6">June</option>
-                            <option value="7">July</option>
-                            <option value="8">August</option>
-                            <option value="9">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="yearSelect" class="form-label fw-semibold">Year</label>
-                        <select class="form-select" id="yearSelect">
-                            <option value="">Select Year</option>
-                        </select>
+        <!-- Total Balance Card -->
+        <div class="row g-3 mb-4">
+            <div class="col-12">
+                <div class="card balance-card">
+                    <div class="card-body text-center">
+                        <h6 class="card-subtitle mb-2 opacity-75">Total Balance Across All Accounts</h6>
+                        <h2 class="card-title fw-bold mb-0" id="totalBalance">$0.00</h2>
+                        <small class="opacity-75">Updated just now</small>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Summary Card -->
-        <div class="card summary-card mb-4">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-8">
-                        <h6 class="card-subtitle mb-1 opacity-75">Total Monthly Expenses</h6>
-                        <h2 class="card-title fw-bold mb-0" id="expensesAmount">$0.00</h2>
-                        <small class="opacity-75" id="expensePeriod">Current Period</small>
-                    </div>
-                    <div class="col-4 text-end">
-                        <button type="button" class="btn btn-light btn-sm" id="applyFilterBtn">
-                            <i class="bi bi-arrow-clockwise"></i> Update
-                        </button>
-                    </div>
+        <!-- Action Buttons -->
+        <div class="row g-2 mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold mb-0">
+                        <i class="bi bi-wallet2"></i> Your Accounts
+                    </h4>
+                    <button type="button" class="btn btn-success action-btn" data-bs-target="#addAccountModal"
+                        data-bs-toggle="modal">
+                        <i class="bi bi-plus-circle"></i> Add Account
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Expenses Table -->
+        <!-- Accounts Table -->
         <div class="card card-shadow border-0 mb-4">
-            <div class="card-header bg-white">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-receipt"></i> Transaction History
-                </h5>
-            </div>
             <div class="card-body p-0">
                 <div class="table-responsive-custom">
-                    <table class="table table-hover mb-0" id="expensesHistoryTable">
+                    <table class="table table-hover mb-0">
                         <thead class="table-light sticky-top">
                             <tr>
-                                <th scope="col" class="ps-3">Description</th>
-                                <th scope="col">Amount</th>
-                                <th scope="col">Account</th>
-                                <th scope="col">Category</th>
-                                <th scope="col" class="pe-3">Date</th>
+                                <th scope="col" class="ps-3">Account Name</th>
+                                <th scope="col" class="pe-3">Balance</th>
                             </tr>
                         </thead>
-                        <tbody id="expensesHistoryTableBody">
+                        <tbody id="accountsTableBody">
                             <tr>
-                                <td colspan="5" class="text-center py-4">
+                                <td colspan="2" class="text-center py-4">
                                     <div class="loading-skeleton rounded py-2 mx-3"></div>
                                     <div class="loading-skeleton rounded py-2 mx-3 mt-2"></div>
                                 </td>
@@ -225,11 +223,11 @@
             </div>
         </div>
 
-        <!-- Chart Container -->
+        <!-- Account Distribution Chart -->
         <div class="card card-shadow border-0">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">
-                    <i class="bi bi-pie-chart"></i> Expenses Analysis
+                    <i class="bi bi-pie-chart"></i> Account Distribution
                 </h5>
                 <div class="btn-group btn-group-sm" role="group" id="chartTypeGroup">
                     <button type="button" class="btn btn-outline-primary active btn-chart" data-chart-type="pie">
@@ -242,11 +240,53 @@
             </div>
             <div class="card-body">
                 <div class="chart-container">
-                    <canvas id="expensesChart"></canvas>
+                    <canvas id="accountsChart"></canvas>
                 </div>
                 <div class="text-center mt-3" id="chartEmptyState" style="display: none;">
                     <i class="bi bi-pie-chart display-4 text-muted"></i>
-                    <p class="text-muted mt-2">No expense data available for the selected period</p>
+                    <p class="text-muted mt-2">No accounts data available</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Account Modal -->
+    <div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="addAccountModalLabel">
+                        <i class="bi bi-plus-circle"></i> Add New Account
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addAccountForm">
+                        <div class="mb-3">
+                            <label for="accountName" class="form-label fw-semibold">Account Name</label>
+                            <input type="text" class="form-control" id="accountName"
+                                placeholder="e.g., Savings, Credit Card, Investment" required>
+                            <div class="form-text">Give a descriptive name to your account</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="accountBalance" class="form-label fw-semibold">Initial Balance</label>
+                            <input type="number" class="form-control" id="accountBalance" placeholder="0.00" step="0.01"
+                                required>
+                            <div class="form-text">Enter the current balance of this account</div>
+                        </div>
+                        <div class="mb-3">
+                            <span id="accountErrorMessage" class="form-text"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="addAccountButton">
+                        <span class="spinner-border spinner-border-sm me-2" id="accountSpinner"
+                            style="display: none;"></span>
+                        Create Account
+                    </button>
                 </div>
             </div>
         </div>
@@ -262,13 +302,12 @@
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-
-    <!-- Chart.js Library -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='js/historicalExpenses.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/accountDetails.js') }}"></script>
 </body>
-
 </html>

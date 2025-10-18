@@ -32,5 +32,10 @@ def dashBoard():
 @app.route('/historicalExpenses')
 def historicalExpenses():
     return render_template('historicalExpenses.html')
+
+@app.route('/accountDetails')
+def account_details():
+    return render_template('accountDetails.html')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

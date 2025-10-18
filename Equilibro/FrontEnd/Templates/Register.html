@@ -2,44 +2,132 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Equilibro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        .card-shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .brand-text {
+            font-weight: 700;
+            color: #667eea;
+        }
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 4px;
+            transition: all 0.3s ease;
+        }
+        .strength-weak { background-color: #dc3545; width: 25%; }
+        .strength-fair { background-color: #ffc107; width: 50%; }
+        .strength-good { background-color: #17a2b8; width: 75%; }
+        .strength-strong { background-color: #28a745; width: 100%; }
+    </style>
 </head>
-<body style="margin: 10px;">
-    <div class="container mt-5 p-4 border rounded-3 shadow" style="max-width: 500px;">
-        <h1 class="text-center">Register</h1>
-        <form>
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" aria-describedby="nameHelp">
+<body class="gradient-bg">
+    <div class="register-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <!-- Header Brand -->
+                    <div class="text-center mb-4">
+                        <h1 class="brand-text text-white display-4">
+                            <i class="bi bi-graph-up"></i> Equilibro
+                        </h1>
+                        <p class="text-white-50">Start your financial journey today</p>
+                    </div>
+
+                    <!-- Register Card -->
+                    <div class="card card-shadow border-0">
+                        <div class="card-body p-4">
+                            <h2 class="card-title text-center mb-4">Create Account</h2>
+                            
+                            <form id="registerForm">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label fw-semibold">Full Name</label>
+                                    <input type="text" class="form-control form-control-lg" id="name" 
+                                           placeholder="Enter your full name" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="email" class="form-label fw-semibold">Email Address</label>
+                                    <input type="email" class="form-control form-control-lg" id="email" 
+                                           placeholder="Enter your email" required>
+                                    <div class="form-text">We'll never share your email with anyone else.</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="password" class="form-label fw-semibold">Password</label>
+                                    <input type="password" class="form-control form-control-lg" id="password" 
+                                           placeholder="Create a password" required>
+                                    <div class="password-strength" id="passwordStrength"></div>
+                                    <div class="form-text">Password must be at least 6 characters long</div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="confirmPassword" class="form-label fw-semibold">Confirm Password</label>
+                                    <input type="password" class="form-control form-control-lg" id="confirmPassword" 
+                                           placeholder="Confirm your password" required>
+                                    <div class="form-text text-success" id="passwordMatch" style="display: none;">
+                                        <i class="bi bi-check-circle"></i> Passwords match
+                                    </div>
+                                </div>
+                                
+                                <!-- Error/Success Message -->
+                                <div class="mb-3">
+                                    <span id="errorMessage" class="form-text text-danger small"></span>
+                                    <span id="successMessage" class="form-text text-success small"></span>
+                                </div>
+                                
+                                <!-- Register Button -->
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg" id="registerButton">
+                                        <span class="spinner-border spinner-border-sm me-2" id="registerSpinner" style="display: none;"></span>
+                                        Create Account
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Login Link -->
+                            <div class="text-center mt-4 pt-3 border-top">
+                                <p class="text-muted mb-0">
+                                    Already have an account?
+                                    <a href="/" class="fw-semibold text-primary text-decoration-none">
+                                        Sign in here
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="text-center mt-4">
+                        <p class="text-white-50 small">
+                            &copy; 2025 Equilibro. All rights reserved.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
-                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password">
-            </div>
-            <div class="mb-3">
-                <label for="confirmPassword" class="form-label">Confirm Password</label>
-                <input type="password" class="form-control" id="confirmPassword">
-            </div>
-            <div class="mb-3">
-                <span id="errorMessage" class="form-text text-danger"></span>
-            </div>
-            <div class="d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary" id="registerButton">Register</button>
-            </div>
-        </form>
-        <p class="mt-6 text-center text-sm text-gray-400">
-            Already have an account?
-            <a href="/" class="text-indigo-400 hover:text-indigo-300 font-medium">Login</a>
-        </p>
+        </div>
     </div>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
