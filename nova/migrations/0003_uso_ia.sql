@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS uso_ia_diario (
+  fecha_utc TEXT PRIMARY KEY,
+  neurons_usadas REAL NOT NULL DEFAULT 0,
+  tokens_entrada INTEGER NOT NULL DEFAULT 0,
+  tokens_salida INTEGER NOT NULL DEFAULT 0,
+  llamadas INTEGER NOT NULL DEFAULT 0,
+  actualizada_en TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

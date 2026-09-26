@@ -1,0 +1,89 @@
+.entrada-mensaje {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 14px 24px calc(14px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, #0f121a 72%, rgba(15, 18, 26, 0.92));
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.entrada-mensaje__input {
+  min-width: 0;
+  min-height: 46px;
+  max-height: 130px;
+  flex: 1;
+  resize: none;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 15px;
+  outline: none;
+  background: #171b24;
+  color: #f1f3f7;
+  caret-color: #9e8cff;
+  line-height: 1.45;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.entrada-mensaje__input::placeholder {
+  color: #666d7b;
+}
+
+.entrada-mensaje__input:focus {
+  border-color: rgba(124, 92, 255, 0.58);
+  box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.09);
+}
+
+.entrada-mensaje__input:disabled {
+  opacity: 0.65;
+}
+
+.entrada-mensaje__boton {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #7c5cff, #5b44d9);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(92, 68, 217, 0.24);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.entrada-mensaje__boton span {
+  margin-top: -2px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.entrada-mensaje__boton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.entrada-mensaje__boton:disabled {
+  cursor: default;
+  opacity: 0.35;
+  box-shadow: none;
+}
+
+@media (max-width: 700px) {
+  .entrada-mensaje {
+    gap: 8px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .entrada-mensaje__input,
+  .entrada-mensaje__boton {
+    min-height: 44px;
+  }
+
+  .entrada-mensaje__boton {
+    width: 44px;
+    height: 44px;
+  }
+}

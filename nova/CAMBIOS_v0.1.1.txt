@@ -1,0 +1,20 @@
+NOVA v0.1.1
+
+Cambios principales
+- Nueva interfaz oscura y responsive para PC y iPhone.
+- Versión visible en pantalla: v0.1.1.
+- Campo de mensaje mejorado y botón de envío compacto.
+- Indicador de escritura de NOVA.
+- Scroll automático al último mensaje.
+- NOVA mantiene el trato de "tú".
+- NOVA evita terminar todas las respuestas con preguntas.
+- NOVA reduce suposiciones innecesarias en conversaciones técnicas.
+- DTF se interpreta correctamente como Direct to Film cuando sea necesario.
+- Los viajes, retrasos, clientes puntuales y trabajos de una sola ocasión no se guardan como memoria estable por defecto.
+- "Me llamo Juan" se guarda de forma rápida como nombre.
+- "Soy tu creador" puede guardarse como relación con NOVA.
+- "Soy técnico de máquinas de impresión" se guarda como ocupación.
+- Consultas sobre nombre, ocupación y creador tienen ruta directa cuando la memoria existe.
+- Las consultas simples de color singular también pueden resolverse sin llamar al modelo.
+
+No requiere migraciones de D1.

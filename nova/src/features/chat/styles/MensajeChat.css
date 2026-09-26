@@ -1,0 +1,136 @@
+.mensaje-fila {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.mensaje-fila--usuario {
+  justify-content: flex-end;
+}
+
+.mensaje-avatar {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  margin-top: 2px;
+  border-radius: 10px;
+  background: #242938;
+  color: #a99cff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.mensaje-chat {
+  width: fit-content;
+  max-width: min(78%, 650px);
+  padding: 12px 15px;
+  overflow-wrap: anywhere;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mensaje-chat--nova {
+  border-radius: 6px 17px 17px 17px;
+  background: #171b24;
+  color: #e9ebf2;
+}
+
+.mensaje-chat--usuario {
+  border-color: rgba(124, 92, 255, 0.28);
+  border-radius: 17px 6px 17px 17px;
+  background: linear-gradient(145deg, #5d46da, #4f3bc4);
+  color: white;
+}
+
+.mensaje-chat__autor {
+  display: block;
+  margin-bottom: 5px;
+  color: #7f8798;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.mensaje-chat--usuario .mensaje-chat__autor {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.mensaje-chat__contenido {
+  font-size: 14px;
+  line-height: 1.58;
+}
+
+.mensaje-chat__contenido > :first-child {
+  margin-top: 0;
+}
+
+.mensaje-chat__contenido > :last-child {
+  margin-bottom: 0;
+}
+
+.mensaje-chat p {
+  margin: 7px 0;
+}
+
+.mensaje-chat ul,
+.mensaje-chat ol {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.mensaje-chat li {
+  margin: 4px 0;
+}
+
+.mensaje-chat h1,
+.mensaje-chat h2,
+.mensaje-chat h3 {
+  margin: 12px 0 7px;
+  font-size: 1em;
+}
+
+.mensaje-chat code {
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.mensaje-chat pre {
+  max-width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  overflow-x: auto;
+  border-radius: 10px;
+  background: #0d1016;
+}
+
+.mensaje-chat pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.mensaje-chat a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .mensaje-chat {
+    max-width: 86%;
+    padding: 11px 13px;
+  }
+
+  .mensaje-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+  }
+
+  .mensaje-chat__contenido {
+    font-size: 14px;
+  }
+}
