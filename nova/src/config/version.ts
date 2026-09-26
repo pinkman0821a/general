@@ -1,1 +1,1 @@
-export const NOVA_VERSION = "v0.1.1.0";
+export const NOVA_VERSION = "v0.1.1.1";
