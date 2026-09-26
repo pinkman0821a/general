@@ -43,6 +43,10 @@ export function crearRespuestaEvento(
 
   const evento = eventos[0];
 
+  if (evento.accion === "creada") {
+    return `Listo. Ya guardé ese dato: ${evento.valorNuevo}.`;
+  }
+
   if (
     evento.accion !== "actualizada" ||
     !evento.valorAnterior
@@ -54,7 +58,8 @@ export function crearRespuestaEvento(
     evento.entidad,
   );
 
-  return `Listo. ${capitalizar(articulo)} ${evento.entidad} pasó de ${evento.valorAnterior} a ${evento.valorNuevo}.`;}
+  return `Listo. ${capitalizar(articulo)} ${evento.entidad} pasó de ${evento.valorAnterior} a ${evento.valorNuevo}.`;
+}
 
 export function crearStreamRespuesta(
   texto: string,
