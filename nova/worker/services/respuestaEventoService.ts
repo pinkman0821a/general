@@ -26,6 +26,59 @@ function capitalizar(texto: string) {
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
+function describirEvento(evento: EventoMemoria) {
+  if (evento.accion === "creada") {
+    return `${evento.entidad}: ${evento.clave} = ${evento.valorNuevo}`;
+  }
+
+  if (
+    evento.accion === "actualizada" &&
+    evento.valorAnterior
+  ) {
+    return `${evento.entidad}: ${evento.clave} pasó de ${evento.valorAnterior} a ${evento.valorNuevo}`;
+  }
+
+  return null;
+}
+
+function crearRespuestaMultiple(eventos: EventoMemoria[]) {
+  const eventosUtiles = eventos.filter(
+    (evento) =>
+      evento.accion === "creada" ||
+      evento.accion === "actualizada",
+  );
+
+  if (eventosUtiles.length < 2) {
+    return null;
+  }
+
+  const descripciones = eventosUtiles
+    .map(describirEvento)
+    .filter((descripcion): descripcion is string => Boolean(descripcion));
+
+  if (descripciones.length < 2) {
+    return null;
+  }
+
+  const todosCreados = eventosUtiles.every(
+    (evento) => evento.accion === "creada",
+  );
+
+  const todosActualizados = eventosUtiles.every(
+    (evento) => evento.accion === "actualizada",
+  );
+
+  if (todosCreados) {
+    return `Listo. Guardé estos datos: ${descripciones.join("; ")}.`;
+  }
+
+  if (todosActualizados) {
+    return `Listo. Actualicé estos datos: ${descripciones.join("; ")}.`;
+  }
+
+  return `Listo. Registré estos cambios: ${descripciones.join("; ")}.`;
+}
+
 export function crearRespuestaEvento(
   eventos: EventoMemoria[],
   mensajeUsuario: string,
@@ -35,6 +88,12 @@ export function crearRespuestaEvento(
     mensajeUsuario.includes("¿")
   ) {
     return null;
+  }
+
+  const respuestaMultiple = crearRespuestaMultiple(eventos);
+
+  if (respuestaMultiple) {
+    return respuestaMultiple;
   }
 
   if (eventos.length !== 1) {
