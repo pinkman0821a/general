@@ -9,17 +9,21 @@ type DatosEntidad = {
   valor: string;
 };
 
-const INDICADORES_ENTIDAD_NUEVA = [
-  "otra ",
-  "otro ",
-  "segunda ",
-  "segundo ",
-  "tercera ",
-  "tercer ",
-  "nueva ",
-  "nuevo ",
-  "una mas",
-  "uno mas",
+const INDICADORES_ANTES_ENTIDAD = [
+  "otra",
+  "otro",
+  "segunda",
+  "segundo",
+  "tercera",
+  "tercer",
+  "nueva",
+  "nuevo",
+];
+
+const INDICADORES_DESPUES_ENTIDAD = [
+  "nueva",
+  "nuevo",
+  "mas",
 ];
 
 function normalizar(texto: string | null | undefined) {
@@ -27,15 +31,36 @@ function normalizar(texto: string | null | undefined) {
     .trim()
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ");
 }
 
-function esEntidadNueva(mensaje: string) {
-  const texto = normalizar(mensaje);
+function escaparRegex(texto: string) {
+  return texto.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
-  return INDICADORES_ENTIDAD_NUEVA.some((indicador) =>
-    texto.includes(indicador),
+function esEntidadNueva(
+  mensaje: string,
+  entidad: string,
+) {
+  const texto = normalizar(mensaje);
+  const entidadNormalizada = normalizar(entidad);
+
+  if (!texto || !entidadNormalizada) {
+    return false;
+  }
+
+  const entidadRegex = escaparRegex(entidadNormalizada);
+
+  const antes = new RegExp(
+    `\\b(?:${INDICADORES_ANTES_ENTIDAD.join("|")})\\s+${entidadRegex}\\b`,
   );
+
+  const despues = new RegExp(
+    `\\b${entidadRegex}\\s+(?:${INDICADORES_DESPUES_ENTIDAD.join("|")})\\b`,
+  );
+
+  return antes.test(texto) || despues.test(texto);
 }
 
 async function buscarPorReferencia(
@@ -107,7 +132,7 @@ export async function resolverEntidad(
     datos.entidad,
   );
 
-  if (esEntidadNueva(mensajeUsuario)) {
+  if (esEntidadNueva(mensajeUsuario, datos.entidad)) {
     const entidadId = await crearEntidad(db, {
       tipo: datos.tipo,
       nombreBase: datos.entidad,
