@@ -5,6 +5,7 @@ import {
 } from "./eventoMemoriaService.js";
 import type { Memoria } from "./memoriaService.js";
 import { pareceConversacionCasual } from "./aiConversacionService.js";
+import { esConsultaGeneralMemoria } from "./consultaMemoriaGeneralService.js";
 
 export type MensajeConversacion = {
   autor: "usuario" | "nova";
@@ -38,10 +39,7 @@ function crearEtiquetasEntidades(
   return etiquetas;
 }
 
-function prepararMemorias(
-  memorias: Memoria[],
-  etiquetas: Map<number, string>,
-) {
+function prepararMemorias(memorias: Memoria[], etiquetas: Map<number, string>) {
   if (memorias.length === 0) {
     return "Ninguna.";
   }
@@ -95,10 +93,7 @@ export function prepararMensajes(
   historialMemorias: Memoria[],
   eventosMemoria: EventoMemoria[],
 ) {
-  const etiquetas = crearEtiquetasEntidades(
-    memoriasActivas,
-    historialMemorias,
-  );
+  const etiquetas = crearEtiquetasEntidades(memoriasActivas, historialMemorias);
 
   const ultimoMensajeUsuario = obtenerUltimoUsuario(mensajes);
 
@@ -134,6 +129,30 @@ Respuesta adecuada:
 
 Respuesta NO adecuada:
 "Eso suena agotador. ¿Te sientes bien? ¿Quieres hablar de ello?"`
+    : "";
+
+  const instruccionMemoriaGeneral = esConsultaGeneralMemoria(
+    ultimoMensajeUsuario,
+  )
+    ? `
+
+MODO CONSULTA GENERAL DE MEMORIA ACTIVO.
+
+Juan está preguntando de forma general qué sabes o recuerdas sobre él.
+
+Para esta respuesta debes cumplir:
+
+- Usa los recuerdos actuales disponibles como conjunto, no solamente uno.
+- Resume varios datos diferentes cuando existan varios recuerdos.
+- Si existen 3 o más hechos útiles, menciona al menos 3 hechos distintos.
+- Prioriza primero información directamente relacionada con Juan.
+- También puedes mencionar proyectos, objetos o contexto relacionado con él cuando ayuden a responder.
+- No conviertas información propia de NOVA en una característica personal de Juan.
+- No digas que no tienes más información si existen otros recuerdos actuales disponibles.
+- No inventes datos para completar la respuesta.
+- Habla de forma natural, como alguien que recuerda a la persona.
+- No menciones base de datos, registros, IDs, etiquetas ni mecanismos internos.
+- No es necesario enumerar absolutamente todos los recuerdos si hay muchos.`
     : "";
 
   const instruccionesSistema = `
@@ -192,6 +211,7 @@ REGLAS DE UBICACIÓN:
 
 La zona horaria no demuestra la ubicación física de Juan.
 ${instruccionConversacionCasual}
+${instruccionMemoriaGeneral}
 `.trim();
 
   return [
@@ -209,13 +229,9 @@ ${instruccionConversacionCasual}
   ];
 }
 
-export function obtenerUltimoUsuario(
-  mensajes: MensajeConversacion[],
-) {
+export function obtenerUltimoUsuario(mensajes: MensajeConversacion[]) {
   return (
-    [...mensajes]
-      .reverse()
-      .find((mensaje) => mensaje.autor === "usuario")
+    [...mensajes].reverse().find((mensaje) => mensaje.autor === "usuario")
       ?.texto ?? ""
   );
 }

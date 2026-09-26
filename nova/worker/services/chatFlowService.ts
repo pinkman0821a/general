@@ -4,6 +4,7 @@ import {
   type ContextoSistema,
   type MensajeConversacion,
 } from "./aiService.js";
+import { esConsultaGeneralMemoria } from "./consultaMemoriaGeneralService.js";
 import { consultarEcho } from "./echoService.js";
 import type { EventoMemoria } from "./eventoMemoriaService.js";
 import { procesarMemoriaAutomatica } from "./memoriaAutomaticaService.js";
@@ -11,7 +12,7 @@ import {
   buscarMemoriasPorEcho,
   buscarMemoriasRelevantesConPuntaje,
 } from "./memoriaBusquedaService.js";
-import type { Memoria } from "./memoriaService.js";
+import { obtenerMemoriasActivas, type Memoria } from "./memoriaService.js";
 import { resolverAclaracionPendiente } from "./resolverAclaracionService.js";
 import { responderDirectamente } from "./respuestaDirectaChatService.js";
 import {
@@ -25,6 +26,7 @@ export type DatosChat = {
 };
 
 const UMBRAL_BUSQUEDA_DIRECTA = 5;
+const LIMITE_MEMORIA_GENERAL = 20;
 
 function obtenerUltimoUsuario(mensajes: MensajeConversacion[]) {
   return [...mensajes].reverse().find((mensaje) => mensaje.autor === "usuario");
@@ -52,6 +54,22 @@ async function obtenerMemorias(
   db: D1Database,
   mensajes: MensajeConversacion[],
 ) {
+  const ultimo = obtenerUltimoUsuario(mensajes);
+
+  if (!ultimo) {
+    return {
+      memoriasActivas: [],
+      historialMemorias: [],
+    };
+  }
+
+  if (esConsultaGeneralMemoria(ultimo.texto)) {
+    return {
+      memoriasActivas: await obtenerMemoriasActivas(db, LIMITE_MEMORIA_GENERAL),
+      historialMemorias: [],
+    };
+  }
+
   const resultado = await buscarMemoriasRelevantesConPuntaje(
     db,
     crearConsultaMemoria(mensajes),
@@ -62,15 +80,6 @@ async function obtenerMemorias(
     resultado.puntajeMaximo >= UMBRAL_BUSQUEDA_DIRECTA
   ) {
     return separarMemorias(resultado.memorias);
-  }
-
-  const ultimo = obtenerUltimoUsuario(mensajes);
-
-  if (!ultimo) {
-    return {
-      memoriasActivas: [],
-      historialMemorias: [],
-    };
   }
 
   const consulta = await consultarEcho(ai, ultimo.texto, db);
@@ -130,15 +139,17 @@ async function prepararFlujo(ai: Ai, db: D1Database, datos: DatosChat) {
       };
     }
 
-    const directa = await responderDirectamente(db, ultimo.texto);
+    if (!esConsultaGeneralMemoria(ultimo.texto)) {
+      const directa = await responderDirectamente(db, ultimo.texto);
 
-    if (directa) {
-      return {
-        directa,
-        eventos,
-        memoriasActivas: [],
-        historialMemorias: [],
-      };
+      if (directa) {
+        return {
+          directa,
+          eventos,
+          memoriasActivas: [],
+          historialMemorias: [],
+        };
+      }
     }
   }
 
