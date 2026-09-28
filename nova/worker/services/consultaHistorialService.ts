@@ -1,14 +1,12 @@
-type MemoriaActual = {
-  id: number;
-  entidad_id: number;
-  valor: string;
-  reemplaza_id: number | null;
-};
-
-type MemoriaAnterior = {
-  id: number;
-  valor: string;
-};
+import {
+  agruparHistoriales,
+  normalizar,
+  obtenerReferenciaAntesDe,
+  obtenerRegistrosColor,
+  seleccionarPorColorActual,
+  seleccionarPorHistorial,
+  type HistorialEntidad,
+} from "./consultaHistorialDatosService.js";
 
 const ALIAS: Record<string, string> = {
   bici: "bicicleta",
@@ -19,23 +17,38 @@ const ALIAS: Record<string, string> = {
   carros: "carro",
   moto: "moto",
   motos: "moto",
+  mascota: "mascota",
+  mascotas: "mascota",
 };
 
-function normalizar(texto: string) {
-  return texto
-    .trim()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[¿?¡!.,;:]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+const NUMEROS = [
+  "cero",
+  "una",
+  "dos",
+  "tres",
+  "cuatro",
+  "cinco",
+  "seis",
+  "siete",
+  "ocho",
+  "nueve",
+  "diez",
+];
+
+function pluralizar(nombre: string) {
+  if (nombre.endsWith("s")) {
+    return nombre;
+  }
+
+  return /[aeiou]$/.test(nombre) ? `${nombre}s` : `${nombre}es`;
+}
+
+function numeroTexto(numero: number) {
+  return NUMEROS[numero] ?? String(numero);
 }
 
 function obtenerEntidad(texto: string) {
-  const palabras = normalizar(texto).split(" ");
-
-  for (const palabra of palabras) {
+  for (const palabra of normalizar(texto).split(" ")) {
     if (ALIAS[palabra]) {
       return ALIAS[palabra];
     }
@@ -44,100 +57,153 @@ function obtenerEntidad(texto: string) {
   return null;
 }
 
-function obtenerReferenciaColor(texto: string, entidad: string) {
+function esConsultaHistorial(texto: string) {
   const normalizado = normalizar(texto);
-  const patron = new RegExp(`\\b${entidad}\\s+([a-zñ]+)\\b`);
 
-  const resultado = normalizado.match(patron);
+  if (normalizado.includes("historial") || normalizado.includes("antes de ")) {
+    return true;
+  }
 
-  return resultado?.[1] ?? null;
+  const hablaDeColor =
+    normalizado.includes("color") || normalizado.includes("colores");
+
+  const hablaDelPasado =
+    normalizado.includes("antes") ||
+    normalizado.includes("anterior") ||
+    normalizado.includes("anteriores") ||
+    normalizado.includes("ha tenido") ||
+    normalizado.includes("han tenido") ||
+    normalizado.includes("era ");
+
+  return hablaDeColor && hablaDelPasado;
 }
 
-async function buscarActualPorReferencia(
-  db: D1Database,
+function quiereHistorialCompleto(texto: string) {
+  const normalizado = normalizar(texto);
+
+  return (
+    normalizado.includes("historial") ||
+    normalizado.includes("ha tenido") ||
+    normalizado.includes("han tenido") ||
+    normalizado.includes("colores tuvo") ||
+    normalizado.includes("colores tenia")
+  );
+}
+
+function describirAmbiguedad(entidad: string, historiales: HistorialEntidad[]) {
+  if (historiales.length === 2) {
+    return `Tengo historial de dos ${pluralizar(entidad)}: una actualmente ${historiales[0].actual.valor} y otra ${historiales[1].actual.valor}. ¿A cuál te refieres?`;
+  }
+
+  const colores = historiales
+    .map((historial) => historial.actual.valor)
+    .join(", ");
+
+  return `Tengo historial de ${numeroTexto(historiales.length)} ${pluralizar(entidad)}. Sus colores actuales son ${colores}. ¿A cuál te refieres?`;
+}
+
+function responderHistorialCompleto(
   entidad: string,
+  historial: HistorialEntidad,
+) {
+  const colores = historial.memorias.map((memoria) => memoria.valor);
+
+  if (colores.length === 1) {
+    return `Solo tengo registrado el color ${colores[0]} para tu ${entidad}.`;
+  }
+
+  return `Tu ${entidad} que actualmente es ${historial.actual.valor} ha pasado por estos colores: ${colores.join(" → ")}.`;
+}
+
+function responderAntesDeReferencia(
+  entidad: string,
+  historial: HistorialEntidad,
   referencia: string,
 ) {
-  const resultado = await db
-    .prepare(
-      `
-      SELECT
-        m.id,
-        m.entidad_id,
-        m.valor,
-        m.reemplaza_id
-      FROM memorias m
-      INNER JOIN entidades e
-        ON e.id = m.entidad_id
-      WHERE m.estado = 'activa'
-        AND e.estado = 'activa'
-        AND LOWER(e.nombre_base) = LOWER(?)
-        AND LOWER(m.clave) = 'color'
-        AND LOWER(m.valor) = LOWER(?)
-      ORDER BY m.id DESC
-    `,
-    )
-    .bind(entidad, referencia)
-    .all<MemoriaActual>();
+  const memoriaObjetivo = [...historial.memorias]
+    .reverse()
+    .find((memoria) => normalizar(memoria.valor) === normalizar(referencia));
 
-  if (resultado.results.length !== 1) {
+  if (!memoriaObjetivo) {
     return null;
   }
 
-  return resultado.results[0];
+  if (!memoriaObjetivo.reemplaza_id) {
+    return `No tengo un color anterior registrado antes de ${memoriaObjetivo.valor} para tu ${entidad}.`;
+  }
+
+  const anterior = historial.memorias.find(
+    (memoria) => memoria.id === memoriaObjetivo.reemplaza_id,
+  );
+
+  if (!anterior) {
+    return null;
+  }
+
+  return `Antes de ser ${memoriaObjetivo.valor}, tu ${entidad} era ${anterior.valor}.`;
 }
 
-async function obtenerMemoriaAnterior(db: D1Database, id: number) {
-  return db
-    .prepare(
-      `
-      SELECT id, valor
-      FROM memorias
-      WHERE id = ?
-      LIMIT 1
-    `,
-    )
-    .bind(id)
-    .first<MemoriaAnterior>();
+function responderAnteriorActual(entidad: string, historial: HistorialEntidad) {
+  if (!historial.actual.reemplaza_id) {
+    return `No tengo un color anterior registrado para tu ${entidad} que actualmente es ${historial.actual.valor}.`;
+  }
+
+  const anterior = historial.memorias.find(
+    (memoria) => memoria.id === historial.actual.reemplaza_id,
+  );
+
+  if (!anterior) {
+    return null;
+  }
+
+  return `Antes de ser ${historial.actual.valor}, tu ${entidad} era ${anterior.valor}.`;
 }
 
 export async function responderConsultaHistorial(
   db: D1Database,
   mensaje: string,
 ) {
-  const texto = normalizar(mensaje);
-
-  if (!texto.includes("antes") && !texto.includes("anterior")) {
+  if (!esConsultaHistorial(mensaje)) {
     return null;
   }
 
-  if (!texto.includes("color")) {
-    return null;
-  }
-
-  const entidad = obtenerEntidad(texto);
+  const entidad = obtenerEntidad(mensaje);
 
   if (!entidad) {
     return null;
   }
 
-  const referencia = obtenerReferenciaColor(texto, entidad);
+  const registros = await obtenerRegistrosColor(db, entidad);
 
-  if (!referencia) {
+  const historiales = agruparHistoriales(registros);
+
+  if (historiales.length === 0) {
     return null;
   }
 
-  const actual = await buscarActualPorReferencia(db, entidad, referencia);
+  const referenciaAntes = obtenerReferenciaAntesDe(mensaje, historiales);
 
-  if (!actual || !actual.reemplaza_id) {
-    return null;
+  let seleccionada = seleccionarPorColorActual(mensaje, historiales);
+
+  if (!seleccionada && referenciaAntes) {
+    seleccionada = seleccionarPorHistorial(referenciaAntes, historiales);
   }
 
-  const anterior = await obtenerMemoriaAnterior(db, actual.reemplaza_id);
-
-  if (!anterior) {
-    return null;
+  if (!seleccionada && historiales.length === 1) {
+    seleccionada = historiales[0];
   }
 
-  return `Antes era ${anterior.valor}.`;
+  if (!seleccionada) {
+    return describirAmbiguedad(entidad, historiales);
+  }
+
+  if (referenciaAntes) {
+    return responderAntesDeReferencia(entidad, seleccionada, referenciaAntes);
+  }
+
+  if (quiereHistorialCompleto(mensaje)) {
+    return responderHistorialCompleto(entidad, seleccionada);
+  }
+
+  return responderAnteriorActual(entidad, seleccionada);
 }

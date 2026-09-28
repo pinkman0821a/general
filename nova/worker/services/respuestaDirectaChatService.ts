@@ -1,4 +1,5 @@
 import { responderConsultaDirecta } from "./consultaDirectaService.js";
+import { responderResumenEntidad } from "./consultaResumenEntidadService.js";
 import { analizarMemoriaRapida } from "./memoriaRapidaService.js";
 
 type CandidatoEntidad = {
@@ -100,6 +101,12 @@ export async function responderDirectamente(db: D1Database, mensaje: string) {
 
   if (consulta) {
     return consulta;
+  }
+
+  const resumen = await responderResumenEntidad(db, mensaje);
+
+  if (resumen) {
+    return resumen;
   }
 
   return responderAmbiguedad(db, mensaje);

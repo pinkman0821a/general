@@ -14,6 +14,7 @@ import {
 } from "./memoriaBusquedaService.js";
 import { obtenerMemoriasActivas, type Memoria } from "./memoriaService.js";
 import { resolverAclaracionPendiente } from "./resolverAclaracionService.js";
+import { resolverConsultaPendiente } from "./resolverConsultaPendienteService.js";
 import { responderDirectamente } from "./respuestaDirectaChatService.js";
 import {
   crearRespuestaEvento,
@@ -124,6 +125,23 @@ async function procesarMemoria(
 
 async function prepararFlujo(ai: Ai, db: D1Database, datos: DatosChat) {
   const ultimo = obtenerUltimoUsuario(datos.mensajes);
+
+  if (ultimo) {
+    const consultaPendiente = resolverConsultaPendiente(datos.mensajes);
+
+    if (consultaPendiente) {
+      const directa = await responderDirectamente(db, consultaPendiente);
+
+      if (directa) {
+        return {
+          directa,
+          eventos: [] as EventoMemoria[],
+          memoriasActivas: [],
+          historialMemorias: [],
+        };
+      }
+    }
+  }
 
   const { eventos } = await procesarMemoria(ai, db, datos.mensajes);
 

@@ -58,6 +58,28 @@ export async function buscarEntidadesActivas(
   return resultado.results;
 }
 
+export async function buscarEntidadesActivasPorTipo(
+  db: D1Database,
+  tipo: string,
+) {
+  const resultado = await db
+    .prepare(
+      `
+      SELECT *
+      FROM entidades
+      WHERE estado = 'activa'
+        AND LOWER(tipo) = LOWER(?)
+      ORDER BY
+        LENGTH(nombre_base) DESC,
+        creada_en ASC
+    `,
+    )
+    .bind(tipo.trim())
+    .all<Entidad>();
+
+  return resultado.results;
+}
+
 export async function obtenerEntidadPorId(db: D1Database, id: number) {
   return db
     .prepare(

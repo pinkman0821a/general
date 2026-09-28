@@ -122,55 +122,31 @@ export function quitarPrefijoRecuerdo(texto: string) {
     .trim();
 }
 
-function empiezaConAlguno(
-  texto: string,
-  prefijos: string[],
-) {
+function empiezaConAlguno(texto: string, prefijos: string[]) {
   return prefijos.some(
-    (prefijo) =>
-      texto === prefijo ||
-      texto.startsWith(`${prefijo} `),
+    (prefijo) => texto === prefijo || texto.startsWith(`${prefijo} `),
   );
 }
 
-export function bloqueaMemoriaRapida(
-  texto: string,
-) {
+export function bloqueaMemoriaRapida(texto: string) {
   const normalizado = normalizar(texto);
-  const contenido = normalizar(
-    quitarPrefijoRecuerdo(texto),
-  );
+  const contenido = normalizar(quitarPrefijoRecuerdo(texto));
 
-  if (
-    /^(?:no recuerdes|olvida|olvidate de)\b/.test(
-      normalizado,
-    )
-  ) {
+  if (/^(?:no recuerdes|olvida|olvidate de)\b/.test(normalizado)) {
     return true;
   }
 
   if (
     /\bno\s+se\s+llama\b/.test(contenido) ||
-    /\bsu\s+color\s+no\s+(?:es|esta)\b/.test(
-      contenido,
-    )
+    /\bsu\s+color\s+no\s+(?:es|esta)\b/.test(contenido)
   ) {
     return true;
   }
 
   if (
-    empiezaConAlguno(
-      contenido,
-      PREFIJOS_INCIERTOS,
-    ) ||
-    empiezaConAlguno(
-      contenido,
-      PREFIJOS_IMAGINADOS,
-    ) ||
-    empiezaConAlguno(
-      contenido,
-      PREFIJOS_ATRIBUIDOS,
-    )
+    empiezaConAlguno(contenido, PREFIJOS_INCIERTOS) ||
+    empiezaConAlguno(contenido, PREFIJOS_IMAGINADOS) ||
+    empiezaConAlguno(contenido, PREFIJOS_ATRIBUIDOS)
   ) {
     return true;
   }
@@ -180,19 +156,12 @@ export function bloqueaMemoriaRapida(
   );
 }
 
-export function esMensajeIgnorable(
-  mensaje: string,
-) {
-  return MENSAJES_IGNORABLES.has(
-    normalizar(mensaje),
-  );
+export function esMensajeIgnorable(mensaje: string) {
+  return MENSAJES_IGNORABLES.has(normalizar(mensaje));
 }
 
 function escaparRegex(texto: string) {
-  return texto.replace(
-    /[.*+?^${}()|[\]\\]/g,
-    "\\$&",
-  );
+  return texto.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 export function regexColores() {
@@ -224,7 +193,7 @@ export function crearMemoriaColor(
   valor: string,
 ) {
   return crearMemoria(
-    "objeto",
+    inferirTipoEntidad(entidad),
     entidad.trim(),
     "color",
     valor,
@@ -233,16 +202,10 @@ export function crearMemoriaColor(
   );
 }
 
-export function inferirTipoEntidad(
-  entidad: string,
-) {
-  const palabras = normalizar(
-    entidad,
-  ).split(/\s+/);
+export function inferirTipoEntidad(entidad: string) {
+  const palabras = normalizar(entidad).split(/\s+/);
 
-  return palabras.some(
-    (palabra) => TIPOS_MASCOTA.has(palabra),
-  )
+  return palabras.some((palabra) => TIPOS_MASCOTA.has(palabra))
     ? "mascota"
     : "objeto";
 }

@@ -18,6 +18,28 @@ export type ContextoSistema = {
   zonaHoraria: string;
 };
 
+function normalizar(texto: string) {
+  return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\p{L}\p{N}_]+/gu, " ")
+    .trim();
+}
+
+function esConsultaAmpliaMemoria(texto: string) {
+  const contenido = ` ${normalizar(texto)} `;
+
+  return (
+    contenido.includes(" que recuerdas ") ||
+    contenido.includes(" lo que recuerdas ") ||
+    contenido.includes(" todo lo que recuerdas ") ||
+    contenido.includes(" que sabes ") ||
+    contenido.includes(" lo que sabes ") ||
+    contenido.includes(" todo lo que sabes ")
+  );
+}
+
 function crearEtiquetasEntidades(
   memoriasActivas: Memoria[],
   historialMemorias: Memoria[],
@@ -148,11 +170,33 @@ Para esta respuesta debes cumplir:
 - Prioriza primero información directamente relacionada con Juan.
 - También puedes mencionar proyectos, objetos o contexto relacionado con él cuando ayuden a responder.
 - No conviertas información propia de NOVA en una característica personal de Juan.
-- No digas que no tienes más información si existen otros recuerdos actuales disponibles.
+- No digas que no tienes más información si existen otros recuerdos disponibles.
 - No inventes datos para completar la respuesta.
 - Habla de forma natural, como alguien que recuerda a la persona.
 - No menciones base de datos, registros, IDs, etiquetas ni mecanismos internos.
 - No es necesario enumerar absolutamente todos los recuerdos si hay muchos.`
+    : "";
+
+  const instruccionResumenMemoria = esConsultaAmpliaMemoria(
+    ultimoMensajeUsuario,
+  )
+    ? `
+
+MODO RESUMEN AMPLIO DE MEMORIA ACTIVO.
+
+Juan está preguntando qué sabes o recuerdas sobre una persona, objeto, proyecto u otra entidad.
+
+Para esta respuesta debes cumplir:
+
+- Usa tanto los recuerdos actuales como los recuerdos anteriores relacionados con lo preguntado.
+- Distingue claramente qué dato es actual y cuáles corresponden al pasado.
+- Nunca presentes un recuerdo reemplazado como si todavía fuera el estado actual.
+- Si existen varias entidades con el mismo nombre, mantén separados los recuerdos de cada una.
+- No mezcles el historial de una entidad con el de otra.
+- Si existen recuerdos anteriores útiles, no digas que no tienes más información.
+- No inventes información que no esté disponible.
+- No menciones IDs, etiquetas internas, base de datos ni mecanismos de memoria.
+- Responde de manera natural y resumida.`
     : "";
 
   const instruccionesSistema = `
@@ -187,7 +231,11 @@ Los cambios confirmados son hechos ya resueltos por el sistema.
 
 Usa los recuerdos actuales para hablar del presente.
 
-Usa los recuerdos anteriores solamente cuando Juan pregunte por el pasado.
+Usa los recuerdos anteriores cuando Juan pregunte por el pasado o cuando haga una consulta amplia sobre qué sabes o recuerdas de una persona, objeto, proyecto u otra entidad.
+
+Cuando uses recuerdos anteriores, distingue siempre el estado actual de los datos históricos.
+
+Nunca presentes una memoria reemplazada como si siguiera siendo el dato actual.
 
 Cuando existan varias entidades con el mismo nombre base, trátalas como entidades diferentes.
 
@@ -212,6 +260,7 @@ REGLAS DE UBICACIÓN:
 La zona horaria no demuestra la ubicación física de Juan.
 ${instruccionConversacionCasual}
 ${instruccionMemoriaGeneral}
+${instruccionResumenMemoria}
 `.trim();
 
   return [

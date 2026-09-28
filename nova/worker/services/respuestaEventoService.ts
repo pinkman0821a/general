@@ -11,6 +11,19 @@ function normalizar(texto: string) {
 function obtenerArticulo(entidad: string) {
   const nombre = normalizar(entidad);
 
+  const femeninas = new Set([
+    "moto",
+    "bicicleta",
+    "mascota",
+    "persona",
+    "mama",
+    "madre",
+  ]);
+
+  if (femeninas.has(nombre)) {
+    return "la";
+  }
+
   if (
     nombre.endsWith("a") ||
     nombre.endsWith("cion") ||

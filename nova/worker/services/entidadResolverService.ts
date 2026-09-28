@@ -1,4 +1,8 @@
-import { buscarEntidadesActivas, crearEntidad } from "./entidadService.js";
+import {
+  buscarEntidadesActivas,
+  buscarEntidadesActivasPorTipo,
+  crearEntidad,
+} from "./entidadService.js";
 import { obtenerMemoriasPorEntidadId } from "./memoriaService.js";
 
 type DatosEntidad = {
@@ -20,11 +24,7 @@ const INDICADORES_ANTES_ENTIDAD = [
   "nuevo",
 ];
 
-const INDICADORES_DESPUES_ENTIDAD = [
-  "nueva",
-  "nuevo",
-  "mas",
-];
+const INDICADORES_DESPUES_ENTIDAD = ["nueva", "nuevo", "mas"];
 
 function normalizar(texto: string | null | undefined) {
   return (texto ?? "")
@@ -39,10 +39,7 @@ function escaparRegex(texto: string) {
   return texto.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function esEntidadNueva(
-  mensaje: string,
-  entidad: string,
-) {
+function esEntidadNueva(mensaje: string, entidad: string) {
   const texto = normalizar(mensaje);
   const entidadNormalizada = normalizar(entidad);
 
@@ -117,6 +114,46 @@ async function buscarPorReferencia(
   return null;
 }
 
+async function buscarEntidadCompuesta(
+  db: D1Database,
+  tipo: string,
+  descripcion: string,
+) {
+  const descripcionNormalizada = normalizar(descripcion);
+
+  const entidades = await buscarEntidadesActivasPorTipo(db, tipo);
+
+  const nombresBase = [
+    ...new Set(entidades.map((entidad) => entidad.nombre_base)),
+  ].sort((a, b) => normalizar(b).length - normalizar(a).length);
+
+  for (const nombreBase of nombresBase) {
+    const base = normalizar(nombreBase);
+
+    if (!descripcionNormalizada.startsWith(`${base} `)) {
+      continue;
+    }
+
+    const referencia = descripcionNormalizada.slice(base.length).trim();
+
+    if (!referencia) {
+      continue;
+    }
+
+    const candidatas = entidades.filter(
+      (entidad) => normalizar(entidad.nombre_base) === base,
+    );
+
+    const entidadId = await buscarPorReferencia(db, candidatas, referencia);
+
+    if (entidadId) {
+      return entidadId;
+    }
+  }
+
+  return null;
+}
+
 export async function resolverEntidad(
   db: D1Database,
   mensajeUsuario: string,
@@ -169,18 +206,31 @@ export async function resolverEntidad(
     };
   }
 
-  if (existentes.length === 0) {
-    const entidadId = await crearEntidad(db, {
-      tipo: datos.tipo,
-      nombreBase: datos.entidad,
-      etiqueta: null,
-    });
+  if (existentes.length > 1) {
+    return null;
+  }
 
+  const entidadCompuesta = await buscarEntidadCompuesta(
+    db,
+    datos.tipo,
+    datos.entidad,
+  );
+
+  if (entidadCompuesta) {
     return {
-      entidadId,
-      esNueva: true,
+      entidadId: entidadCompuesta,
+      esNueva: false,
     };
   }
 
-  return null;
+  const entidadId = await crearEntidad(db, {
+    tipo: datos.tipo,
+    nombreBase: datos.entidad,
+    etiqueta: null,
+  });
+
+  return {
+    entidadId,
+    esNueva: true,
+  };
 }

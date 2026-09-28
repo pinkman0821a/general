@@ -1,3 +1,4 @@
+import { obtenerEntidadPorId } from "./entidadService.js";
 import { resolverEntidad } from "./entidadResolverService.js";
 import type { EventoMemoria } from "./eventoMemoriaService.js";
 import { extraerMemorias } from "./memoriaExtractor.js";
@@ -38,7 +39,9 @@ export async function procesarMemoriaAutomatica(
 
     const { entidadId, esNueva } = entidadResuelta;
 
-    const nombreEntidad = memoria.entidad ?? "Juan";
+    const entidadReal = await obtenerEntidadPorId(db, entidadId);
+
+    const nombreEntidad = entidadReal?.nombre_base ?? memoria.entidad ?? "Juan";
 
     if (esNueva) {
       await guardarMemoria(db, {

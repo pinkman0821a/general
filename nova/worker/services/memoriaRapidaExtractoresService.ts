@@ -20,8 +20,11 @@ function extraerNombreYColorEntidad(mensaje: string) {
   }
 
   const entidad = normalizar(resultado[1]);
+
   const nombre = resultado[2].trim();
+
   const color = normalizar(resultado[3]);
+
   const tipo = inferirTipoEntidad(entidad);
 
   return [
@@ -58,9 +61,7 @@ function extraerDatosPersonales(mensaje: string) {
   }
 
   const profesion =
-    mensaje.match(
-      /\b(?:yo\s+)?soy\s+(t[eé]cnico(?:\s+de\s+[^,.!?]+)?)/iu,
-    )?.[1] ??
+    mensaje.match(/\b(?:yo\s+)?soy\s+(técnico(?:\s+de\s+[^,.!?]+)?)/iu)?.[1] ??
     mensaje.match(/\btrabajo\s+como\s+([^,.!?]+)/iu)?.[1] ??
     mensaje.match(/\bme\s+dedico\s+a\s+([^,.!?]+)/iu)?.[1];
 
@@ -73,8 +74,23 @@ function extraerDatosPersonales(mensaje: string) {
   return memorias;
 }
 
+function extraerCambioColorAhoraInicial(mensaje: string) {
+  const texto = normalizar(mensaje);
+
+  const colores = regexColores();
+
+  const resultado = texto.match(
+    new RegExp(
+      `^ahora\\s+(?:mi|el|la)\\s+(.+?)\\s+(?:es|esta)\\s+(${colores})$`,
+    ),
+  );
+
+  return resultado ? crearMemoriaColor(resultado[1], null, resultado[2]) : null;
+}
+
 function extraerCambioColorConReferencia(mensaje: string) {
   const texto = normalizar(mensaje);
+
   const colores = regexColores();
 
   const resultado = texto.match(
@@ -90,6 +106,7 @@ function extraerCambioColorConReferencia(mensaje: string) {
 
 function extraerCambioColorSinReferencia(mensaje: string) {
   const texto = normalizar(mensaje);
+
   const colores = regexColores();
 
   const resultado = texto.match(
@@ -103,6 +120,7 @@ function extraerCambioColorSinReferencia(mensaje: string) {
 
 function extraerEntidadNuevaColor(mensaje: string) {
   const texto = normalizar(mensaje);
+
   const colores = regexColores();
 
   const resultado = texto.match(
@@ -116,6 +134,7 @@ function extraerEntidadNuevaColor(mensaje: string) {
 
 function extraerColorSimple(mensaje: string) {
   const texto = normalizar(mensaje);
+
   const colores = regexColores();
 
   const resultado = texto.match(
@@ -149,6 +168,7 @@ export function extraerMemoriasDeterministas(mensaje: string) {
   }
 
   const memoria =
+    extraerCambioColorAhoraInicial(mensaje) ??
     extraerCambioColorConReferencia(mensaje) ??
     extraerCambioColorSinReferencia(mensaje) ??
     extraerEntidadNuevaColor(mensaje) ??
