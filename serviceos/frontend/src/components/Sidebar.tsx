@@ -3,6 +3,8 @@ import {
   Settings,
 } from 'lucide-react'
 
+import { NavLink } from 'react-router-dom'
+
 import { menuPrincipal } from '../data/dashboardData'
 
 function Sidebar() {
@@ -17,6 +19,7 @@ function Sidebar() {
           <strong>
             Service<span>OS</span>
           </strong>
+
           <small>Panel de coordinación</small>
         </div>
       </div>
@@ -26,28 +29,39 @@ function Sidebar() {
           const Icono = item.icono
 
           return (
-            <button
-              className={`nav-item ${item.activo ? 'active' : ''}`}
+            <NavLink
+              to={item.ruta}
               key={item.nombre}
+              end={item.ruta === '/'}
+              className={({ isActive }) =>
+                `nav-item ${isActive ? 'active' : ''}`
+              }
             >
               <Icono size={19} strokeWidth={1.8} />
               <span>{item.nombre}</span>
-            </button>
+            </NavLink>
           )
         })}
       </nav>
 
-      <button className="nav-item settings-item">
+      <NavLink
+        to="/ajustes"
+        className={({ isActive }) =>
+          `nav-item settings-item ${
+            isActive ? 'active' : ''
+          }`
+        }
+      >
         <Settings size={19} strokeWidth={1.8} />
         <span>Ajustes</span>
-      </button>
+      </NavLink>
 
       <div className="sidebar-footer">
         <CircleDollarSign size={19} />
 
         <div>
           <span>ServiceOS</span>
-          <strong>v0.0.1</strong>
+          <strong>v0.0.2</strong>
         </div>
       </div>
     </aside>

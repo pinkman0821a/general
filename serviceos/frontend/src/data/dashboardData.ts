@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  Building2,
   CalendarDays,
   CheckCircle2,
   Gauge,
@@ -7,7 +8,6 @@ import {
   PlayCircle,
   UsersRound,
   Wrench,
-  Building2,
 } from 'lucide-react'
 
 export const tecnicos = [
@@ -58,31 +58,37 @@ export const menuPrincipal = [
   {
     nombre: 'Inicio',
     icono: Gauge,
-    activo: true,
+    ruta: '/',
   },
   {
     nombre: 'Agenda',
     icono: CalendarDays,
+    ruta: '/agenda',
   },
   {
     nombre: 'Servicios',
     icono: Wrench,
+    ruta: '/servicios',
   },
   {
     nombre: 'Técnicos',
     icono: UsersRound,
+    ruta: '/tecnicos',
   },
   {
     nombre: 'Clientes',
     icono: Building2,
+    ruta: '/clientes',
   },
   {
     nombre: 'Máquinas',
     icono: Monitor,
+    ruta: '/maquinas',
   },
   {
     nombre: 'Finanzas',
     icono: BarChart3,
+    ruta: '/finanzas',
   },
 ]
 
