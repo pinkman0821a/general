@@ -1,0 +1,8 @@
+CREATE TABLE usuarios (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre TEXT NOT NULL,
+  user TEXT NOT NULL UNIQUE,
+  rol TEXT NOT NULL CHECK (rol IN ('coordinador', 'tecnico')),
+  activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0, 1)),
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
