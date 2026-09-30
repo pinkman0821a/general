@@ -28,7 +28,7 @@ export default {
     ) {
       return Response.json({
         app: 'ServiceOS API',
-        version: '0.07',
+        version: '0.0.7',
         status: 'running',
       })
     }
