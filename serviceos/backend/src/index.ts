@@ -1,17 +1,34 @@
+import { databaseStatusResponse } from './routes/databaseStatus'
 import { healthResponse } from './routes/health'
 
 export default {
-  fetch(request): Response {
+  async fetch(
+    request,
+    env,
+  ): Promise<Response> {
     const url = new URL(request.url)
 
-    if (request.method === 'GET' && url.pathname === '/api/health') {
+    if (
+      request.method === 'GET'
+      && url.pathname === '/api/health'
+    ) {
       return healthResponse()
     }
 
-    if (request.method === 'GET' && url.pathname === '/') {
+    if (
+      request.method === 'GET'
+      && url.pathname === '/api/database/status'
+    ) {
+      return databaseStatusResponse(env)
+    }
+
+    if (
+      request.method === 'GET'
+      && url.pathname === '/'
+    ) {
       return Response.json({
         app: 'ServiceOS API',
-        version: '0.0.5',
+        version: '0.07',
         status: 'running',
       })
     }
