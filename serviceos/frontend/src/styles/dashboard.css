@@ -1,0 +1,232 @@
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  min-height: 132px;
+  padding: 17px;
+  border: 1px solid #20232b;
+  border-radius: 15px;
+  background: linear-gradient(
+    145deg,
+    #11141a,
+    #0f1116
+  );
+}
+
+.stat-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #8a91a0;
+}
+
+.stat-top > span {
+  font-size: 12px;
+}
+
+.stat-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  color: #6695ff;
+  background: rgba(62, 118, 255, 0.12);
+}
+
+.stat-card > strong {
+  display: block;
+  margin-top: 16px;
+  font-size: 27px;
+  line-height: 1;
+}
+
+.stat-card small {
+  display: block;
+  margin-top: 8px;
+  color: #666d7c;
+  font-size: 11px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(300px, 0.9fr);
+  gap: 16px;
+}
+
+.panel,
+.quick-action {
+  border: 1px solid #20232b;
+  border-radius: 15px;
+  background: #101217;
+}
+
+.panel {
+  padding: 18px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.panel-header span,
+.quick-action > div > span {
+  color: #747b8b;
+  font-size: 11px;
+}
+
+.panel-header h2,
+.quick-action h2 {
+  margin: 4px 0 0;
+  font-size: 16px;
+}
+
+.secondary-button {
+  padding: 9px 12px;
+  border: 1px solid #242934;
+  border-radius: 9px;
+  background: #171a21;
+  color: #c6cad4;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.service-list,
+.technician-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.service-row {
+  min-height: 64px;
+  display: grid;
+  grid-template-columns: 58px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid #1c2027;
+}
+
+.service-time {
+  color: #638fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.service-info,
+.technician-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-info strong,
+.technician-info strong {
+  font-size: 13px;
+}
+
+.service-info span,
+.technician-info span {
+  margin-top: 4px;
+  color: #777e8e;
+  font-size: 11px;
+}
+
+.status,
+.availability {
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.pending {
+  color: #b6c9ff;
+  background: rgba(73, 109, 255, 0.15);
+}
+
+.technician {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid #1c2027;
+}
+
+.technician-avatar {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #1c2029;
+  color: #dfe3eb;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.technician-info {
+  flex: 1;
+}
+
+.available {
+  color: #68e4a1;
+  background: rgba(33, 176, 101, 0.15);
+}
+
+.busy {
+  color: #ff9a8f;
+  background: rgba(211, 69, 57, 0.16);
+}
+
+.quick-action {
+  margin-top: 16px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.quick-action p {
+  max-width: 650px;
+  margin: 6px 0 0;
+  color: #727988;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.primary-button {
+  min-height: 42px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 10px;
+  background: linear-gradient(
+    135deg,
+    #477fff,
+    #795cff
+  );
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(76, 91, 255, 0.18);
+}
+
+.primary-button:hover {
+  filter: brightness(1.08);
+}

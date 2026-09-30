@@ -1,0 +1,110 @@
+#root {
+  min-height: 100vh;
+}
+
+.app {
+  min-height: 100vh;
+  background: #08090c;
+  color: #f5f6fa;
+}
+
+.main {
+  min-height: 100vh;
+  margin-left: 240px;
+  padding: 26px 30px 36px;
+}
+
+.topbar {
+  min-height: 72px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 5px;
+  color: #5c8dff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 27px;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.topbar-date {
+  display: block;
+  margin-top: 7px;
+  color: #737988;
+  font-size: 12px;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-button {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #222630;
+  border-radius: 12px;
+  background: #11141a;
+  color: #9ca3b4;
+  cursor: pointer;
+}
+
+.notification-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff5364;
+  box-shadow: 0 0 0 2px #11141a;
+}
+
+.user {
+  min-height: 46px;
+  padding: 4px 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #202531;
+  color: white;
+  font-weight: 700;
+}
+
+.user-data {
+  min-width: 110px;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-data strong {
+  font-size: 13px;
+}
+
+.user-data span {
+  margin-top: 2px;
+  color: #72798a;
+  font-size: 11px;
+}
