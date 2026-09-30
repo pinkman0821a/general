@@ -8,5 +8,5 @@ def health():
     return {
         "status": "ok",
         "app": "ServiceOS",
-        "version": "0.0.3",
+        "version": "0.0.4",
     }

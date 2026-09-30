@@ -6,7 +6,7 @@ from app.routes.health import router as health_router
 
 app = FastAPI(
     title="ServiceOS API",
-    version="0.0.3",
+    version="0.0.4",
 )
 
 
@@ -28,6 +28,6 @@ app.include_router(health_router)
 def root():
     return {
         "app": "ServiceOS",
-        "version": "0.0.3",
+        "version": "0.0.4",
         "status": "running",
     }
