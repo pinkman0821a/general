@@ -1,0 +1,51 @@
+.api-status {
+  min-height: 32px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.api-status svg {
+  flex: 0 0 auto;
+}
+
+.api-status.loading {
+  color: #a3a8b4;
+  background: rgba(120, 126, 140, 0.12);
+}
+
+.api-status.loading svg {
+  animation: api-spin 1s linear infinite;
+}
+
+.api-status.online {
+  color: #68e4a1;
+  background: rgba(33, 176, 101, 0.14);
+}
+
+.api-status.offline {
+  color: #ff8e8e;
+  background: rgba(211, 69, 57, 0.15);
+}
+
+@keyframes api-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 620px) {
+  .api-status span {
+    display: none;
+  }
+
+  .api-status {
+    width: 32px;
+    padding: 0;
+    justify-content: center;
+  }
+}
