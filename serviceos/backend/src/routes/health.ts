@@ -2,6 +2,6 @@ export function healthResponse(): Response {
   return Response.json({
     status: 'ok',
     app: 'ServiceOS',
-    version: '0.0.8',
+    version: '0.0.9',
   })
 }

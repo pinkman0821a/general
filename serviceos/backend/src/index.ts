@@ -1,5 +1,14 @@
+import {
+  login,
+  logout,
+  obtenerSesionActual,
+} from './routes/auth'
 import { databaseStatusResponse } from './routes/databaseStatus'
 import { healthResponse } from './routes/health'
+import {
+  crearUsuario,
+  listarUsuarios,
+} from './routes/usuarios'
 
 export default {
   async fetch(
@@ -23,12 +32,47 @@ export default {
     }
 
     if (
+      request.method === 'POST'
+      && url.pathname === '/api/auth/login'
+    ) {
+      return login(request, env)
+    }
+
+    if (
+      request.method === 'GET'
+      && url.pathname === '/api/auth/me'
+    ) {
+      return obtenerSesionActual(request, env)
+    }
+
+    if (
+      request.method === 'POST'
+      && url.pathname === '/api/auth/logout'
+    ) {
+      return logout(request, env)
+    }
+
+    if (
+      request.method === 'GET'
+      && url.pathname === '/api/usuarios'
+    ) {
+      return listarUsuarios(request, env)
+    }
+
+    if (
+      request.method === 'POST'
+      && url.pathname === '/api/usuarios'
+    ) {
+      return crearUsuario(request, env)
+    }
+
+    if (
       request.method === 'GET'
       && url.pathname === '/'
     ) {
       return Response.json({
         app: 'ServiceOS API',
-        version: '0.0.8',
+        version: '0.0.9',
         status: 'running',
       })
     }
