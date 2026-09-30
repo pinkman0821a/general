@@ -24,11 +24,7 @@
   place-items: center;
   border-radius: 12px;
   color: white;
-  background: linear-gradient(
-    135deg,
-    #467cff,
-    #7657ff
-  );
+  background: linear-gradient(135deg, #467cff, #7657ff);
   box-shadow: 0 8px 24px rgba(91, 92, 255, 0.2);
 }
 
@@ -121,4 +117,39 @@
   margin-top: 2px;
   color: #d6d9e0;
   font-size: 12px;
+}
+.api-status {
+  margin-top: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid #1d2028;
+  border-radius: 11px;
+  background: #101319;
+}
+
+.api-status-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #55d98b;
+  box-shadow: 0 0 8px rgba(85, 217, 139, 0.45);
+}
+
+.api-status > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.api-status strong {
+  font-size: 11px;
+  color: #d5d9e2;
+}
+
+.api-status span {
+  margin-top: 2px;
+  font-size: 10px;
+  color: #72798a;
 }
