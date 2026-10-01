@@ -135,3 +135,128 @@
   opacity: 0.5;
   cursor: wait;
 }
+.session-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.session-user-avatar {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  flex: 0 0 36px;
+  place-items: center;
+  border-radius: 50%;
+  background: #1d222a;
+  color: #f4f4f5;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.session-user-data {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.session-user-data strong {
+  overflow: hidden;
+  color: #f4f4f5;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.session-user-data span {
+  color: #808690;
+  font-size: 11px;
+}
+
+.session-user-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid #2a2e35;
+  border-radius: 9px;
+  background: transparent;
+  color: #b7bbc3;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.session-user-logout:hover {
+  background: #191c21;
+  color: #fff;
+}
+
+.session-user-logout:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+@media (max-width: 700px) {
+  .session-user {
+    gap: 7px;
+  }
+
+  .session-user-avatar {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+  }
+
+  .session-user-data {
+    max-width: 115px;
+  }
+
+  .session-user-logout {
+    width: 36px;
+    padding: 0;
+  }
+
+  .session-user-logout span {
+    display: none;
+  }
+}
+.global-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 64px;
+  margin-bottom: 18px;
+  padding: 10px 0;
+  background: rgba(8, 9, 11, 0.96);
+  backdrop-filter: blur(14px);
+}
+
+.global-topbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.dashboard-heading {
+  margin-bottom: 22px;
+}
+
+@media (max-width: 700px) {
+  .global-topbar {
+    min-height: 58px;
+    margin-bottom: 14px;
+    padding: 8px 0;
+  }
+
+  .global-topbar-actions {
+    gap: 8px;
+  }
+}

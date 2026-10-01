@@ -1,0 +1,266 @@
+.users-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.users-toolbar span {
+  color: #858a93;
+  font-size: 13px;
+}
+
+.users-toolbar button {
+  padding: 9px 13px;
+  border: 1px solid #30343a;
+  border-radius: 9px;
+  background: #1a1d22;
+  color: #f2f2f2;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.user-create-form {
+  padding: 18px;
+  border: 1px solid #25282e;
+  border-radius: 12px;
+  background: #0c0e11;
+}
+
+.users-message {
+  margin-top: 16px;
+}
+
+.users-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.user-row {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px;
+  border: 1px solid #24272d;
+  border-radius: 11px;
+  background: #0c0e11;
+}
+
+.user-row-avatar {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  flex: 0 0 38px;
+  place-items: center;
+  border-radius: 10px;
+  background: #202329;
+  color: #f4f4f5;
+  font-weight: 700;
+}
+
+.user-row-data {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+}
+
+.user-row-data strong {
+  color: #f2f2f2;
+  font-size: 14px;
+}
+
+.user-row-data span {
+  overflow: hidden;
+  color: #777c85;
+  font-size: 12px;
+  text-overflow: ellipsis;
+}
+
+.user-row-meta {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-role,
+.user-status {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #202329;
+  color: #a0a5ae;
+  font-size: 11px;
+}
+
+.user-status.active {
+  background: rgba(87, 201, 128, 0.12);
+  color: #70d89b;
+}
+
+.users-empty {
+  margin: 20px 0 0;
+  color: #777c85;
+  font-size: 13px;
+}
+
+.user-state-button {
+  padding: 6px 10px;
+  border: 1px solid #30343a;
+  border-radius: 8px;
+  background: #1b1e23;
+  color: #f2f2f2;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.user-state-button:hover {
+  background: #25292f;
+}
+
+.user-state-button.danger {
+  border-color: rgba(255, 100, 100, 0.25);
+  color: #ff8b8b;
+}
+
+.user-state-button.danger:hover {
+  background: rgba(255, 100, 100, 0.08);
+}
+
+.user-state-button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.technician-password-form,
+.technician-edit-form {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #2a2e35;
+  border-radius: 12px;
+  background: #0c0e11;
+}
+
+.technician-password-heading,
+.technician-form-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.technician-password-heading > div,
+.technician-form-heading > div {
+  display: grid;
+  gap: 3px;
+}
+
+.technician-password-heading strong,
+.technician-form-heading strong {
+  color: #f4f4f5;
+  font-size: 14px;
+}
+
+.technician-password-heading span,
+.technician-form-heading span {
+  color: #7d828b;
+  font-size: 12px;
+}
+
+.technician-password-heading button,
+.technician-form-heading button {
+  border: 0;
+  background: transparent;
+  color: #90959e;
+  cursor: pointer;
+}
+
+.technician-password-form label,
+.technician-edit-form label {
+  display: grid;
+  gap: 8px;
+  color: #c7cad0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.technician-password-form input,
+.technician-edit-form input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #2b2e34;
+  border-radius: 10px;
+  outline: none;
+  background: #090b0e;
+  color: #fff;
+  font: inherit;
+}
+
+.technician-password-save,
+.technician-edit-save {
+  width: fit-content;
+  padding: 10px 15px;
+  border: 0;
+  border-radius: 9px;
+  background: #f2f2f2;
+  color: #111;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .users-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .users-toolbar button {
+    width: 100%;
+  }
+
+  .user-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .user-row-data {
+    flex: 1;
+  }
+
+  .user-row-meta {
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding-left: 50px;
+  }
+
+  .user-state-button {
+    min-height: 34px;
+  }
+
+  .technician-password-save,
+  .technician-edit-save {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-row {
+    padding: 11px;
+  }
+
+  .user-row-meta {
+    padding-left: 0;
+    justify-content: flex-start;
+  }
+}

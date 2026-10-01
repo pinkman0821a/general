@@ -2,6 +2,9 @@ import { login, logout, obtenerSesionActual } from './routes/auth';
 import { actualizarCoordinador, cambiarPasswordCoordinador } from './routes/coordinador';
 import { databaseStatusResponse } from './routes/databaseStatus';
 import { healthResponse } from './routes/health';
+import { actualizarDatosTecnico } from './routes/usuarioDatos';
+import { cambiarPasswordTecnico } from './routes/usuarioPassword';
+import { cambiarEstadoUsuario } from './routes/usuarioEstado';
 import { crearUsuario, listarUsuarios } from './routes/usuarios';
 
 export default {
@@ -31,9 +34,11 @@ export default {
 		if (request.method === 'PATCH' && url.pathname === '/api/coordinador') {
 			return actualizarCoordinador(request, env);
 		}
+
 		if (request.method === 'PATCH' && url.pathname === '/api/coordinador/password') {
 			return cambiarPasswordCoordinador(request, env);
 		}
+
 		if (request.method === 'GET' && url.pathname === '/api/usuarios') {
 			return listarUsuarios(request, env);
 		}
@@ -42,10 +47,22 @@ export default {
 			return crearUsuario(request, env);
 		}
 
+		if (request.method === 'PATCH' && url.pathname === '/api/usuarios/estado') {
+			return cambiarEstadoUsuario(request, env);
+		}
+
+		if (request.method === 'PATCH' && url.pathname === '/api/usuarios/password') {
+			return cambiarPasswordTecnico(request, env);
+		}
+
+		if (request.method === 'PATCH' && url.pathname === '/api/usuarios/datos') {
+			return actualizarDatosTecnico(request, env);
+		}
+
 		if (request.method === 'GET' && url.pathname === '/') {
 			return Response.json({
 				app: 'ServiceOS API',
-				version: '0.0.10',
+				version: '0.0.11',
 				status: 'running',
 			});
 		}

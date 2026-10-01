@@ -1,22 +1,19 @@
 import { crearPasswordHash } from '../services/passwordService';
 import { obtenerUsuarioSesion } from '../services/sessionService';
 
-type RolUsuario = 'coordinador' | 'tecnico';
-
-type Usuario = {
-	id: number;
-	nombre: string;
-	user: string;
-	rol: RolUsuario;
-	activo: number;
-	created_at: string;
-};
-
 type CrearUsuarioBody = {
 	nombre?: string;
 	user?: string;
 	password?: string;
-	rol?: string;
+};
+
+type UsuarioDb = {
+	id: number;
+	nombre: string;
+	user: string;
+	rol: 'coordinador' | 'tecnico';
+	activo: number;
+	created_at: string;
 };
 
 export async function listarUsuarios(request: Request, env: Env): Promise<Response> {
@@ -24,27 +21,11 @@ export async function listarUsuarios(request: Request, env: Env): Promise<Respon
 		const sesion = await obtenerUsuarioSesion(request, env);
 
 		if (!sesion) {
-			return Response.json(
-				{
-					status: 'error',
-					message: 'No autenticado',
-				},
-				{
-					status: 401,
-				},
-			);
+			return noAutenticado();
 		}
 
 		if (sesion.rol !== 'coordinador') {
-			return Response.json(
-				{
-					status: 'error',
-					message: 'No tienes permiso',
-				},
-				{
-					status: 403,
-				},
-			);
+			return sinPermiso();
 		}
 
 		const resultado = await env.DB.prepare(
@@ -57,9 +38,14 @@ export async function listarUsuarios(request: Request, env: Env): Promise<Respon
           activo,
           created_at
         FROM usuarios
-        ORDER BY nombre ASC
+        ORDER BY
+          CASE
+            WHEN rol = 'coordinador' THEN 0
+            ELSE 1
+          END,
+          nombre ASC
       `,
-		).all<Usuario>();
+		).all<UsuarioDb>();
 
 		return Response.json({
 			status: 'ok',
@@ -69,7 +55,7 @@ export async function listarUsuarios(request: Request, env: Env): Promise<Respon
 		return Response.json(
 			{
 				status: 'error',
-				message: 'No se pudieron consultar los usuarios',
+				message: 'No se pudieron cargar los usuarios',
 			},
 			{
 				status: 500,
@@ -83,27 +69,11 @@ export async function crearUsuario(request: Request, env: Env): Promise<Response
 		const sesion = await obtenerUsuarioSesion(request, env);
 
 		if (!sesion) {
-			return Response.json(
-				{
-					status: 'error',
-					message: 'No autenticado',
-				},
-				{
-					status: 401,
-				},
-			);
+			return noAutenticado();
 		}
 
 		if (sesion.rol !== 'coordinador') {
-			return Response.json(
-				{
-					status: 'error',
-					message: 'Solo el coordinador puede crear usuarios',
-				},
-				{
-					status: 403,
-				},
-			);
+			return sinPermiso();
 		}
 
 		const body = await request.json<CrearUsuarioBody>();
@@ -111,13 +81,48 @@ export async function crearUsuario(request: Request, env: Env): Promise<Response
 		const nombre = body.nombre?.trim();
 		const user = body.user?.trim().toLowerCase();
 		const password = body.password;
-		const rol = body.rol?.trim();
 
-		if (!nombre || !user || !password || !rol) {
+		if (!nombre || !user || !password) {
 			return Response.json(
 				{
 					status: 'error',
-					message: 'nombre, user, password y rol son obligatorios',
+					message: 'Debes completar todos los campos',
+				},
+				{
+					status: 400,
+				},
+			);
+		}
+
+		if (nombre.length > 80) {
+			return Response.json(
+				{
+					status: 'error',
+					message: 'El nombre es demasiado largo',
+				},
+				{
+					status: 400,
+				},
+			);
+		}
+
+		if (user.length < 3 || user.length > 40) {
+			return Response.json(
+				{
+					status: 'error',
+					message: 'El usuario debe tener entre 3 y 40 caracteres',
+				},
+				{
+					status: 400,
+				},
+			);
+		}
+
+		if (!/^[a-z0-9._-]+$/.test(user)) {
+			return Response.json(
+				{
+					status: 'error',
+					message: 'El usuario contiene caracteres no permitidos',
 				},
 				{
 					status: 400,
@@ -137,18 +142,6 @@ export async function crearUsuario(request: Request, env: Env): Promise<Response
 			);
 		}
 
-		if (rol !== 'coordinador' && rol !== 'tecnico') {
-			return Response.json(
-				{
-					status: 'error',
-					message: 'El rol debe ser coordinador o tecnico',
-				},
-				{
-					status: 400,
-				},
-			);
-		}
-
 		const existente = await env.DB.prepare(
 			`
         SELECT id
@@ -158,13 +151,13 @@ export async function crearUsuario(request: Request, env: Env): Promise<Response
       `,
 		)
 			.bind(user)
-			.first();
+			.first<{ id: number }>();
 
 		if (existente) {
 			return Response.json(
 				{
 					status: 'error',
-					message: 'El usuario ya existe',
+					message: 'Ese usuario ya existe',
 				},
 				{
 					status: 409,
@@ -172,23 +165,24 @@ export async function crearUsuario(request: Request, env: Env): Promise<Response
 			);
 		}
 
-		const passwordHash = await crearPasswordHash(password);
+		const passwordGuardado = await crearPasswordHash(password);
 
 		await env.DB.prepare(
 			`
         INSERT INTO usuarios (
           nombre,
           user,
-          password_hash,
-          rol
+          rol,
+          activo,
+          password_hash
         )
-        VALUES (?, ?, ?, ?)
+        VALUES (?, ?, 'tecnico', 1, ?)
       `,
 		)
-			.bind(nombre, user, passwordHash, rol)
+			.bind(nombre, user, passwordGuardado)
 			.run();
 
-		const usuario = await env.DB.prepare(
+		const usuarioCreado = await env.DB.prepare(
 			`
         SELECT
           id,
@@ -203,12 +197,12 @@ export async function crearUsuario(request: Request, env: Env): Promise<Response
       `,
 		)
 			.bind(user)
-			.first<Usuario>();
+			.first<UsuarioDb>();
 
 		return Response.json(
 			{
 				status: 'ok',
-				usuario,
+				usuario: usuarioCreado,
 			},
 			{
 				status: 201,
@@ -218,11 +212,35 @@ export async function crearUsuario(request: Request, env: Env): Promise<Response
 		return Response.json(
 			{
 				status: 'error',
-				message: 'No se pudo crear el usuario',
+				message: 'No se pudo crear el técnico',
 			},
 			{
 				status: 500,
 			},
 		);
 	}
+}
+
+function noAutenticado(): Response {
+	return Response.json(
+		{
+			status: 'error',
+			message: 'No autenticado',
+		},
+		{
+			status: 401,
+		},
+	);
+}
+
+function sinPermiso(): Response {
+	return Response.json(
+		{
+			status: 'error',
+			message: 'Solo el coordinador puede administrar usuarios',
+		},
+		{
+			status: 403,
+		},
+	);
 }

@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 
+import GlobalTopbar from '../components/GlobalTopbar'
 import Sidebar from '../components/Sidebar'
 
 function AppLayout() {
@@ -8,6 +9,8 @@ function AppLayout() {
       <Sidebar />
 
       <main className="main">
+        <GlobalTopbar />
+
         <Outlet />
       </main>
     </div>

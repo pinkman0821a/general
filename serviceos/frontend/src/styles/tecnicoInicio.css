@@ -1,10 +1,42 @@
 .tecnico-page {
   min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 24px;
   background: #08090b;
   color: #f4f4f5;
+}
+
+.tecnico-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 72px;
+  padding: 14px 24px;
+  border-bottom: 1px solid #202329;
+  background: rgba(8, 9, 11, 0.96);
+  backdrop-filter: blur(14px);
+}
+
+.tecnico-brand {
+  display: grid;
+  gap: 2px;
+}
+
+.tecnico-brand strong {
+  font-size: 17px;
+}
+
+.tecnico-brand span {
+  color: #7c818a;
+  font-size: 11px;
+}
+
+.tecnico-content {
+  display: grid;
+  place-items: center;
+  padding: 48px 24px;
 }
 
 .tecnico-card {
@@ -51,7 +83,7 @@
 
 .tecnico-role {
   width: fit-content;
-  margin: 22px auto;
+  margin: 22px auto 0;
   padding: 7px 12px;
   border: 1px solid #2b2e34;
   border-radius: 999px;
@@ -59,26 +91,27 @@
   font-size: 12px;
 }
 
-.tecnico-logout {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 0 18px;
-  border: 1px solid #2b2e34;
-  border-radius: 10px;
-  background: transparent;
-  color: #f4f4f5;
-  font: inherit;
-  cursor: pointer;
-}
+@media (max-width: 600px) {
+  .tecnico-topbar {
+    min-height: 64px;
+    padding: 10px 14px;
+  }
 
-.tecnico-logout:hover {
-  background: #1b1e23;
-}
+  .tecnico-brand span {
+    display: none;
+  }
 
-.tecnico-logout:disabled {
-  opacity: 0.5;
-  cursor: wait;
+  .tecnico-content {
+    display: block;
+    padding: 18px 14px;
+  }
+
+  .tecnico-card {
+    padding: 24px 18px;
+    border-radius: 16px;
+  }
+
+  .tecnico-card h1 {
+    font-size: 24px;
+  }
 }
