@@ -62,7 +62,7 @@ export default {
 		if (request.method === 'GET' && url.pathname === '/') {
 			return Response.json({
 				app: 'ServiceOS API',
-				version: '0.0.12',
+				version: '0.1.0',
 				status: 'running',
 			});
 		}
