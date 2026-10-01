@@ -1,0 +1,84 @@
+.tecnico-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #08090b;
+  color: #f4f4f5;
+}
+
+.tecnico-card {
+  width: min(100%, 480px);
+  padding: 32px;
+  border: 1px solid #24272d;
+  border-radius: 20px;
+  background: #111317;
+  text-align: center;
+}
+
+.tecnico-avatar {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 18px;
+  border-radius: 18px;
+  background: #f2f2f2;
+  color: #111;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.tecnico-eyebrow {
+  margin: 0;
+  color: #737780;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.tecnico-card h1 {
+  margin: 8px 0 0;
+  font-size: 28px;
+}
+
+.tecnico-description {
+  margin: 14px 0 0;
+  color: #92969f;
+  line-height: 1.6;
+}
+
+.tecnico-role {
+  width: fit-content;
+  margin: 22px auto;
+  padding: 7px 12px;
+  border: 1px solid #2b2e34;
+  border-radius: 999px;
+  color: #b4b8c0;
+  font-size: 12px;
+}
+
+.tecnico-logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid #2b2e34;
+  border-radius: 10px;
+  background: transparent;
+  color: #f4f4f5;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tecnico-logout:hover {
+  background: #1b1e23;
+}
+
+.tecnico-logout:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}

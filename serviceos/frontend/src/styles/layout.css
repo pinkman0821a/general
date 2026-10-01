@@ -108,3 +108,30 @@
   color: #72798a;
   font-size: 11px;
 }
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid #2a2d33;
+  border-radius: 9px;
+  background: transparent;
+  color: #9b9fa7;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.logout-button:hover {
+  background: #1b1e23;
+  color: #fff;
+}
+
+.logout-button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
