@@ -2,9 +2,10 @@ import { login, logout, obtenerSesionActual } from './routes/auth';
 import { actualizarCoordinador, cambiarPasswordCoordinador } from './routes/coordinador';
 import { databaseStatusResponse } from './routes/databaseStatus';
 import { healthResponse } from './routes/health';
+import { listarTecnicos } from './routes/tecnicos';
 import { actualizarDatosTecnico } from './routes/usuarioDatos';
-import { cambiarPasswordTecnico } from './routes/usuarioPassword';
 import { cambiarEstadoUsuario } from './routes/usuarioEstado';
+import { cambiarPasswordTecnico } from './routes/usuarioPassword';
 import { crearUsuario, listarUsuarios } from './routes/usuarios';
 
 export default {
@@ -59,10 +60,14 @@ export default {
 			return actualizarDatosTecnico(request, env);
 		}
 
+		if (request.method === 'GET' && url.pathname === '/api/tecnicos') {
+			return listarTecnicos(request, env);
+		}
+
 		if (request.method === 'GET' && url.pathname === '/') {
 			return Response.json({
 				app: 'ServiceOS API',
-				version: '0.1.0',
+				version: '0.1.1',
 				status: 'running',
 			});
 		}
