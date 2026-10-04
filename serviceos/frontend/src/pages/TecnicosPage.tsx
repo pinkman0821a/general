@@ -10,6 +10,28 @@ import "../styles/tecnicos.css";
 
 type FiltroEstado = "todos" | "activos" | "inactivos";
 
+function filtrarTecnicos(
+  tecnicos: Tecnico[],
+  busqueda: string,
+  filtro: FiltroEstado,
+) {
+  const texto = busqueda.trim().toLowerCase();
+
+  return tecnicos.filter((tecnico) => {
+    const coincideBusqueda =
+      !texto ||
+      tecnico.nombre.toLowerCase().includes(texto) ||
+      tecnico.user.toLowerCase().includes(texto);
+
+    const coincideEstado =
+      filtro === "todos" ||
+      (filtro === "activos" && tecnico.activo === 1) ||
+      (filtro === "inactivos" && tecnico.activo === 0);
+
+    return coincideBusqueda && coincideEstado;
+  });
+}
+
 function TecnicosPage() {
   const [tecnicos, setTecnicos] = useState<Tecnico[]>([]);
 
@@ -47,23 +69,27 @@ function TecnicosPage() {
     cargarTecnicos();
   }, []);
 
-  const tecnicosFiltrados = useMemo(() => {
-    const texto = busqueda.trim().toLowerCase();
+  const tecnicosFiltrados = useMemo(
+    () => filtrarTecnicos(tecnicos, busqueda, filtro),
+    [tecnicos, busqueda, filtro],
+  );
 
-    return tecnicos.filter((tecnico) => {
-      const coincideBusqueda =
-        !texto ||
-        tecnico.nombre.toLowerCase().includes(texto) ||
-        tecnico.user.toLowerCase().includes(texto);
+  const seleccionVisible =
+    tecnicosFiltrados.find((tecnico) => tecnico.id === seleccionado?.id) ??
+    tecnicosFiltrados[0] ??
+    null;
 
-      const coincideEstado =
-        filtro === "todos" ||
-        (filtro === "activos" && tecnico.activo === 1) ||
-        (filtro === "inactivos" && tecnico.activo === 0);
+  function actualizarFiltros(nuevaBusqueda: string, nuevoFiltro: FiltroEstado) {
+    const visibles = filtrarTecnicos(tecnicos, nuevaBusqueda, nuevoFiltro);
 
-      return coincideBusqueda && coincideEstado;
-    });
-  }, [tecnicos, busqueda, filtro]);
+    setBusqueda(nuevaBusqueda);
+    setFiltro(nuevoFiltro);
+    setSeleccionado(
+      visibles.find((tecnico) => tecnico.id === seleccionVisible?.id) ??
+        visibles[0] ??
+        null,
+    );
+  }
 
   return (
     <div className="technicians-page">
@@ -86,7 +112,7 @@ function TecnicosPage() {
             placeholder="Buscar técnico..."
             value={busqueda}
             onChange={(evento) => {
-              setBusqueda(evento.target.value);
+              actualizarFiltros(evento.target.value, filtro);
             }}
           />
         </label>
@@ -104,7 +130,7 @@ function TecnicosPage() {
               key={valor}
               className={filtro === valor ? "active" : ""}
               onClick={() => {
-                setFiltro(valor);
+                actualizarFiltros(busqueda, valor);
               }}
             >
               {texto}
@@ -125,7 +151,7 @@ function TecnicosPage() {
                 <TarjetaTecnico
                   key={tecnico.id}
                   tecnico={tecnico}
-                  seleccionado={seleccionado?.id === tecnico.id}
+                  seleccionado={seleccionVisible?.id === tecnico.id}
                   seleccionar={() => {
                     setSeleccionado(tecnico);
                   }}
@@ -138,7 +164,7 @@ function TecnicosPage() {
             )}
           </section>
 
-          {seleccionado && <DetalleTecnico tecnico={seleccionado} />}
+          {seleccionVisible && <DetalleTecnico tecnico={seleccionVisible} />}
         </div>
       )}
     </div>
