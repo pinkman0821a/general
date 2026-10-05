@@ -1,0 +1,90 @@
+.taller-tecnico-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 14px 32px;
+}
+
+.tecnico-brand a {
+  color: #b1b7c0;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.taller-acceso-error {
+  padding: 24px;
+}
+
+@media (min-width: 901px) {
+  .taller-tecnico-content {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .taller-coordinador .taller-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .taller-coordinador .taller-layout.con-panel > .taller-lista,
+  .taller-coordinador .taller-sin-seleccion {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .taller-page .taller-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .taller-page .taller-layout.con-panel > .taller-lista,
+  .taller-page .taller-sin-seleccion {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .taller-page .taller-cabecera,
+  .taller-page .taller-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .taller-page .taller-busqueda {
+    width: 100%;
+  }
+
+  .taller-page .taller-filtros button {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-inline: 7px;
+  }
+
+  .taller-page .taller-panel {
+    padding: 14px;
+  }
+
+  .taller-page .taller-campos,
+  .taller-page .taller-datos {
+    grid-template-columns: 1fr;
+  }
+
+  .taller-page .taller-formulario :is(input:not([type='checkbox']), textarea),
+  .taller-page .taller-busqueda input {
+    font-size: 16px;
+  }
+
+  .taller-page .taller-cabecera button,
+  .taller-page .taller-acciones button {
+    flex: 1;
+    min-height: 44px;
+  }
+
+  .taller-page .taller-otro-accesorio .taller-fila {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .taller-page .taller-detalle-cabecera {
+    margin-top: 0;
+  }
+}

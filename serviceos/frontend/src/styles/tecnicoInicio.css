@@ -91,6 +91,21 @@
   font-size: 12px;
 }
 
+.tecnico-taller-link {
+  display: block;
+  margin-top: 20px;
+  padding: 12px;
+  border: 1px solid #41454d;
+  border-radius: 9px;
+  color: #f4f4f5;
+  text-decoration: none;
+}
+
+.tecnico-taller-link:focus-visible {
+  outline: 2px solid #a9b2c0;
+  outline-offset: 2px;
+}
+
 @media (max-width: 600px) {
   .tecnico-topbar {
     min-height: 64px;

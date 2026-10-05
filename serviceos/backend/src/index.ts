@@ -10,10 +10,32 @@ import { actualizarDatosTecnico } from './routes/usuarioDatos';
 import { cambiarEstadoUsuario } from './routes/usuarioEstado';
 import { cambiarPasswordTecnico } from './routes/usuarioPassword';
 import { crearUsuario, listarUsuarios } from './routes/usuarios';
+import { gestionarTaller } from './routes/taller';
+import { gestionarTallerCatalogo } from './routes/tallerCatalogo';
 
 export default {
 	async fetch(request, env): Promise<Response> {
 		const url = new URL(request.url);
+
+		if (url.pathname === '/api/taller/accesorios-catalogo' && ['GET', 'POST'].includes(request.method)) {
+			return gestionarTallerCatalogo(request, env);
+		}
+		const accesorioCatalogo = url.pathname.match(/^\/api\/taller\/accesorios-catalogo\/([^/]+)$/);
+		if (accesorioCatalogo && request.method === 'DELETE') {
+			return gestionarTallerCatalogo(request, env, accesorioCatalogo[1]);
+		}
+
+		if (url.pathname === '/api/taller' && ['GET', 'POST'].includes(request.method)) {
+			return gestionarTaller(request, env);
+		}
+		const recepcionTaller = url.pathname.match(/^\/api\/taller\/([^/]+)$/);
+		if (recepcionTaller && ['GET', 'PATCH'].includes(request.method)) {
+			return gestionarTaller(request, env, recepcionTaller[1]);
+		}
+		const entregaTaller = url.pathname.match(/^\/api\/taller\/([^/]+)\/entrega$/);
+		if (entregaTaller && request.method === 'PUT') {
+			return gestionarTaller(request, env, entregaTaller[1], true);
+		}
 
 		if (request.method === 'GET' && url.pathname === '/api/health') {
 			return healthResponse();
@@ -95,7 +117,7 @@ export default {
 		if (request.method === 'GET' && url.pathname === '/') {
 			return Response.json({
 				app: 'ServiceOS API',
-				version: '0.1.4',
+				version: '0.2.0',
 				status: 'running',
 			});
 		}

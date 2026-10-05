@@ -1,9 +1,10 @@
 import { Outlet } from 'react-router-dom'
+import type { ReactNode } from 'react'
 
 import GlobalTopbar from '../components/GlobalTopbar'
 import Sidebar from '../components/Sidebar'
 
-function AppLayout() {
+function AppLayout({ children }: { children?: ReactNode }) {
   return (
     <div className="app">
       <Sidebar />
@@ -11,7 +12,7 @@ function AppLayout() {
       <main className="main">
         <GlobalTopbar />
 
-        <Outlet />
+        {children ?? <Outlet />}
       </main>
     </div>
   )

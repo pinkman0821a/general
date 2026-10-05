@@ -81,7 +81,7 @@ export const menuPrincipal = [
     ruta: '/clientes',
   },
   {
-    nombre: 'Máquinas',
+    nombre: 'Taller',
     icono: Monitor,
     ruta: '/maquinas',
   },

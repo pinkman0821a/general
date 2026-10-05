@@ -1,0 +1,179 @@
+.taller-panel {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid #24272d;
+  border-radius: 12px;
+  background: #101216;
+}
+
+.taller-seccion {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid #292c32;
+}
+
+.taller-datos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 18px;
+  margin: 0;
+}
+
+.taller-datos > div {
+  min-width: 0;
+}
+
+.taller-datos dt {
+  margin-bottom: 5px;
+  color: #9da3ad;
+  font-size: 12px;
+}
+
+.taller-datos dd {
+  margin: 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.taller-accesorios-destacados {
+  padding: 16px;
+  border: 1px solid #41454d;
+  border-radius: 9px;
+  background: #15181d;
+}
+
+.taller-accesorios-estado {
+  display: grid;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.taller-accesorios-estado li {
+  display: flex;
+  gap: 10px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.taller-accesorios-estado li > span:first-child,
+.taller-accesorios-estado .devuelto {
+  color: #70d89b;
+}
+
+.taller-accesorios-estado .no-devuelto,
+.taller-accesorios-estado .no-devuelto > span:first-child {
+  color: #ffc17a;
+}
+
+.taller-entrega {
+  border-top-color: #737c8a;
+}
+
+.taller-formulario {
+  display: grid;
+  gap: 12px;
+}
+
+.taller-form-contenido {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.taller-form-contenido:disabled {
+  opacity: 0.65;
+}
+
+.taller-campos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.taller-campos label,
+.taller-otro-accesorio {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  color: #b1b7c0;
+  font-size: 13px;
+}
+
+.taller-campo-amplio {
+  grid-column: 1 / -1;
+}
+
+.taller-formulario :is(input:not([type='checkbox']), textarea) {
+  width: 100%;
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid #353a43;
+  border-radius: 8px;
+  background: #0c0e11;
+  color: #ececee;
+  color-scheme: dark;
+}
+
+.taller-formulario textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.taller-formulario input[type='date'] {
+  margin-top: 7px;
+  margin-bottom: 16px;
+}
+
+.taller-campos input[type='date'] {
+  margin: 0;
+}
+
+.taller-checklist {
+  display: grid;
+  gap: 7px;
+  margin: 12px 0;
+}
+
+.taller-checklist label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  padding: 9px 10px;
+  border: 1px solid #353a43;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.taller-checklist label:has(input:checked) {
+  border-color: #638275;
+  background: rgba(87, 201, 128, 0.06);
+}
+
+.taller-checklist input {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  accent-color: #70d89b;
+}
+
+.taller-checklist small {
+  display: block;
+  margin-top: 4px;
+  color: #9da3ad;
+  font-size: 12px;
+}
+
+.taller-otro-accesorio,
+.taller-acciones {
+  margin-top: 12px;
+}
+
+.taller-acciones {
+  flex-wrap: wrap;
+}

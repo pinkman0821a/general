@@ -1,0 +1,55 @@
+.taller-catalogo {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid #292c32;
+  border-radius: 9px;
+  background: #101216;
+}
+
+.taller-catalogo summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.taller-catalogo summary:focus-visible {
+  outline: 2px solid #a9b2c0;
+  outline-offset: 3px;
+}
+
+.taller-catalogo ul {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.taller-catalogo li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #292c32;
+  overflow-wrap: anywhere;
+}
+
+.taller-catalogo-confirmacion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+
+.taller-catalogo-confirmacion > span {
+  width: 100%;
+  color: #ffc17a;
+}
+
+@media (max-width: 700px) {
+  .taller-catalogo .taller-fila {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

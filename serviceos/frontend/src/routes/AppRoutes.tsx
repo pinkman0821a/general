@@ -13,7 +13,7 @@ import ClientesPage from '../pages/ClientesPage'
 import FinanzasPage from '../pages/FinanzasPage'
 import InicioPage from '../pages/InicioPage'
 import LoginPage from '../pages/LoginPage'
-import MaquinasPage from '../pages/MaquinasPage'
+import TallerAcceso from '../components/taller/TallerAcceso'
 import ServiciosPage from '../pages/ServiciosPage'
 import TecnicoInicioPage from '../pages/TecnicoInicioPage'
 import TecnicosPage from '../pages/TecnicosPage'
@@ -27,6 +27,7 @@ export default function AppRoutes() {
       />
 
       <Route element={<AuthGate />}>
+        <Route path="/maquinas" element={<TallerAcceso />} />
         <Route
           path="/tecnico"
           element={<TecnicoInicioPage />}
@@ -57,11 +58,6 @@ export default function AppRoutes() {
             <Route
               path="/clientes"
               element={<ClientesPage />}
-            />
-
-            <Route
-              path="/maquinas"
-              element={<MaquinasPage />}
             />
 
             <Route

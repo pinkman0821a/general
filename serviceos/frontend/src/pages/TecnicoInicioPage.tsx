@@ -8,7 +8,7 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import '../styles/tecnicoInicio.css'
 
@@ -76,6 +76,9 @@ function TecnicoInicioPage() {
           <div className="tecnico-role">
             Técnico
           </div>
+          <Link className="tecnico-taller-link" to="/maquinas">
+            Taller · Recepción y entrega de equipos
+          </Link>
         </div>
       </section>
     </main>

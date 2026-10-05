@@ -61,7 +61,7 @@ function Sidebar() {
 
         <div>
           <span>ServiceOS</span>
-          <strong>v0.1.4</strong>
+          <strong>v0.2.0</strong>
         </div>
       </div>
     </aside>
