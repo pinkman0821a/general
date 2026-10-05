@@ -1,0 +1,156 @@
+.tecnico-skills {
+  grid-column: 1 / -1;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #24272d;
+  border-radius: 11px;
+  background: #0c0e11;
+}
+
+.tecnico-skills-heading,
+.tecnico-skills-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tecnico-skills-heading {
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.tecnico-skills h3 {
+  margin: 0;
+  color: #ececee;
+  font-size: 13px;
+}
+
+.tecnico-skills button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border: 1px solid #292c32;
+  border-radius: 8px;
+  background: #15181d;
+  color: #ececee;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tecnico-skills button:hover:not(:disabled) {
+  border-color: #555b65;
+}
+
+.tecnico-skills button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tecnico-skills :is(button, input, select):focus-visible {
+  outline: 2px solid #a9b2c0;
+  outline-offset: 2px;
+}
+
+.tecnico-skills-status,
+.tecnico-skills-error,
+.tecnico-skills-hint {
+  margin: 12px 0 0;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.tecnico-skills-status,
+.tecnico-skills-hint {
+  color: #9298a3;
+}
+
+.tecnico-skills-error {
+  color: #ff7777;
+}
+
+.tecnico-skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tecnico-skills-list li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  padding: 3px 3px 3px 10px;
+  border: 1px solid #292c32;
+  border-radius: 10px;
+  background: #171a20;
+  color: #ececee;
+  font-size: 12px;
+}
+
+.tecnico-skills-list span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.tecnico-skills-list button {
+  flex-shrink: 0;
+  padding: 6px;
+  border-color: transparent;
+  background: transparent;
+  color: #a0a6b0;
+}
+
+.tecnico-skills-editor {
+  display: grid;
+  gap: 15px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #24272d;
+}
+
+.tecnico-skills label {
+  display: block;
+  margin-bottom: 7px;
+  color: #a0a6b0;
+  font-size: 12px;
+}
+
+.tecnico-skills :is(input, select) {
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+  padding: 9px 10px;
+  border: 1px solid #292c32;
+  border-radius: 8px;
+  background: #101216;
+  color: #ececee;
+  font: inherit;
+  font-size: 12px;
+}
+
+.tecnico-skills-hint {
+  margin-top: 7px;
+  font-size: 11px;
+}
+
+.tecnico-skills-feedback button {
+  margin-top: 8px;
+}
+
+@media (max-width: 480px) {
+  .tecnico-skills-row {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .tecnico-skills button {
+    min-height: 34px;
+  }
+}

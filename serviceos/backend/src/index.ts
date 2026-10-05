@@ -2,7 +2,9 @@ import { login, logout, obtenerSesionActual } from './routes/auth';
 import { actualizarCoordinador, cambiarPasswordCoordinador } from './routes/coordinador';
 import { databaseStatusResponse } from './routes/databaseStatus';
 import { healthResponse } from './routes/health';
+import { crearSkill, listarSkills } from './routes/skills';
 import { listarTecnicos } from './routes/tecnicos';
+import { gestionarTecnicoSkills } from './routes/tecnicoSkills';
 import { actualizarDatosTecnico } from './routes/usuarioDatos';
 import { cambiarEstadoUsuario } from './routes/usuarioEstado';
 import { cambiarPasswordTecnico } from './routes/usuarioPassword';
@@ -64,10 +66,25 @@ export default {
 			return listarTecnicos(request, env);
 		}
 
+		if (url.pathname === '/api/skills') {
+			if (request.method === 'GET') return listarSkills(request, env);
+			if (request.method === 'POST') return crearSkill(request, env);
+		}
+
+		const skillsTecnico = url.pathname.match(/^\/api\/tecnicos\/([^/]+)\/skills$/);
+		if (skillsTecnico && (request.method === 'GET' || request.method === 'POST')) {
+			return gestionarTecnicoSkills(request, env, skillsTecnico[1]);
+		}
+
+		const skillTecnico = url.pathname.match(/^\/api\/tecnicos\/([^/]+)\/skills\/([^/]+)$/);
+		if (skillTecnico && request.method === 'DELETE') {
+			return gestionarTecnicoSkills(request, env, skillTecnico[1], skillTecnico[2]);
+		}
+
 		if (request.method === 'GET' && url.pathname === '/') {
 			return Response.json({
 				app: 'ServiceOS API',
-				version: '0.1.2',
+				version: '0.1.3',
 				status: 'running',
 			});
 		}
