@@ -4,6 +4,7 @@ import { databaseStatusResponse } from './routes/databaseStatus';
 import { healthResponse } from './routes/health';
 import { crearSkill, listarSkills } from './routes/skills';
 import { listarTecnicos } from './routes/tecnicos';
+import { gestionarTecnicoDisponibilidad } from './routes/tecnicoDisponibilidad';
 import { gestionarTecnicoSkills } from './routes/tecnicoSkills';
 import { actualizarDatosTecnico } from './routes/usuarioDatos';
 import { cambiarEstadoUsuario } from './routes/usuarioEstado';
@@ -81,10 +82,20 @@ export default {
 			return gestionarTecnicoSkills(request, env, skillTecnico[1], skillTecnico[2]);
 		}
 
+		const disponibilidad = url.pathname.match(/^\/api\/tecnicos\/([^/]+)\/disponibilidad$/);
+		if (disponibilidad && (request.method === 'GET' || request.method === 'POST')) {
+			return gestionarTecnicoDisponibilidad(request, env, disponibilidad[1]);
+		}
+
+		const indisponibilidad = url.pathname.match(/^\/api\/tecnicos\/([^/]+)\/disponibilidad\/([^/]+)$/);
+		if (indisponibilidad && request.method === 'DELETE') {
+			return gestionarTecnicoDisponibilidad(request, env, indisponibilidad[1], indisponibilidad[2]);
+		}
+
 		if (request.method === 'GET' && url.pathname === '/') {
 			return Response.json({
 				app: 'ServiceOS API',
-				version: '0.1.3',
+				version: '0.1.4',
 				status: 'running',
 			});
 		}

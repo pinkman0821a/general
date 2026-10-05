@@ -17,11 +17,6 @@ export function insertarSkill(env: Env, nombre: string) {
 	`).bind(nombre).first<SkillDb>();
 }
 
-export function obtenerUsuarioTecnico(env: Env, tecnicoId: number) {
-	return env.DB.prepare('SELECT id, rol FROM usuarios WHERE id = ?')
-		.bind(tecnicoId).first<{ id: number; rol: string }>();
-}
-
 export function obtenerSkill(env: Env, skillId: number) {
 	return env.DB.prepare('SELECT id, nombre, created_at FROM skills WHERE id = ?')
 		.bind(skillId).first<SkillDb>();

@@ -1,12 +1,12 @@
 import type { Tecnico } from "../services/tecnicosService";
 import TecnicoSkills from "./TecnicoSkills";
+import TecnicoDisponibilidad from "./TecnicoDisponibilidad";
 
 type Props = {
   tecnico: Tecnico;
 };
 
 const bloques = [
-  "Disponibilidad",
   "Servicios",
   "Instalaciones",
   "Agenda",
@@ -46,7 +46,8 @@ function DetalleTecnico({ tecnico }: Props) {
       </div>
 
       <div className="technician-detail-sections">
-        <TecnicoSkills key={tecnico.id} tecnicoId={tecnico.id} />
+        <TecnicoSkills key={`skills-${tecnico.id}`} tecnicoId={tecnico.id} />
+        <TecnicoDisponibilidad key={`disponibilidad-${tecnico.id}`} tecnicoId={tecnico.id} />
         {bloques.map((bloque) => (
           <div className="technician-detail-section" key={bloque}>
             <strong>{bloque}</strong>

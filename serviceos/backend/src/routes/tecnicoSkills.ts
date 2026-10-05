@@ -3,8 +3,8 @@ import {
 	insertarAsignacion,
 	listarSkillsAsignadas,
 	obtenerSkill,
-	obtenerUsuarioTecnico,
 } from '../services/skillService';
+import { obtenerUsuarioRol } from '../services/usuarioConsultaService';
 import { errorSkills, idRuta, idValido, leerObjeto, protegerSkills } from './skillsComun';
 
 export async function gestionarTecnicoSkills(
@@ -32,7 +32,7 @@ export async function gestionarTecnicoSkills(
 			return errorSkills('ID de skill inválido', 400);
 		}
 
-		const tecnico = await obtenerUsuarioTecnico(env, tecnicoId);
+		const tecnico = await obtenerUsuarioRol(env, tecnicoId);
 		if (!tecnico) return errorSkills('Técnico no encontrado', 404);
 		if (tecnico.rol !== 'tecnico') {
 			return errorSkills('Esta acción solo aplica a técnicos', 400);

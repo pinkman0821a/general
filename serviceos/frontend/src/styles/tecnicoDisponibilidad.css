@@ -1,0 +1,182 @@
+.tecnico-disponibilidad {
+  grid-column: 1 / -1;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #24272d;
+  border-radius: 11px;
+  background: #0c0e11;
+  color: #ececee;
+  font-size: 12px;
+}
+
+.tecnico-disponibilidad h3 {
+  margin: 0;
+  font-size: 13px;
+}
+
+.disponibilidad-contenido {
+  display: grid;
+  grid-template-columns: minmax(230px, 300px) minmax(0, 1fr);
+  align-items: start;
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.disponibilidad-calendario,
+.disponibilidad-panel {
+  min-width: 0;
+}
+
+.tecnico-disponibilidad button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 10px;
+  border: 1px solid #292c32;
+  border-radius: 8px;
+  background: #15181d;
+  color: #ececee;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tecnico-disponibilidad button:hover:not(:disabled) {
+  border-color: #555b65;
+}
+
+.tecnico-disponibilidad button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tecnico-disponibilidad :is(button, input):focus-visible {
+  outline: 2px solid #a9b2c0;
+  outline-offset: 2px;
+}
+
+.disponibilidad-mes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.disponibilidad-mes strong {
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.disponibilidad-cuadricula {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.disponibilidad-semana {
+  padding: 3px 0;
+  color: #9298a3;
+  text-align: center;
+  font-size: 10px;
+}
+
+.tecnico-disponibilidad .disponibilidad-dia {
+  position: relative;
+  min-height: 36px;
+  padding: 5px 0 8px;
+  background: #101216;
+}
+
+.tecnico-disponibilidad .no-disponible {
+  border-color: #71424b;
+  background: #2b1b22;
+  color: #ffb3be;
+}
+
+.tecnico-disponibilidad .disponibilidad-dia[aria-pressed="true"] {
+  outline: 2px solid #a9b2c0;
+  outline-offset: -2px;
+}
+
+.disponibilidad-marca {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ff9eae;
+}
+
+.disponibilidad-dia .disponibilidad-marca {
+  position: absolute;
+  bottom: 3px;
+  left: calc(50% - 2.5px);
+}
+
+.disponibilidad-leyenda {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  color: #9298a3;
+  font-size: 11px;
+}
+
+.disponibilidad-ayuda,
+.disponibilidad-error,
+.disponibilidad-motivo {
+  margin: 8px 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.disponibilidad-ayuda {
+  color: #9298a3;
+}
+
+.disponibilidad-error {
+  color: #ff7777;
+}
+
+.disponibilidad-motivo {
+  white-space: pre-wrap;
+}
+
+.disponibilidad-panel {
+  padding-top: 7px;
+}
+
+.disponibilidad-panel label {
+  display: block;
+  margin: 10px 0 6px;
+  color: #a0a6b0;
+}
+
+.disponibilidad-panel input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #292c32;
+  border-radius: 8px;
+  background: #101216;
+  color: #ececee;
+  font: inherit;
+}
+
+.disponibilidad-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+@media (max-width: 1250px) {
+  .disponibilidad-contenido {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .disponibilidad-calendario {
+    width: 100%;
+    max-width: 300px;
+  }
+}
