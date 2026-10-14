@@ -7,6 +7,9 @@
 		"enabled": true,
 	},
 	"upload_source_maps": true,
+	"r2_buckets": [
+		{ "binding": "COMPROBANTES", "bucket_name": "serviceos-comprobantes" },
+	],
 	"d1_databases": [
 		{
 			"binding": "DB",

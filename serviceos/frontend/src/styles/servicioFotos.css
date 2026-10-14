@@ -1,0 +1,18 @@
+.servicio-fotos { margin-top: 18px; padding-top: 12px; border-top: 1px solid #293244; min-width: 0; }
+.servicio-fotos h3 { margin: 0 0 6px; font-size: 15px; }
+.servicio-fotos p { font-size: 12px; color: #a3afc2; }
+.servicio-fotos input[type=file] { max-width: 100%; min-height: 44px; padding: 8px; }
+.fotos-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.foto-item { position: relative; min-width: 0; }
+.foto-item > img, .foto-miniatura { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; background: #151e2c; }
+.servicio-fotos .foto-miniatura { display: grid; place-items: center; overflow: hidden; border: 1px solid #314057; padding: 0; cursor: pointer; color: #b1c3dc; }
+.foto-miniatura img { width: 100%; height: 100%; object-fit: cover; }
+.foto-miniatura span { font-size: 11px; }
+.servicio-fotos .foto-quitar { position: absolute; top: 3px; right: 3px; width: 44px; min-height: 44px; padding: 0; border-radius: 8px; border: 1px solid #718198; color: white; background: #101826e8; font-size: 24px; }
+.foto-item.retirada .foto-miniatura { opacity: .4; }
+.foto-item small { display: block; color: #e9ad97; margin-top: 4px; font-size: 10px; }
+.foto-visor { width: min(940px, 94vw); max-height: 92dvh; padding: 52px 12px 12px; border: 1px solid #425573; border-radius: 12px; background: #10151e; color: #dbe7f9; }
+.foto-visor::backdrop { background: #000c; }
+.foto-visor > button { position: absolute; top: 6px; right: 6px; width: 44px; min-height: 44px; font-size: 25px; cursor: pointer; color: white; background: #223149; border: 1px solid #7085a2; border-radius: 8px; }
+.foto-visor img { display: block; width: 100%; max-height: 78dvh; object-fit: contain; }
+@media (max-width: 420px) { .fotos-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } }

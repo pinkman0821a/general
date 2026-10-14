@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
-import SessionUserControl from '../SessionUserControl';
+import { Navigate } from 'react-router-dom';
+import TecnicoTopbarSecundario from '../TecnicoTopbarSecundario';
 import AppLayout from '../../layouts/AppLayout';
 import TallerPage from '../../pages/TallerPage';
 import { obtenerSesion, type UsuarioSesion } from '../../services/authService';
@@ -44,13 +44,7 @@ export default function TallerAcceso() {
 
   return (
     <main className="tecnico-page">
-      <header className="tecnico-topbar">
-        <div className="tecnico-brand">
-          <strong>ServiceOS</strong>
-          <Link to="/tecnico">Volver a mi inicio</Link>
-        </div>
-        <SessionUserControl />
-      </header>
+      <TecnicoTopbarSecundario />
       <div className="taller-tecnico-content">{pagina}</div>
     </main>
   );

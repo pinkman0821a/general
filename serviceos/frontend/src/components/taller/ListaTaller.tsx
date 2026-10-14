@@ -13,7 +13,7 @@ type Props = {
 
 export default function ListaTaller(props: Props) {
   return (
-    <section className="taller-lista" aria-label="Recepciones de Taller" aria-busy={props.cargando}>
+    <section className="taller-lista" aria-label="Recepciones de Oficina" aria-busy={props.cargando}>
       {props.cargando ? <p className="taller-ayuda" role="status">Cargando recepciones...</p>
         : props.error ? <div>
           <p className="taller-error" role="alert">{props.error}</p>

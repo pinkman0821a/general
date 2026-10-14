@@ -9,7 +9,7 @@ import { useTaller } from '../components/taller/useTaller';
 import CatalogoAccesorios from '../components/taller/CatalogoAccesorios';
 
 const filtros: [FiltroTaller, string][] = [
-  ['en_taller', 'En taller'], ['entregada', 'Entregadas'], ['todas', 'Todas'],
+  ['en_taller', 'En oficina'], ['entregada', 'Entregadas'], ['todas', 'Todas'],
 ];
 
 export default function TallerPage({ usuario }: { usuario: UsuarioSesion }) {
@@ -39,7 +39,7 @@ export default function TallerPage({ usuario }: { usuario: UsuarioSesion }) {
       <header className="taller-cabecera">
         <div>
           <p className="eyebrow">Recepción de equipos</p>
-          <h1>Taller</h1>
+          <h1>Oficina</h1>
           <p className="taller-ayuda">Equipos que los clientes traen a la oficina para revisión o reparación.</p>
         </div>
         {coordinador && <button type="button" className="taller-primario" disabled={ocupado || creando}
@@ -47,8 +47,8 @@ export default function TallerPage({ usuario }: { usuario: UsuarioSesion }) {
           <Plus size={17} />Recibir equipo
         </button>}
       </header>
-      <div className="taller-indicadores" aria-label="Resumen del Taller">
-        <span>En taller <strong>{taller.cargandoResumen || taller.errorResumen ? '—' : taller.enTaller}</strong></span>
+      <div className="taller-indicadores" aria-label="Resumen de Oficina">
+        <span>En oficina <strong>{taller.cargandoResumen || taller.errorResumen ? '—' : taller.enTaller}</strong></span>
         <span>Entregadas <strong>{taller.cargandoResumen || taller.errorResumen ? '—' : taller.entregadas}</strong></span>
       </div>
       {taller.errorResumen && <div className="taller-fila">

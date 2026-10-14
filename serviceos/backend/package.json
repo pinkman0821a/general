@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "0.2.0",
+  "version": "0.3.0-rc.1",
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
@@ -15,5 +15,8 @@
     "typescript": "^5.5.2",
     "vitest": "~4.1.0",
     "wrangler": "^4.144.0"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
   }
 }

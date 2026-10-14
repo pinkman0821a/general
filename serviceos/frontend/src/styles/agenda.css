@@ -1,0 +1,56 @@
+.agenda-selector { min-width: 260px; display: grid; gap: 10px; }
+.agenda-selector > div { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.agenda-selector strong { text-transform: capitalize; font-size: 15px; }
+.agenda-selector button { display: grid; place-items: center; width: 44px; }
+.agenda-selector label { display: grid; gap: 6px; color: #a8b4c7; font-size: 12px; }
+.agenda-selector input { min-width: 0; width: 100%; color-scheme: dark; }
+.agenda-leyenda { display: flex; flex-wrap: wrap; gap: 12px 20px; margin: 12px 0 18px; font-size: 12px; }
+.agenda-leyenda span { display: inline-flex; align-items: center; gap: 7px; }
+.agenda-leyenda i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.agenda-calendario { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; border: 1px solid #303846; border-radius: 10px; overflow: hidden; background: #303846; }
+.agenda-semana { text-align: center; padding: 12px 3px; font-size: 12px; color: #a5b4ca; background: #151d2a; }
+.agenda-celda { min-width: 0; padding: 6px; background: #10151e; min-height: 120px; }
+.agenda-celda.vacia { background: #0c1118; }
+.agenda-celda.hoy { background: #122039; }
+.agenda-celda.seleccionada { box-shadow: inset 0 0 0 2px #609dff; }
+.agenda-page .agenda-dia { width: 44px; min-height: 44px; background: transparent; border-color: transparent; padding: 0; margin-bottom: 3px; font-size: 13px; }
+.agenda-celda.hoy .agenda-dia { background: #3067b6; color: white; border-radius: 50%; }
+.agenda-chips { display: grid; gap: 5px; }
+.agenda-page .agenda-chip { min-width: 0; width: 100%; text-align: left; padding: 6px; font-size: 11px; min-height: 44px; border-left-width: 3px; display: grid; gap: 3px; }
+.agenda-chip span, .agenda-chip small { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.agenda-chip small { font-size: 10px; }
+.agenda-page .agenda-chip.disponible { border-left-color: #55c88b; color: #90e3b4; background: #142820; }
+.agenda-page .agenda-chip.programado { border-left-color: #559bfa; color: #a4c9ff; background: #16283e; }
+.agenda-page .agenda-chip.no_disponible { border-left-color: #dc6c78; color: #f5b6bd; background: #32202a; }
+.agenda-page .agenda-chip.sobrecarga { border-left-color: #ff4255; border-color: #b93f50; color: #ff8b99; background: #3b1620; }
+.agenda-remoto { color: #9eb4ce; }
+.agenda-indicadores { display: none; }
+.agenda-detalle { margin-top: 24px; outline-offset: 4px; }
+.agenda-detalle h2 { font-size: 20px; text-transform: capitalize; margin: 0 0 12px; }
+.agenda-detalle-tecnicos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.agenda-ficha { border: 1px solid #293649; border-radius: 10px; padding: 16px; background: #111823; min-width: 0; }
+.agenda-ficha.destacada { border-color: #5996ee; }
+.agenda-ficha header { display: flex; gap: 10px; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+.agenda-ficha h3 { margin: 0; font-size: 15px; overflow-wrap: anywhere; }
+.agenda-ficha header span, .agenda-ficha small { font-size: 11px; }
+.agenda-trabajos h4 { font-size: 12px; color: #a6b8d0; margin: 20px 0 10px; }
+.agenda-servicio { padding: 12px; margin-top: 8px; border: 1px solid #2b3749; background: #151f2e; border-radius: 8px; overflow-wrap: anywhere; }
+.agenda-servicio strong { font-size: 13px; }
+.agenda-servicio p { margin: 5px 0; }
+.agenda-servicio-estado { font-size: 12px; color: #a7bedc; }
+.agenda-servicio-estado.pendiente { color: #edd17d; }
+.agenda-servicio-estado.en_proceso { color: #88b8fc; }
+.agenda-servicio-estado.realizado { color: #87dbae; }
+.agenda-page .agenda-servicio a { display: flex; align-items: center; width: fit-content; min-height: 44px; color: #94bfff; font-size: 13px; }
+@media (max-width: 800px) {
+  .agenda-chips { display: none; }
+  .agenda-celda { padding: 3px; min-height: 78px; }
+  .agenda-selector { min-width: 0; }
+  .agenda-page .agenda-dia { width: 100%; }
+  .agenda-indicadores { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; }
+  .agenda-indicadores span { min-width: 13px; text-align: center; border-radius: 3px; font-size: 10px; background: #172236; color: #96b9e8; }
+  .agenda-indicadores .disponible { color: #80dda5; }
+  .agenda-indicadores .no_disponible { color: #eea0a6; }
+  .agenda-indicadores .sobrecarga { color: #ff586b; font-weight: 700; }
+  .agenda-detalle-tecnicos { grid-template-columns: minmax(0, 1fr); }
+}

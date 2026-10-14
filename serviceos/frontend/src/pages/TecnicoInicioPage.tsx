@@ -1,88 +1,44 @@
-import SessionUserControl from '../components/SessionUserControl'
-import {
-  obtenerSesion,
-  type UsuarioSesion,
-} from '../services/authService'
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import SessionUserControl from '../components/SessionUserControl';
+import DashboardTecnico from '../components/tecnico/DashboardTecnico';
+import ComisionPersonal from '../components/tecnico/ComisionPersonal';
+import { obtenerSesion, type UsuarioSesion } from '../services/authService';
+import { listarServicios, type Servicio } from '../services/serviciosService';
+import { mensajeError } from '../components/servicios/serviciosAyudas';
+import '../styles/tecnicoInicio.css';
+import '../styles/servicios.css';
 
-import {
-  useEffect,
-  useState,
-} from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-
-import '../styles/tecnicoInicio.css'
-
-function TecnicoInicioPage() {
-  const navigate = useNavigate()
-
-  const [usuario, setUsuario] =
-    useState<UsuarioSesion | null>(null)
-
+export default function TecnicoInicioPage() {
+  const [usuario, setUsuario] = useState<UsuarioSesion | null>(null);
+  const [sesionLista, setSesionLista] = useState(false);
+  const [servicios, setServicios] = useState<Servicio[]>([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState('');
+  const [revision, setRevision] = useState(0);
   useEffect(() => {
-    obtenerSesion()
-      .then((sesion) => {
-        if (!sesion) {
-          navigate('/login', {
-            replace: true,
-          })
-
-          return
-        }
-
-        setUsuario(sesion)
-      })
-      .catch(() => {
-        navigate('/login', {
-          replace: true,
-        })
-      })
-  }, [navigate])
-
-  return (
-    <main className="tecnico-page">
-      <header className="tecnico-topbar">
-        <div className="tecnico-brand">
-          <strong>ServiceOS</strong>
-          <span>Panel técnico</span>
-        </div>
-
-        <SessionUserControl />
-      </header>
-
-      <section className="tecnico-content">
-        <div className="tecnico-card">
-          <div className="tecnico-avatar">
-            {usuario?.nombre
-              .trim()
-              .charAt(0)
-              .toUpperCase() ?? 'T'}
-          </div>
-
-          <p className="tecnico-eyebrow">
-            ServiceOS
-          </p>
-
-          <h1>
-            Hola, {usuario?.nombre ?? 'Técnico'}
-          </h1>
-
-          <p className="tecnico-description">
-            Tu cuenta funciona correctamente.
-            El espacio de trabajo para técnicos
-            se construirá en las siguientes etapas
-            de ServiceOS.
-          </p>
-
-          <div className="tecnico-role">
-            Técnico
-          </div>
-          <Link className="tecnico-taller-link" to="/maquinas">
-            Taller · Recepción y entrega de equipos
-          </Link>
-        </div>
-      </section>
-    </main>
-  )
+    let vigente = true;
+    obtenerSesion().then(sesion => { if (vigente) setUsuario(sesion); })
+      .catch(() => { if (vigente) setUsuario(null); })
+      .finally(() => { if (vigente) setSesionLista(true); });
+    return () => { vigente = false; };
+  }, []);
+  useEffect(() => {
+    if (usuario?.rol !== 'tecnico') return;
+    const controlador = new AbortController();
+    listarServicios({ mes: '', estado: '', tipo: '', tecnico_id: '', buscar: '' }, controlador.signal)
+      .then(datos => { if (!controlador.signal.aborted) setServicios(datos); })
+      .catch(causa => { if (!controlador.signal.aborted) setError(mensajeError(causa)); })
+      .finally(() => { if (!controlador.signal.aborted) setCargando(false); });
+    return () => controlador.abort();
+  }, [usuario, revision]);
+  if (sesionLista && !usuario) return <Navigate to="/login" replace />;
+  if (usuario?.rol === 'coordinador') return <Navigate to="/" replace />;
+  return <main className="tecnico-page">
+    <header className="tecnico-topbar"><div className="tecnico-brand"><strong>ServiceOS</strong><span>Panel técnico</span></div>
+      <SessionUserControl /></header>
+    <DashboardTecnico nombre={usuario?.nombre ?? ''} servicios={servicios} cargando={cargando} error={error}
+      comision={<ComisionPersonal habilitado={usuario?.rol === 'tecnico'} />}
+      reintentar={() => { setError(''); setCargando(true); setRevision(valor => valor + 1); }} />
+  </main>;
 }
-
-export default TecnicoInicioPage

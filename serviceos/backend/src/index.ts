@@ -12,10 +12,42 @@ import { cambiarPasswordTecnico } from './routes/usuarioPassword';
 import { crearUsuario, listarUsuarios } from './routes/usuarios';
 import { gestionarTaller } from './routes/taller';
 import { gestionarTallerCatalogo } from './routes/tallerCatalogo';
+import { gestionarServicios } from './routes/servicios';
+import { gestionarServicioComprobante } from './routes/servicioComprobante';
+import { gestionarComisiones } from './routes/comisiones';
+import { gestionarFinanzas } from './routes/finanzas';
+import { resumenFinancieroTecnico } from './routes/tecnicoResumenFinanciero';
+import { gestionarAgenda } from './routes/agenda';
+import { gestionarServicioFotos } from './routes/servicioFotos';
 
 export default {
 	async fetch(request, env): Promise<Response> {
 		const url = new URL(request.url);
+		const fotos = url.pathname.match(/^\/api\/servicios\/([^/]+)\/fotos(?:\/([^/]+))?$/);
+		if (fotos && (fotos[2] ? ['GET', 'DELETE'] : ['GET', 'POST']).includes(request.method)) return gestionarServicioFotos(request, env, fotos[1], fotos[2]);
+		if (request.method === 'GET' && ['/api/agenda', '/api/inicio/resumen'].includes(url.pathname)) return gestionarAgenda(request, env, url.pathname.endsWith('/resumen'));
+		if (url.pathname === '/api/tecnico/resumen-financiero' && request.method === 'GET') return resumenFinancieroTecnico(request, env);
+		if (url.pathname === '/api/finanzas/resumen' && request.method === 'GET') return gestionarFinanzas(request, env);
+		const finanzasTecnico = url.pathname.match(/^\/api\/finanzas\/tecnicos\/([^/]+)$/);
+		if (finanzasTecnico && request.method === 'GET') return gestionarFinanzas(request, env, finanzasTecnico[1]);
+		if (request.method === 'GET' && ['/api/servicios/comisiones.xlsx', '/api/servicios/resumen-pagos'].includes(url.pathname)) {
+			return gestionarComisiones(request, env, url.pathname.endsWith('resumen-pagos'));
+		}
+		const comprobante = url.pathname.match(/^\/api\/servicios\/([^/]+)\/comprobante$/);
+		if (comprobante && ['GET', 'PUT', 'DELETE'].includes(request.method)) {
+			return gestionarServicioComprobante(request, env, comprobante[1]);
+		}
+		if (url.pathname === '/api/servicios' && ['GET', 'POST'].includes(request.method)) {
+			return gestionarServicios(request, env);
+		}
+		const servicio = url.pathname.match(/^\/api\/servicios\/([^/]+)$/);
+		if (servicio && ['GET', 'PATCH', 'DELETE'].includes(request.method)) {
+			return gestionarServicios(request, env, servicio[1]);
+		}
+		const estadoServicio = url.pathname.match(/^\/api\/servicios\/([^/]+)\/estado$/);
+		if (estadoServicio && request.method === 'PATCH') {
+			return gestionarServicios(request, env, estadoServicio[1], true);
+		}
 
 		if (url.pathname === '/api/taller/accesorios-catalogo' && ['GET', 'POST'].includes(request.method)) {
 			return gestionarTallerCatalogo(request, env);
@@ -117,7 +149,7 @@ export default {
 		if (request.method === 'GET' && url.pathname === '/') {
 			return Response.json({
 				app: 'ServiceOS API',
-				version: '0.2.0',
+				version: '0.3.0-rc.1',
 				status: 'running',
 			});
 		}

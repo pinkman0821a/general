@@ -1,4 +1,4 @@
-import { verificarPassword } from '../services/passwordService'
+import { crearPasswordHash, passwordEsLegacy, verificarPassword } from '../services/passwordService'
 import {
   crearCookieSesion,
   crearSesion,
@@ -28,8 +28,8 @@ export async function login(
   try {
     const body = await request.json<LoginBody>()
 
-    const user = body.user?.trim().toLowerCase()
-    const password = body.password
+    const user = typeof body?.user === 'string' ? body.user.trim().toLowerCase() : ''
+    const password = typeof body?.password === 'string' ? body.password : ''
 
     if (!user || !password) {
       return Response.json(
@@ -82,6 +82,13 @@ export async function login(
           status: 403,
         },
       )
+    }
+
+    if (passwordEsLegacy(usuario.password_hash)) {
+      const actualizado = await env.DB.prepare(`UPDATE usuarios SET password_hash = ?
+        WHERE id = ? AND password_hash = ? AND activo = 1`)
+        .bind(await crearPasswordHash(password), usuario.id, usuario.password_hash).run()
+      if (!actualizado.meta.changes) return credencialesIncorrectas()
     }
 
     const token = await crearSesion(

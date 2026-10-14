@@ -5,7 +5,7 @@ import {
 
 import { NavLink } from 'react-router-dom'
 
-import { menuPrincipal } from '../data/dashboardData'
+import { menuPrincipal } from '../data/menuPrincipal'
 
 function Sidebar() {
   return (
@@ -61,7 +61,7 @@ function Sidebar() {
 
         <div>
           <span>ServiceOS</span>
-          <strong>v0.2.0</strong>
+          <strong>v0.3.0-rc.1</strong>
         </div>
       </div>
     </aside>

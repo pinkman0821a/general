@@ -1,0 +1,24 @@
+import { ErrorServicio, type TipoServicio } from './serviciosValidacion';
+
+export function normalizarTrabajo(valor: unknown): string | null {
+	if (valor === undefined || valor === null) return null;
+	if (typeof valor !== 'string' || valor.length > 200) throw new ErrorServicio('Trabajo realizado inválido (máximo 200 caracteres)');
+	return valor.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim()
+		.replace(/\s+/g, ' ').toUpperCase().replace(/(?:(?:^|\s+)(?:PRESENCIAL|REMOT[AO]))+$/, '').trim() || null;
+}
+
+export function requiereTrabajo(tipo: TipoServicio) {
+	return tipo === 'servicio_presencial' || tipo === 'servicio_remoto';
+}
+
+export function comprobarTrabajo(tipo: TipoServicio, estado: string, trabajo: string | null | undefined) {
+	if (estado === 'realizado' && requiereTrabajo(tipo) && !normalizarTrabajo(trabajo)) {
+		throw new ErrorServicio('Indica el trabajo realizado antes de completar el servicio.');
+	}
+}
+
+export function productoComision(tipo: TipoServicio, trabajo: string | null | undefined) {
+	if (tipo === 'instalacion') return 'INSTALACION PRESENCIAL';
+	if (tipo === 'instalacion_remota') return 'INSTALACION REMOTA';
+	return `${normalizarTrabajo(trabajo) ?? 'TRABAJO NO REGISTRADO'} ${tipo === 'servicio_presencial' ? 'PRESENCIAL' : 'REMOTA'}`;
+}

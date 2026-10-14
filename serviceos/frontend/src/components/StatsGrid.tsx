@@ -1,13 +1,22 @@
-import { resumen } from '../data/dashboardData'
+import { CalendarDays, CheckCircle2, PlayCircle, UsersRound } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import type { InicioOperacion } from '../services/agendaService';
 
-function StatsGrid() {
+function StatsGrid({ datos }: { datos: InicioOperacion }) {
+  const mes = datos.hoy.slice(0, 7);
+  const resumen = [
+    { titulo: 'Servicios de hoy', valor: datos.resumen.servicios_hoy, icono: CalendarDays, ruta: `/servicios?mes=${mes}` },
+    { titulo: 'En proceso', valor: datos.resumen.en_proceso, icono: PlayCircle, ruta: `/servicios?mes=${mes}&estado=en_proceso` },
+    { titulo: 'Realizados hoy', valor: datos.resumen.realizados, icono: CheckCircle2, ruta: `/servicios?mes=${mes}&estado=realizado` },
+    { titulo: 'Técnicos libres hoy', valor: datos.resumen.tecnicos_libres, icono: UsersRound, ruta: '/agenda' },
+  ];
   return (
     <section className="stats">
       {resumen.map((item) => {
         const Icono = item.icono
 
         return (
-          <article className="stat-card" key={item.titulo}>
+          <Link className="stat-card" key={item.titulo} to={item.ruta}>
             <div className="stat-top">
               <div className="stat-icon">
                 <Icono size={20} />
@@ -17,8 +26,8 @@ function StatsGrid() {
             </div>
 
             <strong>{item.valor}</strong>
-            <small>{item.detalle}</small>
-          </article>
+            <small>Consultar →</small>
+          </Link>
         )
       })}
     </section>

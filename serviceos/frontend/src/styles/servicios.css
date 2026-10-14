@@ -1,0 +1,91 @@
+@import './serviciosFormularios.css';
+
+.servicios-page { min-width: 0; color: #ececee; font-size: 14px; }
+.servicios-page h1 { margin: 0; font-size: 27px; letter-spacing: -0.5px; }
+.servicios-page h2 { margin: 0 0 12px; font-size: 20px; overflow-wrap: anywhere; }
+.servicios-cabecera, .servicios-acciones, .servicios-cabecera-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.servicios-cabecera, .servicios-cabecera-panel { justify-content: space-between; }
+.servicios-page button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid #30353e;
+  border-radius: 9px;
+  background: #15181d;
+  color: #ececee;
+  cursor: pointer;
+}
+.servicios-page button:hover:not(:disabled) { border-color: #717b8a; }
+.servicios-page button:disabled { opacity: 0.5; cursor: not-allowed; }
+.servicios-page .servicios-primario { background: #ececee; color: #101216; }
+.servicios-page :is(button, select, input, textarea):focus-visible {
+  outline: 2px solid #a9b2c0;
+  outline-offset: 3px;
+}
+.servicios-ayuda { color: #9da3ad; line-height: 1.5; }
+.servicios-error { color: #ff9c9c; line-height: 1.5; overflow-wrap: anywhere; }
+.servicios-exito { color: #8dd6a7; }
+.servicios-indicadores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0 20px; }
+.servicios-indicadores > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid #292c32;
+  border-radius: 10px;
+  background: #101216;
+}
+.servicios-indicadores span { color: #9da3ad; font-size: 13px; }
+.servicios-indicadores strong { font-size: 22px; }
+.servicios-indicadores .pendiente strong { color: #dfbd72; }
+.servicios-indicadores .en_proceso strong { color: #8ab4e9; }
+.servicios-indicadores .realizado strong { color: #8dd6a7; }
+.servicios-layout { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); align-items: start; margin-top: 20px; }
+.servicios-sin-seleccion { display: none; }
+.servicios-lista { display: grid; gap: 10px; min-width: 0; }
+.servicios-page .servicios-tarjeta {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) auto;
+  gap: 12px;
+  width: 100%;
+  padding: 15px;
+  background: #101216;
+  text-align: left;
+  align-items: start;
+}
+.servicios-page .servicios-tarjeta.seleccionada { border-color: #8995a6; background: #171b22; }
+.servicios-tarjeta time { color: #b5bdca; text-transform: uppercase; font-size: 12px; padding-top: 3px; }
+.servicios-tarjeta > div { display: grid; gap: 6px; min-width: 0; overflow-wrap: anywhere; }
+.servicios-tarjeta strong { font-size: 15px; }
+.servicios-tarjeta div > span { color: #9da3ad; font-size: 12px; }
+.servicios-tarjeta div > .servicios-maquina { color: #d5d9df; }
+.servicios-estado { display: inline-block; width: fit-content; padding: 5px 8px; border-radius: 7px; font-size: 11px; }
+.servicios-estado.pendiente { background: #dfbd721a; color: #dfbd72; }
+.servicios-estado.en_proceso { background: #8ab4e91a; color: #8ab4e9; }
+.servicios-estado.realizado { background: #8dd6a71a; color: #8dd6a7; }
+.servicios-tecnico-content { max-width: 780px; margin: 0 auto; padding: 20px 16px 40px; }
+.servicios-acceso-error { padding: 24px; }
+.servicios-sr { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); }
+
+@media (min-width: 1100px) {
+  .servicios-coordinador .servicios-layout.con-panel { grid-template-columns: minmax(320px, 0.9fr) minmax(400px, 1.1fr); }
+}
+@media (max-width: 1099px) {
+  .servicios-layout.con-panel .servicios-lista { display: none; }
+}
+.servicios-tecnico .servicios-layout.con-panel .servicios-lista { display: none; }
+@media (max-width: 600px) {
+  .servicios-indicadores > div { flex-direction: column; align-items: start; padding: 12px; }
+  .servicios-page .servicios-tarjeta { grid-template-columns: 48px minmax(0, 1fr); padding: 13px; }
+  .servicios-tarjeta > .servicios-estado { grid-column: 2; }
+  .servicios-cabecera > .servicios-primario { width: 100%; }
+}

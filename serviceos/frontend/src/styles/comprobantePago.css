@@ -1,0 +1,17 @@
+.comprobante-pago { margin-top: 20px; padding-top: 16px; border-top: 1px solid #292c32; }
+.comprobante-pago h3 { margin: 0; font-size: 14px; }
+.comprobante-metadatos { color: #b1b7c0; font-size: 12px; overflow-wrap: anywhere; }
+.comprobante-confirmacion { margin-top: 12px; padding: 12px; border: 1px solid #353a43; border-radius: 8px; }
+.comprobante-confirmacion p { margin: 0 0 8px; overflow-wrap: anywhere; line-height: 1.5; }
+.comprobante-visor {
+  width: min(900px, calc(100% - 24px));
+  max-height: calc(100dvh - 24px);
+  padding: 12px;
+  border: 1px solid #353a43;
+  border-radius: 12px;
+  background: #101216;
+  color: #ececee;
+}
+.comprobante-visor::backdrop { background: #000c; }
+.comprobante-visor > button { display: flex; margin-left: auto; margin-bottom: 10px; min-width: 44px; }
+.comprobante-visor img { display: block; width: 100%; max-height: calc(100dvh - 110px); object-fit: contain; }

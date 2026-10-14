@@ -1,4 +1,5 @@
 import { Plus } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 function QuickAction() {
   return (
@@ -9,15 +10,14 @@ function QuickAction() {
         <h2>¿Necesitas programar un servicio?</h2>
 
         <p>
-          Desde aquí podrás crear servicios y después
-          ServiceOS mostrará los técnicos disponibles.
+          Consulta la disponibilidad del equipo y asigna un nuevo trabajo.
         </p>
       </div>
 
-      <button className="primary-button">
+      <Link to="/servicios?nuevo=1" className="primary-button">
         <Plus size={18} />
         Crear servicio
-      </button>
+      </Link>
     </section>
   )
 }

@@ -3,130 +3,85 @@
   background: #08090b;
   color: #f4f4f5;
 }
-
 .tecnico-topbar {
   position: sticky;
   top: 0;
   z-index: 20;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  min-height: 72px;
-  padding: 14px 24px;
+  gap: 12px;
+  padding: 14px;
   border-bottom: 1px solid #202329;
-  background: rgba(8, 9, 11, 0.96);
-  backdrop-filter: blur(14px);
+  background: #08090b;
 }
-
-.tecnico-brand {
-  display: grid;
-  gap: 2px;
-}
-
-.tecnico-brand strong {
-  font-size: 17px;
-}
-
-.tecnico-brand span {
-  color: #7c818a;
-  font-size: 11px;
-}
-
-.tecnico-content {
-  display: grid;
-  place-items: center;
-  padding: 48px 24px;
-}
-
-.tecnico-card {
-  width: min(100%, 480px);
-  padding: 32px;
-  border: 1px solid #24272d;
-  border-radius: 20px;
-  background: #111317;
-  text-align: center;
-}
-
-.tecnico-avatar {
-  width: 64px;
-  height: 64px;
-  display: grid;
-  place-items: center;
-  margin: 0 auto 18px;
-  border-radius: 18px;
-  background: #f2f2f2;
-  color: #111;
-  font-size: 26px;
-  font-weight: 800;
-}
-
-.tecnico-eyebrow {
-  margin: 0;
-  color: #737780;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.tecnico-card h1 {
-  margin: 8px 0 0;
-  font-size: 28px;
-}
-
-.tecnico-description {
-  margin: 14px 0 0;
-  color: #92969f;
-  line-height: 1.6;
-}
-
-.tecnico-role {
-  width: fit-content;
-  margin: 22px auto 0;
-  padding: 7px 12px;
-  border: 1px solid #2b2e34;
-  border-radius: 999px;
-  color: #b4b8c0;
-  font-size: 12px;
-}
-
-.tecnico-taller-link {
-  display: block;
-  margin-top: 20px;
-  padding: 12px;
-  border: 1px solid #41454d;
+.tecnico-brand { display: grid; gap: 3px; }
+.tecnico-brand strong { font-size: 17px; }
+.tecnico-brand span { color: #9ca8b8; font-size: 12px; }
+.tecnico-topbar .session-user-logout { min-height: 44px; width: auto; padding: 0 10px; }
+.tecnico-topbar .session-user-logout span { display: inline; }
+.tecnico-topbar .session-user-data strong { white-space: normal; overflow-wrap: anywhere; }
+.tecnico-content { max-width: 1180px; margin: 0 auto; padding: 22px 14px 40px; }
+.tecnico-saludo h1 { font-size: 25px; margin: 0 0 6px; }
+.tecnico-saludo p { margin: 0; color: #9ca8b8; }
+.tecnico-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 22px 0; }
+.tecnico-kpi { display: grid; gap: 12px; padding: 16px; border: 1px solid #242a34; border-radius: 12px; background: #11151b; }
+.tecnico-kpi span { font-size: 13px; color: #b0bac8; }
+.tecnico-kpi strong { font-size: 30px; }
+.tecnico-kpi.pendiente strong { color: #efc86a; }
+.tecnico-kpi.en_proceso strong { color: #69acff; }
+.tecnico-kpi.realizado strong { color: #70d5a0; }
+.tecnico-kpi.hoy strong { color: #cad9ec; }
+.tecnico-operacion { display: grid; gap: 14px; }
+.tecnico-bloque { min-width: 0; padding: 20px; border: 1px solid #242a34; border-radius: 14px; background: #11151b; }
+.tecnico-prioritario { border-color: #294a75; background: linear-gradient(135deg, #142338, #10151c); }
+.tecnico-bloque h2 { font-size: 18px; margin: 0 0 18px; }
+.tecnico-bloque h3 { font-size: 23px; margin: 12px 0; overflow-wrap: anywhere; }
+.tecnico-bloque p { color: #aeb9c8; line-height: 1.5; overflow-wrap: anywhere; }
+.tecnico-etiqueta { margin: 0 0 8px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.tecnico-fecha { display: flex; gap: 8px; align-items: center; color: #92bdff; font-size: 14px; }
+.tecnico-boton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 46px;
+  margin-top: 18px;
+  padding: 0 14px;
   border-radius: 9px;
-  color: #f4f4f5;
+  color: #fff;
+  background: #2563b9;
   text-decoration: none;
+  font-weight: 600;
 }
-
-.tecnico-taller-link:focus-visible {
-  outline: 2px solid #a9b2c0;
-  outline-offset: 2px;
+.tecnico-boton.secundario { background: #19212d; border: 1px solid #303d50; }
+.tecnico-trabajo { display: flex; align-items: center; gap: 12px; min-height: 66px; padding: 12px 0; color: #eef3fa; text-decoration: none; border-bottom: 1px solid #252d39; }
+.tecnico-trabajo > span { flex-shrink: 0; color: #92bdff; font-size: 12px; }
+.tecnico-trabajo div { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.tecnico-trabajo small { display: block; margin-top: 5px; color: #9daabd; }
+.tecnico-taller > svg { color: #86b8fa; margin-bottom: 12px; }
+.tecnico-error { padding: 12px; border: 1px solid #984b4b; border-radius: 10px; color: #f8adad; }
+.tecnico-error button { min-height: 44px; }
+.tecnico-boton:focus-visible, .tecnico-trabajo:focus-visible { outline: 2px solid #92bdff; outline-offset: 3px; }
+@media (min-width: 760px) {
+  .tecnico-topbar { padding: 16px 32px; }
+  .tecnico-content { padding: 32px; }
+  .tecnico-kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .tecnico-operacion { grid-template-columns: 1.2fr 1fr; gap: 20px; }
+  .tecnico-taller { grid-column: 1 / -1; display: flex; align-items: center; gap: 20px; }
+  .tecnico-taller > svg { margin: 0; }
+  .tecnico-taller h2, .tecnico-taller p { margin: 0 0 5px; }
+  .tecnico-taller .tecnico-boton { margin: 0 0 0 auto; min-width: 180px; }
 }
-
-@media (max-width: 600px) {
-  .tecnico-topbar {
-    min-height: 64px;
-    padding: 10px 14px;
-  }
-
-  .tecnico-brand span {
-    display: none;
-  }
-
-  .tecnico-content {
-    display: block;
-    padding: 18px 14px;
-  }
-
-  .tecnico-card {
-    padding: 24px 18px;
-    border-radius: 16px;
-  }
-
-  .tecnico-card h1 {
-    font-size: 24px;
-  }
+.tecnico-introduccion { display: grid; gap: 16px; margin-bottom: 20px; }
+.tecnico-comision { border-left: 2px solid #4289ec; padding: 8px 16px; min-width: 0; }
+.tecnico-comision > span { display: block; color: #9ba7bb; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; }
+.tecnico-comision strong { display: block; font-size: 1.65rem; margin: 5px 0; }
+.tecnico-comision p { margin: 4px 0; color: #bdc8d9; }
+.tecnico-comision small { color: #9ba7bb; }
+.tecnico-comision button { min-height: 44px; }
+@media (min-width: 760px) {
+  .tecnico-introduccion { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+  .tecnico-comision { min-width: 240px; }
 }

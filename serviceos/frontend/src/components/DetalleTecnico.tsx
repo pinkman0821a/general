@@ -6,13 +6,6 @@ type Props = {
   tecnico: Tecnico;
 };
 
-const bloques = [
-  "Servicios",
-  "Instalaciones",
-  "Agenda",
-  "Pagos",
-];
-
 function DetalleTecnico({ tecnico }: Props) {
   const fechaCreacion = new Date(tecnico.created_at).toLocaleDateString(
     "es-CO",
@@ -48,12 +41,6 @@ function DetalleTecnico({ tecnico }: Props) {
       <div className="technician-detail-sections">
         <TecnicoSkills key={`skills-${tecnico.id}`} tecnicoId={tecnico.id} />
         <TecnicoDisponibilidad key={`disponibilidad-${tecnico.id}`} tecnicoId={tecnico.id} />
-        {bloques.map((bloque) => (
-          <div className="technician-detail-section" key={bloque}>
-            <strong>{bloque}</strong>
-            <span>Próximamente</span>
-          </div>
-        ))}
       </div>
     </section>
   );

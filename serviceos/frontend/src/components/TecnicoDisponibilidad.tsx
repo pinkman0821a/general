@@ -2,12 +2,16 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useId, useState } from "react";
 import { diasSemana, mostrarFecha } from "./calendarioDisponibilidad";
 import { useTecnicoDisponibilidad } from "./useTecnicoDisponibilidad";
+import { useServiciosCalendario } from './useServiciosCalendario';
+import DiaDisponibilidad from './DiaDisponibilidad';
+import DetalleServiciosDia from './DetalleServiciosDia';
 import "../styles/tecnicoDisponibilidad.css";
 
 type Props = { tecnicoId: number };
 
 function TecnicoDisponibilidad({ tecnicoId }: Props) {
   const estado = useTecnicoDisponibilidad(tecnicoId);
+  const agenda = useServiciosCalendario(tecnicoId, estado.calendario.desde.slice(0, 7));
   const [motivo, setMotivo] = useState("");
   const id = useId();
   const marcada = estado.lista.find((item) => item.fecha === estado.seleccion);
@@ -21,7 +25,7 @@ function TecnicoDisponibilidad({ tecnicoId }: Props) {
   return (
     <section className="tecnico-disponibilidad" aria-labelledby={`${id}-titulo`} aria-busy={estado.cargando || estado.operacion}>
       <h3 id={`${id}-titulo`}>Disponibilidad</h3>
-      <p className="disponibilidad-ayuda">Disponible por defecto. Selecciona un día para cambiarlo.</p>
+      <p className="disponibilidad-ayuda">Consulta los servicios asignados y gestiona la indisponibilidad manual por separado.</p>
       <div className="disponibilidad-contenido">
         <div className="disponibilidad-calendario">
           <div className="disponibilidad-mes">
@@ -36,21 +40,24 @@ function TecnicoDisponibilidad({ tecnicoId }: Props) {
           <div className="disponibilidad-cuadricula" role="group" aria-label={estado.calendario.titulo}>
             {diasSemana.map((dia) => <span className="disponibilidad-semana" key={dia}>{dia}</span>)}
             {estado.calendario.celdas.map((celda, indice) => celda ? (
-              <button
-                type="button"
-                key={celda.fecha}
-                className={`disponibilidad-dia${excepciones.has(celda.fecha) ? " no-disponible" : ""}`}
-                disabled={estado.cargando || Boolean(estado.errorCarga) || estado.operacion}
-                aria-pressed={estado.seleccion === celda.fecha}
-                aria-label={`${mostrarFecha(celda.fecha)}: ${estado.cargando || estado.errorCarga ? "sin consultar" : excepciones.has(celda.fecha) ? "no disponible" : "disponible"}`}
-                onClick={() => seleccionar(celda.fecha)}
-              >
-                {celda.dia}
-                {excepciones.has(celda.fecha) && <span className="disponibilidad-marca" aria-hidden="true" />}
-              </button>
+              <DiaDisponibilidad key={celda.fecha} fecha={celda.fecha} dia={celda.dia}
+                cantidad={agenda.porDia[celda.fecha]?.length ?? 0} noDisponible={excepciones.has(celda.fecha)}
+                deshabilitado={estado.cargando || Boolean(estado.errorCarga) || estado.operacion}
+                seleccionado={estado.seleccion === celda.fecha} sinConsultar={estado.cargando || !!estado.errorCarga}
+                serviciosSinConsultar={agenda.cargando || !!agenda.error} seleccionar={() => seleccionar(celda.fecha)} />
             ) : <span key={`vacio-${indice}`} aria-hidden="true" />)}
           </div>
-          <p className="disponibilidad-leyenda"><span className="disponibilidad-marca" /> No disponible</p>
+          <div className="disponibilidad-leyenda" aria-label="Leyenda del calendario">
+            <span><i className="leyenda-disponible" />Disponible</span>
+            <span><i className="leyenda-ocupada" />Servicio programado</span>
+            <span><i className="leyenda-sobrecarga" />Sobrecarga</span>
+            <span><i className="leyenda-no-disponible" />No disponible</span>
+          </div>
+          {agenda.cargando && <p className="disponibilidad-ayuda" role="status">Cargando servicios…</p>}
+          {agenda.error && <div><p className="disponibilidad-error" role="alert">{agenda.error}</p>
+            <button type="button" onClick={agenda.reintentar}>Reintentar servicios</button></div>}
+          {estado.seleccion && !agenda.cargando && !agenda.error &&
+            <DetalleServiciosDia fecha={estado.seleccion} servicios={agenda.porDia[estado.seleccion] ?? []} />}
         </div>
 
         <div className="disponibilidad-panel">

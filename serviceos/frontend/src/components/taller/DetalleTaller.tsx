@@ -84,7 +84,7 @@ export default function DetalleTaller(props: Props) {
               {recepcion.maquina_tipo}{recepcion.maquina_tamano && ` · ${recepcion.maquina_tamano}`}
             </p>
             <p className={`taller-estado ${recepcion.estado}`}>
-              {recepcion.estado === 'en_taller' ? 'En taller'
+              {recepcion.estado === 'en_taller' ? 'En oficina'
                 : `Entregada — ${mostrarFecha(recepcion.fecha_entrega!)}`}
             </p>
             <Datos titulo="Cliente" campos={[

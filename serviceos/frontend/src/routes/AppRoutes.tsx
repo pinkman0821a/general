@@ -9,12 +9,11 @@ import CoordinadorGate from '../components/CoordinadorGate'
 import AppLayout from '../layouts/AppLayout'
 import AgendaPage from '../pages/AgendaPage'
 import AjustesPage from '../pages/AjustesPage'
-import ClientesPage from '../pages/ClientesPage'
 import FinanzasPage from '../pages/FinanzasPage'
 import InicioPage from '../pages/InicioPage'
 import LoginPage from '../pages/LoginPage'
 import TallerAcceso from '../components/taller/TallerAcceso'
-import ServiciosPage from '../pages/ServiciosPage'
+import ServiciosAcceso from '../components/servicios/ServiciosAcceso'
 import TecnicoInicioPage from '../pages/TecnicoInicioPage'
 import TecnicosPage from '../pages/TecnicosPage'
 
@@ -28,6 +27,9 @@ export default function AppRoutes() {
 
       <Route element={<AuthGate />}>
         <Route path="/maquinas" element={<TallerAcceso />} />
+        <Route path="/taller" element={<TallerAcceso />} />
+        <Route path="/servicios" element={<ServiciosAcceso />} />
+        <Route path="/servicios/:id" element={<ServiciosAcceso detalle />} />
         <Route
           path="/tecnico"
           element={<TecnicoInicioPage />}
@@ -46,18 +48,8 @@ export default function AppRoutes() {
             />
 
             <Route
-              path="/servicios"
-              element={<ServiciosPage />}
-            />
-
-            <Route
               path="/tecnicos"
               element={<TecnicosPage />}
-            />
-
-            <Route
-              path="/clientes"
-              element={<ClientesPage />}
             />
 
             <Route

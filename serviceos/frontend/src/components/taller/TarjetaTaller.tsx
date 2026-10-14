@@ -15,7 +15,7 @@ export default function TarjetaTaller({ recepcion, seleccionada, ocupado, abrir 
       <span className="taller-tarjeta-cabecera">
         <strong>{recepcion.cliente_nombre}</strong>
         <span className={`taller-estado ${recepcion.estado}`}>
-          {recepcion.estado === 'en_taller' ? 'En taller' : 'Entregada'}
+          {recepcion.estado === 'en_taller' ? 'En oficina' : 'Entregada'}
         </span>
       </span>
       <span className="taller-maquina">

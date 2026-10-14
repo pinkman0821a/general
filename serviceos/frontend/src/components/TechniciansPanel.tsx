@@ -1,6 +1,8 @@
-import { tecnicos } from '../data/dashboardData'
+import { Link } from 'react-router-dom';
+import type { TecnicoDia } from '../services/agendaService';
+import { descripcionTecnico, estadosAgenda } from './operacion/agendaAyudas';
 
-function TechniciansPanel() {
+function TechniciansPanel({ tecnicos }: { tecnicos: TecnicoDia[] }) {
   return (
     <article className="panel technician-panel">
       <div className="panel-header">
@@ -11,6 +13,7 @@ function TechniciansPanel() {
       </div>
 
       <div className="technician-list">
+        {!tecnicos.length && <p>No hay técnicos activos.</p>}
         {tecnicos.map((tecnico) => (
           <div
             className="technician"
@@ -22,21 +25,17 @@ function TechniciansPanel() {
 
             <div className="technician-info">
               <strong>{tecnico.nombre}</strong>
-              <span>{tecnico.ciudad}</span>
+              <span>{descripcionTecnico(tecnico)}</span>
+              {!!tecnico.remotos.length && <span>{tecnico.remotos.length} remoto{tecnico.remotos.length > 1 ? 's' : ''} · no ocupa agenda</span>}
             </div>
 
-            <span
-              className={
-                tecnico.estado === 'Disponible'
-                  ? 'availability available'
-                  : 'availability busy'
-              }
-            >
-              {tecnico.estado}
+            <span className={`availability agenda-estado ${tecnico.estado}`}>
+              {tecnico.estado === 'programado' ? 'En servicio' : estadosAgenda[tecnico.estado]}
             </span>
           </div>
         ))}
       </div>
+      <Link to="/agenda" className="secondary-button">Consultar agenda</Link>
     </article>
   )
 }

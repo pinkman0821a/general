@@ -1,0 +1,42 @@
+.tecnico-disponibilidad .disponibilidad-dia {
+  min-height: 48px;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 9px;
+}
+.tecnico-disponibilidad .disponibilidad-dia.agenda-ocupada {
+  border-color: #75623c;
+  background: #211e16;
+  color: #dfbd72;
+}
+.tecnico-disponibilidad .disponibilidad-dia.no-disponible {
+  border-color: #626975;
+  background: #23262d;
+  color: #c2c7d0;
+}
+.tecnico-disponibilidad .disponibilidad-dia.agenda-sobrecarga {
+  border-color: #af515b;
+  background: #31191e;
+  color: #ffc3c7;
+}
+.disponibilidad-conteo {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 700;
+}
+.disponibilidad-conteo::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+.disponibilidad-dia.no-disponible .disponibilidad-marca { width: 10px; height: 2px; left: calc(50% - 5px); border-radius: 0; background: #b4bac5; }
+.disponibilidad-leyenda { flex-wrap: wrap; gap: 8px 12px; }
+.disponibilidad-leyenda > span { display: inline-flex; align-items: center; gap: 5px; }
+.disponibilidad-leyenda i { display: inline-block; width: 7px; height: 7px; border: 1px solid #626975; border-radius: 50%; }
+.disponibilidad-leyenda .leyenda-ocupada { background: #dfbd72; border-color: #dfbd72; }
+.disponibilidad-leyenda .leyenda-sobrecarga { background: #af515b; border-color: #af515b; }
+.disponibilidad-leyenda .leyenda-no-disponible { height: 2px; width: 10px; border: 0; border-radius: 0; background: #b4bac5; }
+.disponibilidad-servicios { border-top: 1px solid #292c32; padding-top: 14px; margin-top: 14px; }
+.disponibilidad-servicios h4 { margin: 0; font-size: 13px; }
+.disponibilidad-aviso { padding: 10px; border: 1px solid #af515b; border-radius: 8px; line-height: 1.5; }
+.disponibilidad-servicio { display: grid; gap: 7px; margin-top: 10px; padding: 12px; border: 1px solid #292c32; border-radius: 8px; overflow-wrap: anywhere; }
+.disponibilidad-servicio > span:not(.servicios-estado) { color: #b1b7c0; }
+.disponibilidad-servicio a { display: inline-flex; align-items: center; min-height: 40px; color: #a8bedf; }
