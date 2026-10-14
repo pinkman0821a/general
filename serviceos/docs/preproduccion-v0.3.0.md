@@ -130,7 +130,7 @@ no se validaba explícitamente. Esos campos inválidos ahora se rechazan con 400
 
 ## INFORMATIVOS
 
-Versiones configuradas para este checkpoint: 0.3.0-rc.1.
+Versiones configuradas para este checkpoint: 0.3.0-rc.2.
 Oficina conserva internamente Taller, `/taller`, `/api/taller` y el acceso `/maquinas`.
 No se hallaron console.log, TODO, FIXME, debugger, credenciales constantes ni URLs localhost
 en el código operativo inspeccionado. Los ejemplos en placeholders de inputs son ayudas de captura.

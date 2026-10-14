@@ -94,11 +94,12 @@ it('Escrituras administrativas no admiten técnicos ni peticiones sin sesión', 
   }
 });
 
-it('Migraciones 0001–0014 aplicadas en D1 aislada: integridad, FK, índices y triggers', async () => {
+it('Migraciones 0001–0015 aplicadas en D1 aislada: integridad, FK, índices y triggers', async () => {
   const migraciones = (await env.DB.prepare('SELECT name FROM d1_migrations ORDER BY id').all<{ name: string }>()).results;
-  expect(migraciones).toHaveLength(14);
+  expect(migraciones).toHaveLength(15);
   expect(migraciones[0].name).toBe('0001_create_app_info.sql');
   expect(migraciones[13].name).toBe('0014_create_servicio_fotos.sql');
+  expect(migraciones[14].name).toBe('0015_update_app_info_version.sql');
   expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
   const objetos = (await env.DB.prepare("SELECT name FROM sqlite_master WHERE type IN ('index', 'trigger')").all<{ name: string }>()).results.map(o => o.name);
   expect(objetos).toEqual(expect.arrayContaining(['idx_servicios_tecnico_fecha', 'idx_servicio_fotos_orden',
