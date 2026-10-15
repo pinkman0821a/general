@@ -45,7 +45,7 @@ it('Servicio inexistente devuelve 404', async () => {
 });
 
 it('Desaparece de Agenda/Inicio/Finanzas/resumen propio/Excel y conserva la edición de otro servicio', async () => {
-  const servicio = await crear({ trabajo_realizado: 'REVISION' });
+  const servicio = await crear();
   await pedir('PATCH', `/${servicio.id}/estado`, { estado: 'realizado' });
   expect((await consultarFinanzas(env, '2026-10')).resumen.pago_tecnicos).toBe(100000);
   expect((await pedir('GET', '/comisiones.xlsx?mes=2026-10')).status).toBe(200);

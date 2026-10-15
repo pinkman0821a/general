@@ -10,11 +10,8 @@ export type DatosServicio = {
   tipo_falla: string | null;
   ciudad?: string | null;
   direccion?: string | null;
-  tarjeteria?: string | null;
-  cabezal?: string | null;
   observaciones?: string | null;
   valor_servicio?: number | null;
-  trabajo_realizado?: string | null;
 };
 export type Servicio = DatosServicio & {
   id: number; estado: EstadoServicio;
@@ -87,7 +84,7 @@ export async function obtenerServicio(id: number, signal?: AbortSignal) {
   return datos.servicio;
 }
 
-async function guardar(ruta: string, method: string, body: PayloadServicio | { estado: EstadoServicio; trabajo_realizado?: string | null }) {
+async function guardar(ruta: string, method: string, body: PayloadServicio | { estado: EstadoServicio }) {
   const datos = await solicitar(ruta, {
     method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
   });
@@ -101,8 +98,8 @@ export function crearServicio(datos: PayloadServicio) {
 export function editarServicio(id: number, datos: PayloadServicio) {
   return guardar(`/api/servicios/${id}`, 'PATCH', datos);
 }
-export function cambiarEstadoServicio(id: number, estado: EstadoServicio, trabajo_realizado?: string | null) {
-  return guardar(`/api/servicios/${id}/estado`, 'PATCH', { estado, ...(trabajo_realizado === undefined ? {} : { trabajo_realizado }) });
+export function cambiarEstadoServicio(id: number, estado: EstadoServicio) {
+  return guardar(`/api/servicios/${id}/estado`, 'PATCH', { estado });
 }
 
 export async function eliminarServicio(id: number) {

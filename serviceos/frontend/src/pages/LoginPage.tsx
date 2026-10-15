@@ -116,7 +116,7 @@ navigate(
         </form>
 
         <span className="login-version">
-          ServiceOS v0.3.0-rc.2
+          ServiceOS v0.3.0-rc.3
         </span>
       </section>
     </main>

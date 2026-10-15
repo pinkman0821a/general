@@ -8,7 +8,7 @@ beforeEach(preparar);
 describe('Servicios: ocupación e indisponibilidad', () => {
 	it.each(['garantia', 'servicio_presencial', 'instalacion'])('advierte sobrecarga presencial %s incluso realizado', async tipo => {
 		const servicio = await crear({ tipo, valor_servicio: tipo === 'servicio_presencial' ? 250000 : null });
-		expect((await pedir('PATCH', `/${servicio.id}/estado`, { estado: 'realizado', trabajo_realizado: 'REVISION' })).status).toBe(200);
+		expect((await pedir('PATCH', `/${servicio.id}/estado`, { estado: 'realizado' })).status).toBe(200);
 		await error(await pedir('POST', '', datos), 409);
 		expect((await lista()).length).toBe(1);
 		await crear({ tecnico_id: 3 });
@@ -66,9 +66,9 @@ describe('Servicios: ocupación e indisponibilidad', () => {
 		await error(await pedir('POST', '', { ...datos, tecnico_id: 3 }), 409);
 	});
 	it('permite edición parcial normalizada y limpiar opcionales', async () => {
-		const servicio = await crear({ tarjeteria: '  Sunjung  ', cabezal: 'DX7' });
-		expect(servicio.tarjeteria).toBe('Sunjung');
-		const editado = await detalle(await pedir('PATCH', `/${servicio.id}`, { cliente_nombre: ' Otro ', cabezal: null }));
-		expect(editado).toMatchObject({ cliente_nombre: 'Otro', cabezal: null, maquina: 'Plotter', estado: 'pendiente' });
+		const servicio = await crear({ observaciones: '  Revisar  ' });
+		expect(servicio.observaciones).toBe('Revisar');
+		const editado = await detalle(await pedir('PATCH', `/${servicio.id}`, { cliente_nombre: ' Otro ', observaciones: null }));
+		expect(editado).toMatchObject({ cliente_nombre: 'Otro', observaciones: null, maquina: 'Plotter', estado: 'pendiente' });
 	});
 });

@@ -22,13 +22,11 @@
 .servicio-detalle-ejecucion h3 { margin-bottom: 0; }
 .servicio-detalle-ejecucion .servicios-control-estado { margin: 0; }
 .servicio-detalle-ejecucion :is(input, select) { font-size: 16px; }
-.servicio-detalle-trabajo { min-width: 0; display: grid; gap: 10px; }
 .servicio-detalle-ejecucion .servicio-fotos { margin-top: 0; }
 .servicio-detalle-editar { margin-top: 18px; }
 .servicio-detalle .servicios-eliminar { margin-top: 18px; }
 @container (min-width: 560px) {
   .servicio-detalle-datos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; }
-  .servicio-detalle-trabajo button { justify-self: start; }
 }
 @media (max-width: 600px) {
   .servicios-panel.servicio-detalle { padding: 16px 14px; }

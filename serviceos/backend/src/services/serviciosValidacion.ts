@@ -1,6 +1,5 @@
 import { idValido } from '../routes/rutaComun';
 import { fechaValida } from '../utils/fecha';
-import { comprobarTrabajo, normalizarTrabajo } from './servicioTrabajo';
 
 export const tiposServicio = ['garantia', 'servicio_presencial', 'servicio_remoto', 'instalacion', 'instalacion_remota'] as const;
 export const estadosServicio = ['pendiente', 'en_proceso', 'realizado'] as const;
@@ -16,13 +15,12 @@ export type DatosServicio = {
 	tecnico_id: number;
 	maquina: string;
 	tipo_falla: string | null;
-	tarjeteria: string | null;
-	cabezal: string | null;
 	observaciones: string | null;
 	valor_servicio: number | null;
-	trabajo_realizado?: string | null;
 };
 export type ServicioDb = DatosServicio & {
+	// Solo lectura interna para exportar registros historicos; no forma parte del contrato publico.
+	trabajo_realizado?: string | null;
 	id: number;
 	estado: EstadoServicio;
 	created_at: string;
@@ -63,7 +61,7 @@ export function respuestaServicio(servicio: ServicioDb, rol?: 'coordinador' | 't
 		comprobante_size: servicio.comprobante_size ?? null };
 }
 export const camposServicio = ['tipo', 'cliente_nombre', 'cliente_telefono', 'ciudad', 'direccion',
-	'fecha_programada', 'tecnico_id', 'maquina', 'tipo_falla', 'tarjeteria', 'cabezal', 'observaciones', 'valor_servicio', 'trabajo_realizado'] as const;
+	'fecha_programada', 'tecnico_id', 'maquina', 'tipo_falla', 'observaciones', 'valor_servicio'] as const;
 
 export function validarServicio(body: Record<string, unknown>, actual?: ServicioDb): DatosServicio {
 	if (!Object.keys(body).length || Object.keys(body).some((campo) => campo !== 'confirmar_sobrecarga'
@@ -74,7 +72,6 @@ export function validarServicio(body: Record<string, unknown>, actual?: Servicio
 		throw new ErrorServicio('confirmar_sobrecarga debe ser booleano');
 	}
 	const datos: Record<string, unknown> = { ...actual, ...body };
-	datos.trabajo_realizado = normalizarTrabajo(datos.trabajo_realizado);
 	if (!tiposServicio.includes(datos.tipo as TipoServicio)) throw new ErrorServicio('Tipo inválido');
 	if (!fechaValida(datos.fecha_programada)) throw new ErrorServicio('Fecha programada inválida');
 	if (!idValido(datos.tecnico_id)) throw new ErrorServicio('Técnico inválido');
@@ -88,7 +85,7 @@ export function validarServicio(body: Record<string, unknown>, actual?: Servicio
 		if (typeof datos.tipo_falla !== 'string' || !datos.tipo_falla.trim()) throw new ErrorServicio('tipo_falla es obligatorio');
 		datos.tipo_falla = datos.tipo_falla.trim();
 	}
-	for (const campo of ['ciudad', 'direccion', 'tarjeteria', 'cabezal', 'observaciones']) {
+	for (const campo of ['ciudad', 'direccion', 'observaciones']) {
 		if (datos[campo] === undefined || datos[campo] === null) datos[campo] = null;
 		else if (typeof datos[campo] !== 'string' || !(datos[campo] as string).trim()) throw new ErrorServicio(`${campo} inválido`);
 		else datos[campo] = (datos[campo] as string).trim();
@@ -102,14 +99,11 @@ export function validarServicio(body: Record<string, unknown>, actual?: Servicio
 		if (datos.valor_servicio !== undefined && datos.valor_servicio !== null) throw new ErrorServicio('Este tipo no admite valor del servicio');
 		datos.valor_servicio = null;
 	}
-	if (actual && ('trabajo_realizado' in body || actual.tipo !== datos.tipo)) {
-		comprobarTrabajo(datos.tipo as TipoServicio, actual.estado, datos.trabajo_realizado as string | null);
-	}
 	return Object.fromEntries(camposServicio.map((campo) => [campo, datos[campo]])) as DatosServicio;
 }
 
 export function validarEstado(body: Record<string, unknown>): EstadoServicio {
-	if (Object.keys(body).some(campo => !['estado', 'trabajo_realizado'].includes(campo)) || !estadosServicio.includes(body.estado as EstadoServicio)) {
+	if (Object.keys(body).some(campo => campo !== 'estado') || !estadosServicio.includes(body.estado as EstadoServicio)) {
 		throw new ErrorServicio('Solo se admite un estado válido');
 	}
 	return body.estado as EstadoServicio;

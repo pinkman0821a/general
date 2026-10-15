@@ -11,8 +11,10 @@ export type TecnicoFinanzas = {
 export function agregarFinanzas(operaciones: OperacionFinanzas[]) {
 	const grupos = new Map<number, TecnicoFinanzas>();
 	let pago = 0;
+	let ingresos = 0;
 	let cantidad = 0;
 	for (const operacion of operaciones) {
+		if (operacion.tipo === 'servicio_presencial' || operacion.tipo === 'servicio_remoto') ingresos += operacion.valor_servicio ?? 0;
 		const generado = pagoTecnico(operacion);
 		if (generado <= 0) continue;
 		pago += generado; cantidad++;
@@ -28,7 +30,7 @@ export function agregarFinanzas(operaciones: OperacionFinanzas[]) {
 		grupos.set(tecnico.id, tecnico);
 	}
 	return {
-		resumen: { pago_tecnicos: pago, servicios_con_pago: cantidad, tecnicos_con_actividad: grupos.size,
+		resumen: { ingresos_servicios: ingresos, pago_tecnicos: pago, servicios_con_pago: cantidad, tecnicos_con_actividad: grupos.size,
 			promedio_por_servicio: cantidad ? pago / cantidad : 0 },
 		tecnicos: [...grupos.values()].sort((a, b) => b.pago_generado - a.pago_generado
 			|| a.nombre.localeCompare(b.nombre, 'es') || a.id - b.id),

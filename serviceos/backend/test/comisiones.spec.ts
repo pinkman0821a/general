@@ -11,7 +11,10 @@ beforeAll(migrar);
 beforeEach(preparar);
 
 async function realizado(cambios: Record<string, unknown> = {}) {
-	const servicio = await crear({ ...remoto, trabajo_realizado: 'CALIBRACION', confirmar_sobrecarga: true, ...cambios });
+	// Los trabajos solo se siembran en D1 para representar filas historicas, nunca desde la API nueva.
+ const { trabajo_realizado = 'CALIBRACION', ...actuales } = cambios;
+ const servicio = await crear({ ...remoto, confirmar_sobrecarga: true, ...actuales });
+ await env.DB.prepare('UPDATE servicios SET trabajo_realizado = ? WHERE id = ?').bind(trabajo_realizado, servicio.id).run();
 	await detalle(await pedir('PATCH', `/${servicio.id}/estado`, { estado: 'realizado' }));
 	return servicio;
 }
@@ -28,6 +31,16 @@ async function leer(cookie = cookies.coordinador, filtros = '') {
 }
 
 describe('Excel comisiones: generación y lectura reales dentro de Workers', () => {
+	it('exporta servicios nuevos finalizados con solo estado y sin trabajo histórico', async () => {
+		for (const tipo of ['servicio_presencial', 'servicio_remoto']) {
+			const servicio = await crear({ tipo, ...(tipo === 'servicio_remoto' ? { ciudad: null, direccion: null } : {}) });
+			await detalle(await pedir('PATCH', `/${servicio.id}/estado`, { estado: 'realizado' }, cookies.tecnico));
+		}
+		const { libro } = await leer(cookies.tecnico);
+		expect([9, 10].map(fila => libro.worksheets[0].getCell(`D${fila}`).value))
+			.toEqual(['TRABAJO NO REGISTRADO PRESENCIAL', 'TRABAJO NO REGISTRADO REMOTA']);
+		expect(libro.worksheets[0].getCell('H11').value).toEqual({ formula: 'SUM(H9:H10)', result: 200000 });
+	});
 	it('técnico solo exporta lo suyo y coordinador exporta todas las hojas con datos', async () => {
 		await realizado({ cliente_nombre: 'Propio' });
 		await realizado({ tecnico_id: 3, cliente_nombre: 'Ajeno' });

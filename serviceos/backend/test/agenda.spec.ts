@@ -13,7 +13,7 @@ async function bloqueo(fecha: string, motivo: string | null = 'Viaje', tecnico =
 	await env.DB.prepare('INSERT INTO tecnico_indisponibilidades (tecnico_id, fecha, motivo) VALUES (?, ?, ?)').bind(tecnico, fecha, motivo).run();
 }
 async function servicio(cambios: Record<string, unknown> = {}) {
-	return crear({ confirmar_sobrecarga: true, trabajo_realizado: 'REVISION', ...cambios });
+	return crear({ confirmar_sobrecarga: true, ...cambios });
 }
 async function dia(fecha = '2026-10-15') {
 	return (await consultarAgenda(env, fecha.slice(0, 7))).dias.find(d => d.fecha === fecha)!;

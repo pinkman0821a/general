@@ -28,7 +28,7 @@ export async function gestionarServicios(request: Request, env: Env, valorId?: s
 		const body = await leerObjeto(request);
 		if (!body) return errorRuta('Cuerpo JSON inválido', 400);
 		const servicio = cambiarEstado && id !== null
-			? await guardarEstadoServicio(env, id, validarEstado(body), usuario, body)
+			? await guardarEstadoServicio(env, id, validarEstado(body), usuario)
 			: await guardarServicio(env, validarServicio(body, actual ?? undefined), actual ?? undefined, body.confirmar_sobrecarga === true);
 		return Response.json({ status: 'ok', servicio: respuestaServicio(servicio, usuario.rol, true) }, { status: id === null ? 201 : 200 });
 	} catch (error) {

@@ -27,10 +27,7 @@ for (const tipo of Object.keys(tiposServicio)) {
     const falla = html.match(/<input[^>]*name="tipo_falla"[^>]*>/);
     if (tipo === 'instalacion' || tipo === 'instalacion_remota') assert.equal(falla, null);
     else assert.match(falla[0], /required=""/);
-    for (const campo of ['tarjeteria', 'cabezal']) {
-      assert.match(html, new RegExp(`name="${campo}"`));
-      assert.doesNotMatch(html.match(new RegExp(`<input[^>]*name="${campo}"[^>]*>`))[0], /required/);
-    }
+    assert.doesNotMatch(html, /name="tarjeteria"|name="cabezal"|name="trabajo_realizado"/);
     assert.doesNotMatch(html, /name="estado"|pago_tecnico/);
     assert.doesNotMatch(html, />Inactivo</);
   });

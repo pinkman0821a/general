@@ -33,7 +33,7 @@ export function filtrosServicios(parametros: URLSearchParams, usuario: UsuarioSe
 	const buscar = parametros.get('buscar');
 	if (buscar !== null) {
 		if (!buscar.trim()) throw new ErrorServicio('Búsqueda vacía');
-		const campos = ['cliente_nombre', 'cliente_telefono', 'ciudad', 'maquina', 'tipo_falla', 'tarjeteria', 'cabezal'];
+		const campos = ['cliente_nombre', 'cliente_telefono', 'ciudad', 'maquina', 'tipo_falla'];
 		condiciones.push(`(${campos.map((campo) => `instr(lower(coalesce(${campo}, '')), lower(?)) > 0`).join(' OR ')})`);
 		valores.push(...campos.map(() => buscar.trim()));
 	}

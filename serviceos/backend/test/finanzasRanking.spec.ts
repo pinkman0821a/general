@@ -54,7 +54,7 @@ it('rankings independientes de seis meses, ceros omitidos, inactivos históricos
 it('desempate nombre ASC y todos los estados aportan al resumen propio sin garantías ni otros técnicos', async () => {
 	const mes = mesActualFinanciero();
 	for (const estado of ['pendiente', 'en_proceso', 'realizado']) {
-		const servicio = await operacion({ valor_servicio: 200000, fecha_programada: `${mes}-10`, trabajo_realizado: 'REVISION' });
+		const servicio = await operacion({ valor_servicio: 200000, fecha_programada: `${mes}-10` });
 		if (estado !== 'pendiente') await detalle(await pedir('PATCH', `/${servicio.id}/estado`, { estado }));
 	}
 	await operacion({ tecnico_id: 3, valor_servicio: 600000, fecha_programada: `${mes}-10` });

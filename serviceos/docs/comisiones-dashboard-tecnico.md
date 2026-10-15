@@ -6,14 +6,13 @@ Los cambios locales anteriores se conservaron; el estado Git contiene también e
 ## Comportamiento
 
 - Migración nueva `0013_add_servicio_trabajo_realizado.sql`: columna nullable. 0011 y 0012 permanecen intactas.
-- La creación no exige trabajo realizado. El coordinador lo edita en formulario/detalle.
-- El técnico asignado guarda concepto o cambia estado desde el detalle mediante `PATCH /api/servicios/:id/estado`.
-  Ese endpoint admite únicamente `estado` y `trabajo_realizado`; comprueba propiedad también al escribir.
-- Los servicios presenciales/remotos no pasan a realizado sin concepto; instalaciones y garantías no lo requieren.
-- El concepto se normaliza a mayúsculas, sin acentos, con espacios compactados y sin sufijos de modalidad repetidos.
-- Los registros históricos siguen siendo legibles con NULL y conservan la edición administrativa.
-  Al exportarlos se muestra `TRABAJO NO REGISTRADO PRESENCIAL/REMOTA`, para no confundir máquina y trabajo.
-  El coordinador puede completar su concepto histórico.
+- Desde RC.3, creación, edición y detalle omiten el trabajo realizado y sus sugerencias.
+- El técnico asignado cambia estado mediante `PATCH /api/servicios/:id/estado` enviando únicamente `estado`.
+  Se comprueba propiedad también al escribir; todos los tipos pueden finalizar sin campos adicionales.
+- La columna histórica `trabajo_realizado` permanece intacta y solo se lee para Excel.
+  Sus etiquetas se normalizan a mayúsculas, sin acentos y sin sufijos de modalidad repetidos.
+  Cuando no existe valor se exporta `TRABAJO NO REGISTRADO PRESENCIAL/REMOTA`.
+  Las operaciones nuevas no escriben ni validan esa columna.
 - `GET /api/servicios/comisiones.xlsx?mes=YYYY-MM`: identidad técnica de sesión; coordinador exporta todo el equipo.
   Solo incluye realizados del mes de los cuatro tipos con comisión; garantías siempre excluidas.
   Los filtros visuales no afectan la exportación. Un técnico no puede enviar `tecnico_id` para exportar otro.
@@ -83,7 +82,7 @@ Backend: suite Vitest sobre Workers/D1 aislados, lectura de celdas reales de XLS
 hojas, fórmulas/resultados, estilos, privacidad, filtros, trabajo realizado y resumen.
 Incluye generación/lectura de 600 filas sin Web Workers y período de febrero bisiesto.
 
-Frontend: pruebas Node de componentes reales, handlers y efectos; permisos, conceptos,
+Frontend: pruebas Node de componentes reales, handlers y efectos; permisos, finalización con solo estado,
 dashboard, KPIs, enlaces, resumen, descarga por mes, errores, doble envío y revocación.
 No sustituyen una inspección visual en Excel o en dispositivos reales.
 
@@ -115,10 +114,10 @@ git diff --stat
 3. En otra terminal, desde `frontend`, ejecutar `npm.cmd run dev`.
    Vite ya dirige `/api` a `http://127.0.0.1:8787`.
 4. Con coordinador, crear operaciones del mes para dos técnicos; dejar una pendiente,
-   otra en proceso y completar servicios indicando concepto; completar también instalaciones y garantía.
+   otra en proceso y completar servicios enviando solo estado; completar también instalaciones y garantía.
 5. Verificar la tarjeta de pagos con filtros distintos: su importe permanece igual.
    Descargar comisiones: un XLSX con hojas por técnico, únicamente realizados con comisión.
-6. Con técnico, revisar `/tecnico`, abrir próximo servicio, guardar trabajo y completar.
+6. Con técnico, revisar `/tecnico`, abrir próximo servicio y marcar realizado sin campos adicionales.
    Descargar desde Servicios: solo operaciones propias del mes. Revisar también el acceso Taller y Atrás.
 
 ## Pendientes y límites

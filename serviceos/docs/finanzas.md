@@ -21,7 +21,12 @@ Respuestas con `Cache-Control: no-store`. No hay escrituras financieras ni cambi
 
 ## Fuente y cálculo
 
-Todas las operaciones se calculan con `pagoTecnico`, la función central existente:
+Desde RC.3 el KPI superior muestra **Ingresos por servicios**, usando `resumen.ingresos_servicios`:
+valor completo de servicio presencial y remoto del mes seleccionado según `fecha_programada`, en todos los estados.
+Excluye garantías, ambas instalaciones y comisiones. Ejemplo: presencial 500000 + remoto 300000,
+con instalación y garantía adicionales, produce 800000 COP. Incluye valores cuyo pago redondea a cero.
+
+Los pagos a técnicos se calculan con `pagoTecnico`, la función central existente, sin cambios:
 
 - Garantía: cero.
 - Instalación presencial: 100000 COP.

@@ -10,7 +10,7 @@ const tecnicos = [
 const datos = {
   status: 'ok', mes: '2026-10', historico, tecnicos,
   historico_tecnicos: [...historico].reverse().map(fila => ({ mes: fila.mes, tecnicos: fila.pago_generado ? tecnicos : [] })),
-  resumen: { pago_tecnicos: 1200000, servicios_con_pago: 8, tecnicos_con_actividad: 2, promedio_por_servicio: 150000 },
+  resumen: { ingresos_servicios: 800000, pago_tecnicos: 1200000, servicios_con_pago: 8, tecnicos_con_actividad: 2, promedio_por_servicio: 150000 },
   comparacion: { mes_anterior: '2026-09', pago_anterior: 950000, diferencia: 250000, porcentaje: 26.31578947368421 },
 };
 const detalle = {

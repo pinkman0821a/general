@@ -130,7 +130,14 @@ no se validaba explícitamente. Esos campos inválidos ahora se rechazan con 400
 
 ## INFORMATIVOS
 
-Versiones configuradas para este checkpoint: 0.3.0-rc.2.
+Versiones configuradas para este checkpoint: 0.3.0-rc.3.
+RC.3 retira tarjeteria, cabezal y trabajo_realizado de formularios, detalles y contratos nuevos de Servicios.
+Las columnas y datos históricos permanecen; Excel sigue leyendo el trabajo antiguo cuando existe.
+El técnico asignado puede finalizar enviando solo estado, con los mismos permisos.
+El KPI superior de Finanzas muestra ingresos completos por servicios presenciales/remotos del mes,
+sin sumar instalaciones, garantías ni pagos técnicos: 500000 + 300000 = 800000 COP.
+La migración `0016_update_app_info_version.sql` solo actualiza `app_info.version` de la fila 1.
+Las migraciones 0001–0016 se verificaron exclusivamente en D1 aislada de pruebas.
 Oficina conserva internamente Taller, `/taller`, `/api/taller` y el acceso `/maquinas`.
 No se hallaron console.log, TODO, FIXME, debugger, credenciales constantes ni URLs localhost
 en el código operativo inspeccionado. Los ejemplos en placeholders de inputs son ayudas de captura.
@@ -142,7 +149,7 @@ Se conservó la validación de COP numéricos positivos, finitos y enteros repre
 | Área | Evidencia y comportamiento |
 | --- | --- |
 | Autenticación | Login de ambos roles, logout, usuario inactivo, sesión inválida/expirada/desactivada; cookie HttpOnly/SameSite y Secure bajo HTTPS; token de sesión almacenado con hash |
-| Servicios | Cinco tipos, tres estados y campos condicionales; técnico solo estado/concepto propio; realizado exige trabajo_realizado en servicios presencial/remoto |
+| Servicios | Cinco tipos, tres estados y campos condicionales; técnico solo cambia estado propio; realizado no exige campos adicionales. Campos técnicos retirados de la experiencia RC.3; históricos intactos |
 | Asignación | Técnico activo; bloqueo manual duro; 409 de sobrecarga confirmable sin omitir indisponibilidad; remoto no ocupa |
 | Agenda/Inicio | Fuente compartida: manual > sobrecarga > un presencial > disponible; remotos secundarios, inactivos con histórico y enlaces exactos; sin horas ficticias |
 | Técnicos | Skills y disponibilidad reales, administración coordinador, calendario individual y detalle de servicios |
@@ -165,7 +172,7 @@ diagnóstico previo de `finanzas.md`. No se modificó ese dato durante la audito
 | --- | --- | --- | --- | --- |
 | Servicio detalle | Sí | Sí | 403 | 401 |
 | Servicio crear/editar administración | Sí | 403 | 403 | 401 |
-| Estado/trabajo_realizado | Sí | Sí, campos limitados | 403 | 401 |
+| Estado | Sí | Sí, solo estado | 403 | 401 |
 | Comprobante GET/PUT/DELETE | Sí, tipos admitidos | 403 | 403 | 401 |
 | Fotos listar/ver | Sí | Sí | 403 | 401 |
 | Fotos agregar/eliminar | Sí | 403 | 403 | 401 |
@@ -231,7 +238,7 @@ Estas cifras son del trabajo acumulado; no representan cambios nuevos de código
 
 1. Entorno aislado y cuentas de prueba para Cristian; login/logout de ambos roles y cambio de clave.
 2. Verificar actualización de cuentas legacy utilizadas y revocación de sesiones al cambiar contraseña.
-3. Recorrer los cinco tipos, estados/concepto, bloqueo manual y sobrecarga confirmada de Servicios.
+3. Recorrer los cinco tipos, finalización con solo estado, bloqueo manual y sobrecarga confirmada de Servicios.
 4. Contrastar Agenda/Inicio y abrir servicios exactos; revisar Técnicos/skills/disponibilidad.
 5. Completar recepción, edición y entrega de Oficina con accesorios históricos y ambos roles.
 6. Probar comprobante separado de fotos, cancelar edición y reintentar fallos de subida.

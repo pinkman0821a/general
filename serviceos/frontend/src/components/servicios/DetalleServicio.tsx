@@ -5,7 +5,6 @@ import { estadosServicio, mensajeError, mostrarFecha, tiposServicio } from './se
 import EstadoServicio from './EstadoServicio';
 import { useOperacionServicio } from './useOperacionServicio';
 import ComprobantePago from './ComprobantePago';
-import TrabajoRealizado from './TrabajoRealizado';
 import FotosServicio from './fotos/FotosServicio';
 import EliminarServicio from './EliminarServicio';
 import '../../styles/servicioDetalle.css';
@@ -25,10 +24,9 @@ function DatosDetalle({ campos, principal = false }: { campos: [string, string |
   </dl>;
 }
 
-export function FichaServicio({ servicio, coordinador, tecnico, ocupado, cerrar, editar, cambiarEstado, trabajo, cambiarTrabajo, guardarTrabajo, children }: {
+export function FichaServicio({ servicio, coordinador, tecnico, ocupado, cerrar, editar, cambiarEstado, children }: {
   servicio: Servicio; coordinador: boolean; tecnico: string; ocupado: boolean;
   cerrar: () => void; editar: () => void; cambiarEstado: (estado: Estado) => void;
-  trabajo?: string; cambiarTrabajo?: (valor: string) => void; guardarTrabajo?: () => void;
   children?: ReactNode;
 }) {
   const principales: [string, string | null | undefined][] = [
@@ -38,7 +36,6 @@ export function FichaServicio({ servicio, coordinador, tecnico, ocupado, cerrar,
   ];
   const tecnicos: [string, string | null | undefined][] = [
     ['Tipo de servicio', tiposServicio[servicio.tipo]], ['Tipo de falla', servicio.tipo_falla],
-    ['Tarjetería', servicio.tarjeteria], ['Cabezal', servicio.cabezal],
   ];
   if (coordinador) tecnicos.push(['Técnico asignado', tecnico]);
   return <>
@@ -59,11 +56,6 @@ export function FichaServicio({ servicio, coordinador, tecnico, ocupado, cerrar,
           {Object.entries(estadosServicio).map(([valor, texto]) => <option key={valor} value={valor}>{texto}</option>)}
         </select>
       </label>
-      {servicio.tipo.startsWith('servicio_') && cambiarTrabajo && <div className="servicio-detalle-trabajo">
-        <TrabajoRealizado valor={trabajo ?? ''} cambiar={cambiarTrabajo} ocupado={ocupado} />
-        <button type="button" disabled={ocupado || (trabajo ?? '') === (servicio.trabajo_realizado ?? '')}
-          onClick={guardarTrabajo}>Guardar trabajo</button>
-      </div>}
       {servicio.observaciones && <DatosDetalle campos={[[ 'Observaciones', servicio.observaciones ]]} />}
       {children}
     </section>
@@ -73,7 +65,6 @@ export function FichaServicio({ servicio, coordinador, tecnico, ocupado, cerrar,
 
 export default function DetalleServicio(props: Props) {
   const [servicio, setServicio] = useState<Servicio | null>(null);
-  const [trabajo, setTrabajo] = useState('');
   const [error, setError] = useState('');
   const [revision, setRevision] = useState(0);
   const [ocupadoComprobante, setOcupadoComprobante] = useState(false);
@@ -81,13 +72,12 @@ export default function DetalleServicio(props: Props) {
   const textoCerrar = props.coordinador ? 'Cerrar' : 'Volver al listado';
   const operacion = useOperacionServicio((guardado) => {
     setServicio(guardado);
-    setTrabajo(guardado.trabajo_realizado ?? '');
     props.alGuardar(guardado);
   }, props.onOcupado);
   useEffect(() => {
     const controlador = new AbortController();
     obtenerServicio(props.id, controlador.signal)
-      .then((datos) => { if (!controlador.signal.aborted) { setServicio(datos); setTrabajo(datos.trabajo_realizado ?? ''); } })
+      .then((datos) => { if (!controlador.signal.aborted) { setServicio(datos); } })
       .catch((causa: unknown) => { if (!controlador.signal.aborted) setError(mensajeError(causa)); });
     return () => controlador.abort();
   }, [props.id, revision]);
@@ -98,9 +88,7 @@ export default function DetalleServicio(props: Props) {
       : servicio ? <FichaServicio servicio={servicio} coordinador={props.coordinador}
         tecnico={props.tecnicos.find((item) => item.id === servicio.tecnico_id)?.nombre ?? `Técnico #${servicio.tecnico_id}`}
         ocupado={operacion.guardando || ocupadoComprobante || ocupadoEliminacion} cerrar={props.cerrar} editar={() => props.editar(servicio)}
-        trabajo={trabajo} cambiarTrabajo={setTrabajo}
-        guardarTrabajo={() => void operacion.ejecutar(() => cambiarEstadoServicio(servicio.id, servicio.estado, trabajo))}
-        cambiarEstado={(estado) => { if (estado !== servicio.estado) void operacion.ejecutar(() => cambiarEstadoServicio(servicio.id, estado, trabajo)); }}>
+        cambiarEstado={(estado) => { if (estado !== servicio.estado) void operacion.ejecutar(() => cambiarEstadoServicio(servicio.id, estado)); }}>
         <FotosServicio servicioId={servicio.id} />
       </FichaServicio>
         : <><p role="status">Cargando detalle…</p><button type="button" onClick={props.cerrar}>{textoCerrar}</button></>}

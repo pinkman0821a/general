@@ -6,7 +6,6 @@ const { render, ejemplo, tecnicos } = require('./serviciosTestAyudas.cjs');
 const { montar, encontrarTodos, terminar } = require('./hooksPrueba.cjs');
 const Detalle = require('../src/components/servicios/DetalleServicio.tsx').default;
 const { FichaServicio } = require('../src/components/servicios/DetalleServicio.tsx');
-const Trabajo = require('../src/components/servicios/TrabajoRealizado.tsx').default;
 const Fotos = require('../src/components/servicios/fotos/FotosServicio.tsx').default;
 const Comprobante = require('../src/components/servicios/ComprobantePago.tsx').default;
 const Eliminar = require('../src/components/servicios/EliminarServicio.tsx').default;
@@ -34,7 +33,8 @@ test('Información principal prioriza máquina, teléfono, dirección, ciudad y 
 
 test('Información técnica conserva valores y omite etiquetas vacías; observaciones pertenecen a ejecución', () => {
   const html = render(FichaServicio, props), tecnica = zona(html, 'Información técnica');
-  for (const valor of ['Servicio presencial', ejemplo.tipo_falla, 'Sunjung', 'DX7']) assert.ok(tecnica.includes(valor));
+  for (const valor of ['Servicio presencial', ejemplo.tipo_falla]) assert.ok(tecnica.includes(valor));
+  assert.doesNotMatch(html, /Tarjetería|Cabezal|Sunjung|DX7/);
   assert.doesNotMatch(tecnica, /Revisar conectores/);
   assert.match(zona(html, 'Ejecución del servicio'), /Observaciones[^]*Revisar conectores/);
   const remoto = render(FichaServicio, { ...props, servicio: { ...ejemplo, tipo: 'servicio_remoto', ciudad: null, direccion: null } });
@@ -42,20 +42,16 @@ test('Información técnica conserva valores y omite etiquetas vacías; observac
   assert.doesNotMatch(zona(remoto, 'Información técnica'), /<dt>Tarjetería|<dt>Cabezal/);
 });
 
-test('Ejecución mantiene estado, edición de trabajo, guardado y fotos sin agregar funciones', () => {
-  const cambios = []; let guardados = 0;
-  const ficha = FichaServicio({ ...props, trabajo: 'REVISION', cambiarTrabajo: valor => cambios.push(valor),
-    guardarTrabajo: () => guardados++, cambiarEstado: valor => cambios.push(valor),
+test('Ejecución mantiene estado y fotos sin campos retirados', () => {
+  const cambios = [];
+  const ficha = FichaServicio({ ...props, cambiarEstado: valor => cambios.push(valor),
     children: require('react').createElement(Fotos, { servicioId: ejemplo.id }) });
   const ejecucion = encontrarTodos(ficha, nodo => nodo.props?.['aria-label'] === 'Ejecución del servicio')[0];
-  const trabajo = encontrarTodos(ejecucion, nodo => nodo.type === Trabajo)[0];
-  assert.equal(trabajo.props.valor, 'REVISION');
-  trabajo.props.cambiar('CALIBRACION');
-  encontrarTodos(ejecucion, nodo => nodo.type === 'button' && nodo.props.children === 'Guardar trabajo')[0].props.onClick();
   encontrarTodos(ejecucion, nodo => nodo.type === 'select')[0].props.onChange({ target: { value: 'en_proceso' } });
-  assert.deepEqual(cambios, ['CALIBRACION', 'en_proceso']); assert.equal(guardados, 1);
+  assert.deepEqual(cambios, ['en_proceso']);
   assert.equal(encontrarTodos(ejecucion, nodo => nodo.type === Fotos)[0].props.servicioId, ejemplo.id);
-  assert.match(render(FichaServicio, { ...props, ocupado: true, cambiarTrabajo() {} }), /aria-label="Trabajo realizado"[^>]*disabled/);
+  assert.match(render(FichaServicio, { ...props, ocupado: true }), /aria-label="Cambiar estado"[^>]*disabled/);
+  assert.doesNotMatch(render(FichaServicio, props), /Trabajo realizado|Guardar trabajo|trabajos-comunes/);
 });
 
 for (const coordinador of [false, true]) test(`Detalle reorganizado preserva fotos y permisos administrativos: ${coordinador}`, async () => {

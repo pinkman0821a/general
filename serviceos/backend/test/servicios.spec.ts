@@ -54,7 +54,7 @@ describe('Servicios: permisos e historial', () => {
 		const servicio = await crear({ tipo, valor_servicio, ...(esRemoto ? { ciudad: null, direccion: null } : {}) });
 		expect(servicio.pago_tecnico).toBe(pago);
 		for (const estado of ['en_proceso', 'realizado', 'pendiente']) {
-			const actualizado = await detalle(await pedir('PATCH', `/${servicio.id}/estado`, { estado, trabajo_realizado: 'REVISION' }, cookies.tecnico));
+			const actualizado = await detalle(await pedir('PATCH', `/${servicio.id}/estado`, { estado }, cookies.tecnico));
 			expect(actualizado).toMatchObject({ estado, pago_tecnico: pago });
 		}
 	});
@@ -62,14 +62,14 @@ describe('Servicios: permisos e historial', () => {
 
 describe('Servicios: filtros', () => {
 	it('combina filtros, conserva meses y ordena por fecha e ID', async () => {
-		const primero = await crear({ ...remoto, tarjeteria: 'Sunjung', cabezal: 'DX7' });
+		const primero = await crear({ ...remoto, maquina: 'Plotter DX7' });
 		const segundo = await crear({ ...remoto });
 		await crear({ tecnico_id: 3, fecha_programada: '2026-09-01' });
-		await detalle(await pedir('PATCH', `/${primero.id}/estado`, { estado: 'realizado', trabajo_realizado: 'REVISION' }));
+		await detalle(await pedir('PATCH', `/${primero.id}/estado`, { estado: 'realizado' }));
 		expect((await lista()).map(s => s.fecha_programada)).toEqual(['2026-09-01', '2026-10-15', '2026-10-15']);
 		expect((await lista('?mes=2026-10')).map(s => s.id)).toEqual([primero.id, segundo.id]);
 		expect((await lista('?mes=2026-10&estado=realizado&tipo=servicio_remoto&tecnico_id=2&buscar=DX7')).map(s => s.id)).toEqual([primero.id]);
-		for (const buscar of ['Publicidad', '300123', 'Plotter', 'negro', 'Sunjung', 'DX7']) expect((await lista(`?buscar=${buscar}`)).length).toBeGreaterThan(0);
+		for (const buscar of ['Publicidad', '300123', 'Plotter', 'negro', 'DX7']) expect((await lista(`?buscar=${buscar}`)).length).toBeGreaterThan(0);
 		expect((await lista('?buscar=Bogot')).length).toBe(1);
 		expect(await lista('?buscar=%25')).toEqual([]);
 	});

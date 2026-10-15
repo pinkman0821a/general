@@ -1,6 +1,5 @@
 import type { UsuarioSesion } from './sessionService';
 import { filtrosServicios } from './serviciosFiltros';
-import { comprobarTrabajo, normalizarTrabajo } from './servicioTrabajo';
 import { camposServicio, ErrorServicio, ErrorSobrecarga, esPresencial, respuestaServicio, type DatosServicio, type ServicioDb, type EstadoServicio } from './serviciosValidacion';
 
 export function detalleServicio(env: Env, id: number) {
@@ -66,15 +65,13 @@ export async function guardarServicio(env: Env, datos: DatosServicio, actual?: S
 	return servicio;
 }
 
-export async function guardarEstadoServicio(env: Env, id: number, estado: EstadoServicio, usuario: UsuarioSesion, body: Record<string, unknown> = {}) {
+export async function guardarEstadoServicio(env: Env, id: number, estado: EstadoServicio, usuario: UsuarioSesion) {
 	const actual = await detalleServicio(env, id);
 	if (!actual || (usuario.rol === 'tecnico' && actual.tecnico_id !== usuario.id)) throw new ErrorServicio('Servicio no accesible', 403);
-	const trabajo = normalizarTrabajo('trabajo_realizado' in body ? body.trabajo_realizado : actual.trabajo_realizado);
-	comprobarTrabajo(actual.tipo, estado, trabajo);
 	// El guardado verifica propiedad y tipo en la misma escritura ante cambios administrativos concurrentes.
-	const servicio = await env.DB.prepare(`UPDATE servicios SET estado = ?, trabajo_realizado = ?, updated_at = CURRENT_TIMESTAMP
+	const servicio = await env.DB.prepare(`UPDATE servicios SET estado = ?, updated_at = CURRENT_TIMESTAMP
 		WHERE id = ? AND tipo = ? AND tecnico_id = ? RETURNING *`)
-		.bind(estado, trabajo, id, actual.tipo, actual.tecnico_id).first<ServicioDb>();
+		.bind(estado, id, actual.tipo, actual.tecnico_id).first<ServicioDb>();
 	if (!servicio) throw new ErrorServicio('Servicio no accesible', 403);
 	return servicio;
 }

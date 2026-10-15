@@ -14,9 +14,9 @@ const ayudas = require('../src/components/finanzas/finanzasAyudas.ts');
 
 test('KPIs globales, COP y comparación mensual con signo y decimal colombiano', () => {
   const html = render(Resumen, { datos });
-  for (const texto of ['Pago técnicos del mes', 'Servicios con pago', 'Técnicos con actividad', 'Promedio por servicio',
-    '$ 1.200.000', '$ 150.000', '+26,3%', 'septiembre de 2026', '$ 950.000', '+$ 250.000']) assert.ok(html.includes(texto), texto);
-  assert.match(html, /Totales de todos los técnicos del mes/);
+  for (const texto of ['Ingresos por servicios', 'Servicios con pago', 'Técnicos con actividad', 'Promedio por servicio',
+    '$ 800.000', '$ 150.000', '+26,3%', 'septiembre de 2026', '$ 950.000', '+$ 250.000']) assert.ok(html.includes(texto), texto);
+  assert.match(html, /Totales del mes seleccionado/);
   assert.doesNotMatch(html, /ya pagado|liquidado/);
   assert.equal(ayudas.formatoCop(1234000), '$ 1.234.000');
   assert.match(ayudas.textoComparacion({ pago_anterior: 400, diferencia: -400, porcentaje: -100 }), /-100,0%/);

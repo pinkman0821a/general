@@ -10,7 +10,7 @@ const invalidos: Record<string, unknown>[] = [
 	{ tecnico_id: 0 }, { tecnico_id: '2' }, { tecnico_id: 1 }, { tecnico_id: 4 },
 	...['20261015', '2026-1-15', '2026-02-30', '2026-02-29', '1900-02-29', '0000-01-01', '2026-13-01'].map(fecha_programada => ({ fecha_programada })),
 	...['cliente_nombre', 'cliente_telefono', 'maquina', 'tipo_falla'].flatMap(campo => ['', ' \t ', null, 2].map(valor => ({ [campo]: valor }))),
-	...['ciudad', 'direccion', 'tarjeteria', 'cabezal', 'observaciones'].flatMap(campo => ['', ' \n ', 2].map(valor => ({ [campo]: valor }))),
+	...['ciudad', 'direccion', 'observaciones'].flatMap(campo => ['', ' \n ', 2].map(valor => ({ [campo]: valor }))),
 	{ ciudad: null }, { direccion: null }, { ...remoto, ciudad: 'Bogotá' }, { ...remoto, direccion: 'Carrera' },
 	...[null, 0, -1, 1.5, '250000', true].map(valor_servicio => ({ valor_servicio })),
 	...['garantia', 'instalacion', 'instalacion_remota'].map(tipo => ({ tipo })),

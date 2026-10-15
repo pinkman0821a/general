@@ -5,7 +5,6 @@ import { admiteValor, esPresencial, mensajeError, requiereFalla, tiposServicio }
 import { cambiarTipo, construirPayload, valoresIniciales, type ValoresFormulario } from './formularioServicioAyudas';
 import { useOperacionServicio } from './useOperacionServicio';
 import AlertaSobrecarga from './AlertaSobrecarga';
-import TrabajoRealizado from './TrabajoRealizado';
 import { useFotosEdicion } from './fotos/useFotosEdicion';
 import EditorFotos from './fotos/EditorFotos';
 import EliminarServicio from './EliminarServicio';
@@ -84,11 +83,7 @@ export default function FormularioServicio(props: Props) {
           {campo('ciudad', 'Ciudad', true)}{campo('direccion', 'Dirección', true)}
         </>}
         {campo('maquina', 'Máquina', true, 'Plotter ecosolvente 1.80 m')}
-        {props.servicio && admiteValor(valores.tipo) && <TrabajoRealizado valor={valores.trabajo_realizado ?? ''}
-          cambiar={valor => cambiar('trabajo_realizado', valor)} ocupado={bloqueado} />}
         {requiereFalla(valores.tipo) && campo('tipo_falla', 'Tipo de falla', true, 'Caída de color negro')}
-        {campo('tarjeteria', 'Tarjetería', false, 'Sunjung')}
-        {campo('cabezal', 'Cabezal', false, 'DX7')}
         <label className="servicios-campo-amplio">Observaciones
           <textarea name="observaciones" value={valores.observaciones} rows={3}
             onChange={(evento) => cambiar('observaciones', evento.target.value)} />

@@ -1,5 +1,5 @@
 import { env } from 'cloudflare:workers';
-import { SELF } from 'cloudflare:test';
+import { SELF, type D1Migration } from 'cloudflare:test';
 import { beforeAll, beforeEach, expect, it } from 'vitest';
 import { cookies, crear, migrar, pedir, preparar } from './serviciosAyudas';
 import { crearSesion } from '../src/services/sessionService';
@@ -29,8 +29,8 @@ it('Matriz global: coordinador consulta; ambos técnicos 403; sin sesión 401', 
   }
 });
 
-it('Matriz servicios: propio, ajeno, estados, trabajo, comprobante, fotos y Excel', async () => {
-  const servicio = await crear({ trabajo_realizado: 'CALIBRACION' });
+it('Matriz servicios: propio, ajeno, estados, comprobante, fotos y Excel', async () => {
+  const servicio = await crear();
   await pedir('PATCH', `/${servicio.id}/estado`, { estado: 'realizado' });
   await comprobante('PUT', servicio.id, multipart());
   await fotos('POST', servicio.id, undefined, cuerpoFotos());
@@ -55,10 +55,34 @@ it('Matriz servicios: propio, ajeno, estados, trabajo, comprobante, fotos y Exce
     expect((await api(`/servicios/${servicio.id}/fotos/${foto.id}`, cookie, 'DELETE')).status).toBe(403);
   }
   expect((await api(`/servicios/${servicio.id}/estado`, ajeno, 'PATCH', { estado: 'pendiente' })).status).toBe(403);
-  expect((await api(`/servicios/${servicio.id}/estado`, cookies.tecnico, 'PATCH', { estado: 'realizado', trabajo_realizado: 'REVISION' })).status).toBe(200);
+  expect((await api(`/servicios/${servicio.id}/estado`, cookies.tecnico, 'PATCH', { estado: 'realizado' })).status).toBe(200);
   expect((await api('/servicios/comisiones.xlsx?mes=2026-10', cookies.tecnico)).status).toBe(200);
   expect((await api('/servicios/comisiones.xlsx?mes=2026-10&tecnico_id=3', cookies.tecnico)).status).toBe(403);
   expect((await api('/servicios/comisiones.xlsx?mes=2026-10')).status).toBe(401);
+});
+
+it('0016 cambia exclusivamente la versión de ServiceOS y conserva esquema y datos', async () => {
+  const servicio = await crear();
+  await env.DB.prepare("UPDATE app_info SET version = '0.3.0-rc.2' WHERE id = 1").run();
+  await env.DB.prepare("INSERT INTO app_info (nombre, version) VALUES ('Otra aplicación', 'histórica')").run();
+  const antes = (await env.DB.prepare('SELECT * FROM app_info ORDER BY id').all<Record<string, unknown>>()).results;
+  const schema = (await env.DB.prepare('SELECT * FROM sqlite_master ORDER BY name').all()).results;
+  const servicios = (await env.DB.prepare('SELECT * FROM servicios WHERE id = ?').bind(servicio.id).all()).results;
+  const migracion = (env as Env & { TEST_MIGRATIONS: D1Migration[] }).TEST_MIGRATIONS
+    .find(item => item.name === '0016_update_app_info_version.sql')!;
+  await env.DB.batch(migracion.queries.map(sql => env.DB.prepare(sql)));
+  expect((await env.DB.prepare('SELECT * FROM app_info ORDER BY id').all()).results)
+    .toEqual(antes.map(fila => fila.id === 1 ? { ...fila, version: '0.3.0-rc.3' } : fila));
+  expect((await env.DB.prepare('SELECT * FROM sqlite_master ORDER BY name').all()).results).toEqual(schema);
+  expect((await env.DB.prepare('SELECT * FROM servicios WHERE id = ?').bind(servicio.id).all()).results).toEqual(servicios);
+});
+
+it('raíz API y health anuncian RC.3', async () => {
+  for (const ruta of ['/', '/api/health']) {
+    const respuesta = await SELF.fetch(`https://example.com${ruta}`);
+    expect(respuesta.status).toBe(200);
+    expect(await respuesta.json()).toMatchObject({ version: '0.3.0-rc.3' });
+  }
 });
 
 it('Oficina: lectura y entrega son compartidas; creación/edición y catálogo son administrativos', async () => {
@@ -94,12 +118,16 @@ it('Escrituras administrativas no admiten técnicos ni peticiones sin sesión', 
   }
 });
 
-it('Migraciones 0001–0015 aplicadas en D1 aislada: integridad, FK, índices y triggers', async () => {
+it('Migraciones 0001–0016 aplicadas en D1 aislada: integridad, FK, índices y triggers', async () => {
   const migraciones = (await env.DB.prepare('SELECT name FROM d1_migrations ORDER BY id').all<{ name: string }>()).results;
-  expect(migraciones).toHaveLength(15);
+  expect(migraciones).toHaveLength(16);
+  expect(migraciones.map(fila => fila.name.slice(0, 4)))
+    .toEqual(Array.from({ length: 16 }, (_, indice) => String(indice + 1).padStart(4, '0')));
   expect(migraciones[0].name).toBe('0001_create_app_info.sql');
   expect(migraciones[13].name).toBe('0014_create_servicio_fotos.sql');
   expect(migraciones[14].name).toBe('0015_update_app_info_version.sql');
+  expect(migraciones[15].name).toBe('0016_update_app_info_version.sql');
+  expect(await env.DB.prepare('SELECT version FROM app_info WHERE id = 1').first()).toEqual({ version: '0.3.0-rc.3' });
   expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
   const objetos = (await env.DB.prepare("SELECT name FROM sqlite_master WHERE type IN ('index', 'trigger')").all<{ name: string }>()).results.map(o => o.name);
   expect(objetos).toEqual(expect.arrayContaining(['idx_servicios_tecnico_fecha', 'idx_servicio_fotos_orden',

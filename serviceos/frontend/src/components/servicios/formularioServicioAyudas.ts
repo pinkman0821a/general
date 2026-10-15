@@ -8,7 +8,7 @@ export function valoresIniciales(servicio?: Servicio): ValoresFormulario {
     tipo: 'servicio_presencial', cliente_nombre: '', cliente_telefono: '',
     fecha_programada: `${mesActual(hoy)}-${String(hoy.getDate()).padStart(2, '0')}`,
     tecnico_id: '', maquina: '', tipo_falla: '', ciudad: '', direccion: '',
-    tarjeteria: '', cabezal: '', observaciones: '', valor_servicio: '', trabajo_realizado: '',
+    observaciones: '', valor_servicio: '',
   };
   if (servicio) {
     for (const campo of Object.keys(valores) as (keyof ValoresFormulario)[]) {
@@ -33,10 +33,8 @@ export function construirPayload(valores: ValoresFormulario, actual?: Servicio):
     cliente_telefono: valores.cliente_telefono.trim(), fecha_programada: valores.fecha_programada,
     tecnico_id: Number(valores.tecnico_id), maquina: valores.maquina.trim(),
     tipo_falla: requiereFalla(valores.tipo) ? valores.tipo_falla.trim() : null,
-    tarjeteria: valores.tarjeteria.trim() || null, cabezal: valores.cabezal.trim() || null,
     observaciones: valores.observaciones.trim() || null,
   };
-  if (actual) datos.trabajo_realizado = valores.trabajo_realizado?.trim() || null;
   if (!datos.cliente_nombre || !datos.cliente_telefono || !datos.maquina) {
     throw new Error('Completa cliente, teléfono y máquina.');
   }

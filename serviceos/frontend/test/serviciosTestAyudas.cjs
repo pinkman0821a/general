@@ -23,7 +23,7 @@ const ejemplo = {
   cliente_telefono: '3001234567', fecha_programada: '2026-10-15', tecnico_id: 2,
   maquina: 'Plotter ecosolvente 1.80 m', tipo_falla: 'Caída de color negro',
   ciudad: 'Bogotá', direccion: 'Calle 1', valor_servicio: 250000,
-  tarjeteria: null, cabezal: null, observaciones: null,
+  observaciones: null,
 };
 const tecnicos = [{ id: 2, nombre: 'Juan', activo: 1 }, { id: 3, nombre: 'Inactivo', activo: 0 }];
 const render = (Componente, props, ruta = '/') => renderToStaticMarkup(React.createElement(MemoryRouter,

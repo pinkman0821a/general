@@ -6,7 +6,7 @@ export type TecnicoFinanzas = {
 };
 export type ResumenFinanzas = {
   mes: string;
-  resumen: { pago_tecnicos: number; servicios_con_pago: number; tecnicos_con_actividad: number; promedio_por_servicio: number };
+  resumen: { ingresos_servicios: number; pago_tecnicos: number; servicios_con_pago: number; tecnicos_con_actividad: number; promedio_por_servicio: number };
   tecnicos: TecnicoFinanzas[];
   historico: { mes: string; pago_generado: number }[];
   historico_tecnicos: { mes: string; tecnicos: TecnicoFinanzas[] }[];

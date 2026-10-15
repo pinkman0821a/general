@@ -73,7 +73,7 @@ describe('Comprobante privado: R2 simulado real y API', () => {
 			const listado = await lista('', cookie);
 			expect(Object.keys(listado[0]).some(campo => campo.includes('comprobante'))).toBe(false);
 		}
-		const actualizado = await detalle(await pedir('PATCH', `/${servicio.id}/estado`, { estado: 'realizado', trabajo_realizado: 'REVISION' }, cookies.tecnico));
+		const actualizado = await detalle(await pedir('PATCH', `/${servicio.id}/estado`, { estado: 'realizado' }, cookies.tecnico));
 		expect(Object.keys(actualizado).some(campo => campo.includes('comprobante'))).toBe(false);
 		const coordinador = await detalle(await pedir('GET', `/${servicio.id}`));
 		expect(coordinador).toHaveProperty('tiene_comprobante', true); expect(coordinador).not.toHaveProperty('comprobante_key');

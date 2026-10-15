@@ -22,7 +22,7 @@ async function detalleFinanzas(id: number, mes = '2026-10') {
 	return await respuesta.json() as Awaited<ReturnType<typeof consultarDetalleFinanzas>>;
 }
 async function operacion(cambios: Record<string, unknown> = {}, estado = 'pendiente') {
-	const servicio = await crear({ ...remoto, confirmar_sobrecarga: true, trabajo_realizado: 'REVISION', ...cambios });
+	const servicio = await crear({ ...remoto, confirmar_sobrecarga: true, ...cambios });
 	if (estado !== 'pendiente') await detalle(await pedir('PATCH', `/${servicio.id}/estado`, { estado }));
 	return servicio;
 }
@@ -41,6 +41,16 @@ async function escenario() {
 }
 
 describe('Finanzas: resumen, detalle e históricos con D1 real', () => {
+	it('ingresos completos del mes: presencial 500000 + remoto 300000 = 800000', async () => {
+		await crear({ valor_servicio: 500000 });
+		await crear({ ...remoto, valor_servicio: 300000 });
+		await crear({ tipo: 'instalacion', valor_servicio: null, confirmar_sobrecarga: true });
+		await crear({ tipo: 'garantia', valor_servicio: null, confirmar_sobrecarga: true });
+		await crear({ tipo: 'instalacion_remota', ciudad: null, direccion: null, valor_servicio: null });
+		await crear({ ...remoto, valor_servicio: 900000, fecha_programada: '2026-09-30' });
+		expect((await resumen()).resumen).toMatchObject({ ingresos_servicios: 800000, pago_tecnicos: 470000 });
+		expect((await resumen('/resumen?mes=2026-09')).resumen).toMatchObject({ ingresos_servicios: 900000 });
+	});
 	it.each(['/resumen?mes=2026-10', '/tecnicos/2?mes=2026-10', '/tecnicos/3?mes=2026-10',
 		'/resumen?mes=incorrecto', '/tecnicos/abc?mes=2026-10'])('solo coordinador: %s', async ruta => {
 		await error(await finanzas(ruta, ''), 401);
@@ -60,7 +70,7 @@ describe('Finanzas: resumen, detalle e históricos con D1 real', () => {
 	it('incluye todos los estados y tipos con pago, redondeo, KPIs e inactivos', async () => {
 		await escenario();
 		const datos = await resumen();
-		expect(datos.resumen).toEqual({ pago_tecnicos: 250203, servicios_con_pago: 6, tecnicos_con_actividad: 3, promedio_por_servicio: 41700.5 });
+		expect(datos.resumen).toEqual({ ingresos_servicios: 250509, pago_tecnicos: 250203, servicios_con_pago: 6, tecnicos_con_actividad: 3, promedio_por_servicio: 41700.5 });
 		expect(datos.tecnicos).toEqual([
 			{ id: 2, nombre: 'Juan', activo: 1, servicios_con_pago: 3, pendientes: 1, en_proceso: 1, realizados: 1, pago_generado: 200001 },
 			{ id: 3, nombre: 'Carlos', activo: 1, servicios_con_pago: 2, pendientes: 1, en_proceso: 0, realizados: 1, pago_generado: 50002 },
@@ -76,7 +86,8 @@ describe('Finanzas: resumen, detalle e históricos con D1 real', () => {
 		const presencial = ['garantia', 'instalacion', 'servicio_presencial'].includes(tipo);
 		await operacion({ tipo, valor_servicio, ...(presencial ? { ciudad: 'Bogotá', direccion: 'Calle' } : {}) });
 		const datos = await resumen();
-		expect(datos.resumen).toMatchObject({ pago_tecnicos: pago, servicios_con_pago: pago > 0 ? 1 : 0,
+		expect(datos.resumen).toMatchObject({ ingresos_servicios: tipo.startsWith('servicio_') ? valor_servicio : 0,
+			pago_tecnicos: pago, servicios_con_pago: pago > 0 ? 1 : 0,
 			tecnicos_con_actividad: pago > 0 ? 1 : 0, promedio_por_servicio: pago });
 	});
 	it('detalle solo del técnico y mes, orden fecha/id, total y proyección sin comprobante', async () => {
@@ -142,7 +153,7 @@ describe('Finanzas: resumen, detalle e históricos con D1 real', () => {
 	it('sin datos o solo garantías devuelve ceros, lista vacía e histórico de seis meses', async () => {
 		await operacion({ tipo: 'garantia', ciudad: 'Cali', direccion: 'Calle', valor_servicio: null });
 		const datos = await resumen();
-		expect(datos.resumen).toEqual({ pago_tecnicos: 0, servicios_con_pago: 0, tecnicos_con_actividad: 0, promedio_por_servicio: 0 });
+		expect(datos.resumen).toEqual({ ingresos_servicios: 0, pago_tecnicos: 0, servicios_con_pago: 0, tecnicos_con_actividad: 0, promedio_por_servicio: 0 });
 		expect(datos.tecnicos).toEqual([]);
 		expect(datos.historico).toHaveLength(6);
 		expect(datos.historico.every(fila => fila.pago_generado === 0)).toBe(true);
