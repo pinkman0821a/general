@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0c1420" />
+  <meta name="description" content="Zolvani: control local de agentes, tareas y pedidos de demostración." />
+  <link rel="stylesheet" href="/styles.css" />
+  <title>ZOLVANI · La Colmena</title>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-symbol">✦</div><div><strong>ZOLVANI</strong><small>LA COLMENA</small></div></div>
+      <div class="sidebar-label">CENTRO DE CONTROL</div>
+      <nav class="navigation" aria-label="Secciones principales">
+        <button class="nav active" data-tab="panel"><span>⌂</span> Vista general</button>
+        <button class="nav" data-tab="tareas"><span>◈</span> Huevos · tareas</button>
+        <button class="nav" data-tab="pedidos"><span>⬡</span> Celdillas · pedidos</button>
+        <button class="nav" data-tab="productos"><span>▧</span> Productos</button>
+        <button class="nav" data-tab="registro"><span>◷</span> Registro de actividad</button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="mini-status"><span class="led"></span><div><b>Motor local activo</b><small>Simulación · sin conexión comercial</small></div></div>
+        <div class="version-tag">v0.1.0-preview.1</div>
+        <a href="https://github.com/ederland/Agentes_IA_3D" target="_blank" rel="noreferrer">Inspirado en Agentes IA 3D ↗</a>
+      </div>
+    </aside>
+    <div class="content-area">
+      <header class="topbar"><div class="crumb">OPERACIONES <span>/</span> <b id="current-page">Vista general</b></div><div class="topbar-right"><span class="pill">● MODO DEMOSTRACIÓN</span><span class="profile">🐝</span></div></header>
+      <main class="main">
+        <div id="notice" class="notice" role="status" aria-live="polite"></div>
+        <section class="view visible" id="view-panel">
+          <div class="page-heading"><div><p class="eyebrow">TU NEGOCIO, ORGANIZADO COMO UNA COLMENA</p><h1>Buenos días, Apicultor <span class="wave">✺</span></h1><p class="muted">La Reina coordina y las abejas trabajan. Tú conservas el control.</p></div><button class="action primary" data-action="new-task">+ Crear huevo</button></div>
+          <div class="stats-grid">
+            <article class="stat"><div class="stat-top">Huevos totales <span>◈</span></div><div class="stat-value" id="metric-total">0</div><div class="stat-foot">Trabajos registrados</div></article>
+            <article class="stat"><div class="stat-top">En ejecución <span>◉</span></div><div class="stat-value" id="metric-active">0</div><div class="stat-foot">Una tarea a la vez</div></article>
+            <article class="stat"><div class="stat-top">Completados <span>✓</span></div><div class="stat-value" id="metric-done">0</div><div class="stat-foot">Solo demostraciones</div></article>
+            <article class="stat"><div class="stat-top">Presupuesto disponible <span>$</span></div><div class="stat-value money" id="metric-budget">$130.000</div><div class="stat-foot">Pesos colombianos</div></article>
+          </div>
+          <div class="main-grid">
+            <section class="panel hive-panel">
+              <div class="section-head"><div><p class="kicker">MAPA OPERATIVO</p><h2>La Colmena <span class="live">● en vivo</span></h2></div><span class="small-muted">Arrastra para girar · rueda para zoom</span></div>
+              <div class="canvas-wrap"><canvas id="hive3d" role="img" aria-label="Mapa de colmena 3D con siete agentes y sus estados"></canvas><div class="canvas-overlay">VISTA 3D LOCAL <span>↗</span></div></div>
+              <div class="legend"><span><i class="dot idle"></i> Disponibles</span><span><i class="dot working"></i> Trabajando</span><span><i class="dot blocked"></i> Simulación segura</span></div>
+            </section>
+            <section class="panel side-panel"><div class="section-head"><div><p class="kicker">DIRECCIÓN</p><h2>La Reina 👑</h2></div></div><div class="queen-avatar">♛</div><h3>Supervisando la operación</h3><p class="muted small">Distribuye los huevos automáticamente según la especialidad de cada abeja. La Inspectora revisa la salida antes de cerrar una tarea.</p><div class="queen-tile"><span>Estado del sistema</span><b>● Operativo</b></div><div class="queen-tile"><span>Pedidos reales</span><b>0 · desactivados</b></div><button class="action secondary wide" data-action="demo">▶ Ejecutar demostración</button><p class="disclaimer">No utiliza Codex, Dropi, WhatsApp ni redes sociales.</p></section>
+          </div>
+          <div class="two-column">
+            <section class="panel compact-panel"><div class="section-head"><h2>Últimos huevos</h2><button class="quiet" data-tab="tareas">Ver todos ↗</button></div><div id="recent-tasks" class="stack-list"></div></section>
+            <section class="panel compact-panel"><div class="section-head"><h2>Actividad reciente</h2><button class="quiet" data-tab="registro">Ver registro ↗</button></div><div id="recent-events" class="stack-list"></div></section>
+          </div>
+        </section>
+        <section class="view" id="view-tareas"><div class="page-heading"><div><p class="eyebrow">GESTIÓN DEL TRABAJO</p><h1>Huevos <span class="subtle">/ tareas</span></h1><p class="muted">La Reina asigna automáticamente cada trabajo a una abeja.</p></div><button class="action primary" data-action="new-task">+ Crear huevo</button></div><div class="panel list-panel"><div class="section-head"><h2>Cola y entregas</h2><span class="small-muted">Datos locales guardados automáticamente</span></div><div id="all-tasks" class="task-list"></div></div></section>
+        <section class="view" id="view-pedidos"><div class="page-heading"><div><p class="eyebrow">CONTROL COMERCIAL</p><h1>Celdillas <span class="subtle">/ pedidos</span></h1><p class="muted">Únicamente registros ficticios. Dropi se conectará después de validarlo.</p></div><button class="action primary" data-action="new-order">+ Celdilla demo</button></div><div class="panel list-panel"><div class="section-head"><h2>Pedidos simulados</h2><span class="pill subdued">Sin ventas reales</span></div><div id="all-orders"></div></div></section>
+        <section class="view" id="view-productos"><div class="page-heading"><div><p class="eyebrow">EXPLORACIÓN</p><h1>Productos <span class="subtle">/ catálogo</span></h1><p class="muted">Ningún precio aquí representa una oferta real de proveedor.</p></div><button class="action secondary" data-action="product-demo">Crear investigación demo</button></div><div class="panel list-panel"><div class="section-head"><h2>Fichas de prueba</h2><span class="pill subdued">Datos ficticios</span></div><div id="all-products"></div></div></section>
+        <section class="view" id="view-registro"><div class="page-heading"><div><p class="eyebrow">TRAZABILIDAD</p><h1>Registro <span class="subtle">/ eventos</span></h1><p class="muted">Todo lo que ejecuta el motor queda documentado en este dispositivo.</p></div></div><div class="panel list-panel"><div class="section-head"><h2>Bitácora de la Colmena</h2><span class="small-muted">Últimos 100 eventos</span></div><div id="all-events" class="stack-list"></div></div></section>
+        <footer class="main-footer">ZOLVANI · LA COLMENA <span>Versión preliminar · Acceso exclusivamente local</span></footer>
+      </main>
+    </div>
+  </div>
+  <dialog id="dialog-task" class="modal"><form id="task-form"><div class="dialog-head"><div><p class="kicker">NUEVO HUEVO</p><h2>Encargar una tarea</h2></div><button type="button" class="close" data-action="close">×</button></div><label>Título del trabajo<input name="title" maxlength="130" minlength="4" required placeholder="Ej. Analizar producto de prueba" /></label><label>Especialidad<select name="type"><option value="productos">Exploradora · Productos</option><option value="precios">Financiera · Costos</option><option value="contenido">Creativa · Publicidad</option><option value="ventas">Vendedora · Atención</option><option value="calidad">Inspectora · Calidad</option><option value="seguridad">Guardiana · Seguridad</option></select></label><label>Prioridad<select name="priority"><option value="media">Media</option><option value="alta">Alta</option><option value="baja">Baja</option></select></label><label>Indicaciones<textarea name="details" maxlength="1500" rows="3" placeholder="Describe qué necesitas..."></textarea></label><p class="form-hint">La ejecución será simulada: no se buscarán productos ni se generará contenido con IA todavía.</p><div class="dialog-actions"><button type="button" class="action secondary" data-action="close">Cancelar</button><button class="action primary" type="submit">Crear y asignar</button></div></form></dialog>
+  <dialog id="dialog-order" class="modal"><form id="order-form"><div class="dialog-head"><div><p class="kicker">NUEVA CELDILLA</p><h2>Pedido de demostración</h2></div><button type="button" class="close" data-action="close">×</button></div><label>Alias ficticio<input name="alias" required minlength="2" maxlength="90" placeholder="Cliente de prueba" /></label><label>Código ficticio de producto<input name="productCode" required maxlength="90" value="DEMO-CAM-001" /></label><label>Cantidad<input name="quantity" type="number" min="1" max="100" value="1" required /></label><p class="form-hint">No introduzcas teléfonos, direcciones ni datos de clientes reales.</p><div class="dialog-actions"><button type="button" class="action secondary" data-action="close">Cancelar</button><button class="action primary" type="submit">Guardar simulación</button></div></form></dialog>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
