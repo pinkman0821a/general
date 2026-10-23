@@ -1,0 +1,14 @@
+{
+  "name": "zolvani-colmena",
+  "version": "0.1.0-preview.1",
+  "private": true,
+  "type": "module",
+  "description": "Zolvani - Colonia local con simulación y ejecución optativa mediante OmniRoute o Codex",
+  "scripts": {
+    "start": "node server/index.mjs",
+    "dev": "node --watch server/index.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check server/index.mjs && node --check server/core.mjs && node --check server/providers/codex-exec.mjs && node --check server/providers/omniroute.mjs && node --check app/app.js && node --check app/hive3d.js"
+  },
+  "engines": {"node": ">=20"}
+}

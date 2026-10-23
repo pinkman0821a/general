@@ -1,0 +1,70 @@
+:root {
+  color-scheme: dark;
+  --zolvani-fondo: #2B0D12;
+  --zolvani-superficie: #4E242A;
+  --zolvani-borgona: #733B44;
+  --zolvani-cobre-profundo: #906961;
+  --zolvani-cobre-suave: #AB8978;
+  --zolvani-rose-gold: #BA9985;
+  --zolvani-texto: #F2E7E0;
+  --zolvani-texto-secundario: #D2B8A8;
+  --zolvani-linea: #733B44;
+  --zolvani-ok: #9BC9A6;
+  --zolvani-alerta: #D7B77A;
+  --zolvani-error: #E0A29D;
+  color: var(--zolvani-texto);
+  background: var(--zolvani-fondo);
+}
+
+body { color: var(--zolvani-texto); background: var(--zolvani-fondo); }
+.sidebar { background: var(--zolvani-fondo); border-color: var(--zolvani-borgona); }
+.brand.zolvani-brand { display: flex; min-height: 70px; padding: 1px 7px 32px; }
+.zolvani-brand picture { display: block; width: 100%; }
+.zolvani-brand img { display: block; width: 100%; height: 54px; object-fit: contain; object-position: left center; }
+.navigation .nav { color: var(--zolvani-texto-secundario); }
+.navigation .nav.active, .navigation .nav:hover { background: var(--zolvani-superficie); color: var(--zolvani-texto); }
+.sidebar-label, .mini-status small, .sidebar-footer a, .crumb, .muted, .small-muted, .subtle, .stat-foot, .disclaimer, .main-footer { color: var(--zolvani-texto-secundario); }
+.topbar { border-color: var(--zolvani-borgona); }
+.crumb span, .main-footer { color: var(--zolvani-cobre-suave); }
+.crumb b, .stat-value, .task-row h3, .product-row h3, .order-row h3 { color: var(--zolvani-texto); }
+.profile, .version-tag { color: var(--zolvani-texto); background: var(--zolvani-superficie); border-color: var(--zolvani-cobre-profundo); }
+.pill { color: var(--zolvani-texto); background: var(--zolvani-superficie); border-color: var(--zolvani-cobre-profundo); }
+.pill.subdued { color: var(--zolvani-texto-secundario); background: var(--zolvani-fondo); border-color: var(--zolvani-borgona); }
+.eyebrow, .kicker, .quiet, .task-row .task-meta, .product-row small, .order-row small, .stat-top span, .stat-value.money { color: var(--zolvani-rose-gold); }
+.action.primary { color: var(--zolvani-fondo); background: linear-gradient(120deg, var(--zolvani-rose-gold), var(--zolvani-cobre-profundo)); box-shadow: 0 6px 22px #2B0D1240; }
+.action.secondary { color: var(--zolvani-texto); background: var(--zolvani-superficie); border-color: var(--zolvani-cobre-profundo); }
+.stat, .panel { background: var(--zolvani-superficie); border-color: var(--zolvani-borgona); }
+.canvas-wrap { background: radial-gradient(ellipse at center, var(--zolvani-borgona), var(--zolvani-fondo) 72%); border-color: var(--zolvani-cobre-profundo); }
+.canvas-overlay, .legend { color: var(--zolvani-texto-secundario); }
+.canvas-overlay span { color: var(--zolvani-rose-gold); }
+.dot.idle, .led { background: var(--zolvani-ok); }
+.dot.working { background: var(--zolvani-alerta); }
+.dot.blocked { background: var(--zolvani-error); }
+.queen-avatar { background: radial-gradient(circle at 36% 24%, var(--zolvani-rose-gold), var(--zolvani-borgona) 72%); border-color: var(--zolvani-cobre-profundo); color: var(--zolvani-texto); box-shadow: 0 15px 40px #2B0D1240; }
+.queen-tile, .task-row, .product-row, .order-row, .item-icon { color: var(--zolvani-texto-secundario); background: var(--zolvani-fondo); border-color: var(--zolvani-borgona); }
+.task-row p, .product-row p, .order-row p, .item-detail, .item-title { color: var(--zolvani-texto-secundario); }
+.task-row .task-result { background: var(--zolvani-superficie); border-left-color: var(--zolvani-rose-gold); }
+.state-tag { color: var(--zolvani-ok); background: #2B0D12; }
+.state-tag.running, .state-tag.pending { color: var(--zolvani-alerta); background: var(--zolvani-superficie); }
+.state-tag.block { color: var(--zolvani-error); background: var(--zolvani-superficie); }
+.stack-item { border-color: var(--zolvani-borgona); }
+.empty { color: var(--zolvani-texto-secundario); border-color: var(--zolvani-cobre-profundo); }
+.notice { color: var(--zolvani-texto); background: var(--zolvani-superficie); border-color: var(--zolvani-cobre-suave); }
+.modal { color: var(--zolvani-texto); background: var(--zolvani-superficie); border-color: var(--zolvani-cobre-profundo); }
+.modal label, .form-hint { color: var(--zolvani-texto-secundario); }
+.modal input, .modal select, .modal textarea { color: var(--zolvani-texto); background: var(--zolvani-fondo); border-color: var(--zolvani-borgona); }
+.modal :is(input, select, textarea):focus { border-color: var(--zolvani-rose-gold); }
+
+@media (max-width: 980px) {
+  .brand.zolvani-brand { min-height: 60px; padding-bottom: 20px; }
+  .zolvani-brand img { height: 42px; }
+}
+
+@media (max-width: 700px) {
+  .brand.zolvani-brand { width: 46px; min-height: 42px; padding: 0 0 10px; }
+  .zolvani-brand img { width: 38px; height: 38px; object-position: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

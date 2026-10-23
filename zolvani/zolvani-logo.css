@@ -1,0 +1,23 @@
+/* ZOLVANI logo responsive · no modifica estilos globales. */
+:root {
+  --zolvani-borgona: #2B0D12;
+  --zolvani-vino: #4E242A;
+  --zolvani-acento: #733B44;
+  --zolvani-cobre: #BA9985;
+  --zolvani-cobre-suave: #AB8978;
+  --zolvani-blanco: #F2E7E0;
+}
+.zolvani-logo { display: inline-flex; align-items: center; line-height: 0; max-width: 100%; text-decoration: none; }
+.zolvani-logo picture { display: block; max-width: 100%; }
+.zolvani-logo img { display: block; object-fit: contain; width: auto; height: 54px; max-width: 100%; }
+.zolvani-logo--grande img { height: clamp(110px, 20vw, 220px); }
+.zolvani-logo--sidebar img { height: 58px; }
+/* Menor ancho disponible: la marca conserva legibilidad sin deformar. */
+@media (max-width: 780px) {
+  .zolvani-logo img { height: 46px; }
+  .zolvani-logo--sidebar img { height: 50px; }
+}
+@media (max-width: 480px) {
+  .zolvani-logo img { height: 40px; }
+  .zolvani-logo--sidebar img { height: 44px; }
+}
