@@ -1,5 +1,17 @@
 # Estado del proyecto — ZOLVANI: LA COLONIA
 
+## Misión 3 — catálogo de productos comerciales (implementado localmente; 2026-10-23)
+
+- Productos nuevas se guardan en el estado JSON local (`data/state.json`, excluido en `.gitignore`); las tareas, fichas demo y celdillas existentes se conservan.
+- La vista Productos permite registrar/editar, filtrar, ver procedencia por campo, hallazgos, historial/precios previos, importar plantilla CSV y pedir a Reina una evaluación de una o varias fichas.
+- El CSV Zolvani requiere fuentes individuales por dato, fechas compartidas, UTF-8 y campos exactos; límite de 500 filas/2 MB; rechaza fórmulas, URLs con credenciales, importes inválidos y duplicados.
+- Financiera calcula con enteros COP adquisición, precio propuesto, flete, comisión, empaque, publicidad y otros costos. Muestra parcial/faltantes, margen y sensibilidad +10%; rechazo/devolución solo si se ingresan tasa y pérdida como supuesto explícito. Un cálculo no significa datos verificados.
+- Inspectora revisa campos obligatorios, procedencia, confirmación, antigüedad de 30 días, disponibilidad desconocida, rentabilidad y posibles riesgos regulatorios; nunca marca un producto como listo para vender.
+- Reina conserva flujo de máximo cuatro llamadas IA seriales; ficha seleccionada pasa como datos no confiables y se bloquean correos/teléfonos/claves identificables. Financiera recibe resultados deterministas. La cuota de Gemini no se consumió durante el desarrollo.
+- Dropi: el sitio oficial presenta catálogo/integraciones y existe `api.dropi.co`, pero su raíz pública no incluye especificación de autenticación, permisos ni lectura de catálogo/precios/inventario. No se sondearon rutas. Una API privada autorizada puede existir; queda pendiente obtener documentación y permiso para la cuenta. Se usa entrada manual, sin scraping/endpoints no documentados. Detalle en [docs/CATALOGO_PRODUCTOS.md](docs/CATALOGO_PRODUCTOS.md).
+- Pruebas nuevas: normalización, cálculos y supuestos, CSV/formula injection, API/persistencia/historial, bloqueo HTTP de PII y coordinación simulada. `npm.cmd run check` aprobado; `npm.cmd test` aprobado **56/56**. Sin llamadas externas de IA.
+- Versión real continúa `v0.1.0-preview.1`. Sin commit, tag ni push; respaldo y otros repositorios intactos.
+
 ## Misión 2 — coordinación de Reina (implementada localmente)
 
 - `POST /api/goals/real` crea objetivo persistente e inicia un huevo real de planificación asignado a Reina.
@@ -7,7 +19,7 @@
 - Cada etapa recibe summary/evidence previas; todas permanecen marcadas como no verificadas comercialmente. Financiera no acepta importes ni porcentajes inventados; informe lista verificaciones pendientes.
 - Hasta 4 llamadas por objetivo, serie global de una tarea a la vez, modelo congelado por objetivo, no se encolan objetivos consecutivos y no hay reintento automático. Errores, cuota, cancelación o reinicio detienen el flujo sin reejecutar.
 - UI añade formulario propio de objetivo, lista de objetivos y visualización de plan, dependencias, etapas, resultados, estado, historial e tokens reportados; mantiene la creación de un huevo IA individual y el modo demostración.
-- Prueba simulada end-to-end aprobada en desarrollo: ver [REPORTE_DESARROLLO.md](REPORTE_DESARROLLO.md). La prueba OmniRoute/Gemini real de coordinación sigue pendiente; no se afirma coordinación real comprobada hasta esa ejecución.
+- Prueba simulada end-to-end aprobada en desarrollo: ver [REPORTE_DESARROLLO.md](REPORTE_DESARROLLO.md). El propietario confirmó después que la coordinación multiagente real con OmniRoute/Gemini completó cuatro llamadas y finalizó Reina, Exploradora, Financiera e Inspectora; en esta misión no se volvió a consumir cuota.
 - Versión continúa `v0.1.0-preview.1`; no hubo commit, push ni cambio del respaldo/repositorio general.
 - Verificación de esta misión: `npm.cmd run check` aprobado; `npm.cmd test` 43/43 aprobadas con proveedores simulados. Ninguna solicitud de IA externa.
 

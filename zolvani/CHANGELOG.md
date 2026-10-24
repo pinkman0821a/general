@@ -1,5 +1,18 @@
 # Historial de cambios
 
+## Trabajo local sin publicar — catálogo comercial verificable (2026-10-23)
+
+### Añadido
+- Catálogo local de productos con campos comerciales en COP entero, procedencia por dato, confirmación del propietario, inspección determinista e historial de cambios de precio.
+- API local para registrar, editar e importar CSV Zolvani (UTF-8, máx. 2 MB/500 referencias), con validación de encabezados, fórmulas, URLs, duplicados e importes.
+- Calculadora de contribución/unidad, margen sobre venta, faltantes, sensibilidad +10% y ajuste opcional por rechazo/devolución declarado como supuesto.
+- Productos muestra hallazgos, fuentes, historial, cálculo parcial o calculable y análisis multiagente de una selección; la Reina comparte las fichas con Exploradora, los resultados locales con Financiera e Inspectora y adjunta análisis determinista al informe.
+- Barrera para PII/credenciales antes de remitir fichas a OmniRoute. No se activó proveedor real, consulta de Dropi ni operación comercial.
+
+### Verificación
+- Pruebas nuevas de normalización, importación, persistencia API, historial, cálculo, datos faltantes, supuestos, inspección, PII y flujo de Reina con proveedor falso; ver reporte de esta misión.
+- Versión se mantiene `v0.1.0-preview.1`, sin commit/tag/push.
+
 ## Trabajo local sin publicar — coordinación de la Reina (2026-10-23)
 
 ### Añadido

@@ -287,7 +287,7 @@ test('servidor HTTP ofrece interfaz y API locales; rechaza orígenes foráneos',
  const temp=setup();const {server,hive}=createServer({stateFile:temp.file,auto:false});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const p=server.address().port, base=`http://127.0.0.1:${p}`;
  try{
-  const index=await fetch(base);assert.equal(index.status,200);const html=await index.text();assert.match(html,/LA COLONIA/);assert.match(html,/EJECUTAR CON IA REAL/);assert.match(html,/real-ai-button/);assert.match(html,/new-real-task-button/);assert.match(html,/real-task-form/);assert.match(html,/real-goal-form/);assert.match(html,/goals-list/);assert.match(html,/zolvani-brand/);
+  const index=await fetch(base);assert.equal(index.status,200);const html=await index.text();assert.match(html,/LA COLONIA/);assert.match(html,/EJECUTAR CON IA REAL/);assert.match(html,/real-ai-button/);assert.match(html,/new-real-task-button/);assert.match(html,/real-task-form/);assert.match(html,/real-goal-form/);assert.match(html,/goals-list/);assert.match(html,/zolvani-brand/);assert.match(html,/product-form/);assert.match(html,/product-csv-file/);assert.match(html,/analyze-products/);
   const logo=await fetch(`${base}/assets/zolvani-horizontal.png`);assert.equal(logo.status,200);assert.match(logo.headers.get('content-type'),/image\/png/);
   const mobileMark=await fetch(`${base}/assets/zolvani-icono-64.png`);assert.equal(mobileMark.status,200);assert.match(mobileMark.headers.get('content-type'),/image\/png/);
   const favicon=await fetch(`${base}/assets/favicon.ico`);assert.equal(favicon.status,200);assert.match(favicon.headers.get('content-type'),/image\/x-icon/);

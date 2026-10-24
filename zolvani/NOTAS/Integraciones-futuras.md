@@ -9,3 +9,9 @@ La prueba de esta sesión sustituye el proceso por un ejecutor de prueba y verif
 ## Pendientes externos
 
 Dropi, WhatsApp Business, TikTok, Facebook, Instagram, Firebase y publicación están fuera de servicio. Cualquier integración requerirá documentación oficial, permisos mínimos, revisión de privacidad y autorización de acciones con efecto externo.
+
+### Dropi — consulta de catálogo pendiente
+
+Revisión pública de las páginas oficiales el 2026-10-23: Dropi presenta catálogo en su plataforma y enumera integraciones comerciales. Se encontró `https://api.dropi.co/`, pero su raíz pública solo indica “Api Dropi”: no expone allí una especificación, autenticación, alcances ni endpoints de lectura de catálogo/precios/inventario. La existencia del subdominio no acredita el acceso autorizado de Zolvani ni el alcance permitido. Los términos oficiales describen límites a automatización indebida y extracción masiva. Hasta que el propietario obtenga documentación y autorización vigentes, solo se registrarán manualmente referencias, precios y evidencias autorizadas. No se sondean rutas no documentadas, no hay login automático ni scraping.
+
+Referencias: [catálogo oficial](https://dropi.co/), [raíz oficial Api Dropi](https://api.dropi.co/), [integraciones para proveedores](https://www.dropi.co/soluciones-para-proveedores), [términos oficiales](https://dropi.co/terminos-y-condiciones), [procedimiento local CSV](../docs/CATALOGO_PRODUCTOS.md).

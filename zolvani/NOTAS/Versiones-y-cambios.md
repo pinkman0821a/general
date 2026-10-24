@@ -1,5 +1,9 @@
 # Versiones y cambios
 
+## Misión 3 — catálogo verificable (2026-10-23)
+
+Se conservó `v0.1.0-preview.1` y se añadió localmente el catálogo, registro CSV, procedencia de cada dato, historial y cálculo financiero determinista. Reina coordina evaluaciones de fichas; Financiera recibe los cálculos del programa e Inspectora conserva los hallazgos deterministas. `npm.cmd run check` aprobado; `npm.cmd test` 56/56. Proveedor de IA simulado en pruebas; no se consume cuota ni se crea etiqueta o commit.
+
 ## `v0.1.0-preview.1` — base preservada
 
 Etiqueta existente sobre `7ce2907`, ejecutada previamente por el propietario. Rama estable `main` y rama `develop` apuntaban al mismo commit al iniciar esta sesión.

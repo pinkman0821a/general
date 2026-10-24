@@ -1,5 +1,31 @@
 # Reporte de desarrollo — OmniRoute en Zolvani
 
+## Misión 3: catálogo y evaluación comercial con fuentes (2026-10-23)
+
+**Versión:** `v0.1.0-preview.1` se conserva; no se escribieron Git ni respaldos remotos. **Estado:** flujo local implementado y comprobado con proveedor simulado; no se consumió IA real.
+
+**Continuidad:** el propietario confirmó que, antes de esta misión, la coordinación multiagente real con OmniRoute/Gemini había completado cuatro llamadas. Se conserva ese motor; la evaluación de catálogo de este desarrollo solo se probó con el proveedor simulado y requiere una ejecución real controlada aparte.
+
+**Catálogo:** se agregaron `server/catalog.mjs`, API local y formulario Productos para registrar y editar productos, costos COP, fuente/fecha por campo, disponibilidad, filtro, historial de precios y plantilla/importador CSV. El CSV acepta hasta 500 filas/2 MB y rechaza fórmulas, encabezados extra o faltantes, importes no enteros/no seguros, URLs con credenciales y duplicados. El catálogo vive dentro del `data/state.json` ya ignorado en `.gitignore`; no hay sincronización a GitHub.
+
+**Financiera e Inspectora:** la calculadora de código resta únicamente importes conocidos; marca el resultado parcial si faltan costos, informa margen y sensibilidad de +10% de costos conocidos. El supuesto opcional de devolución/rechazo solo se aplica cuando se aportan ambas entradas y se muestra como supuesto del propietario. Inspectora marca referencias o fuentes pendientes, confirmación ausente, datos de más de 30 días, disponibilidad no verificada, cálculo incompleto y categorías que requieren revisión regulatoria. Ninguna salida significa “listo para vender”.
+
+**Reina y Exploradora:** se añadió selección de fichas para el flujo ya existente Reina → Exploradora → Financiera → Inspectora. Las fichas y su procedencia viajan como contenido no confiable; la Financiera recibe los cálculos locales, y el informe conserva la evaluación determinista. Correos, teléfonos y credenciales reconocibles detienen el envío a IA. La interfaz distingue los resultados de IA del cálculo local.
+
+**Dropi:** el sitio oficial presenta catálogo e integraciones y existe `api.dropi.co`, pero su raíz pública solo muestra “Api Dropi”; no encontramos una especificación pública de autenticación, permisos o lectura de catálogo/precios/inventario. No se sondearon rutas. Esto no prueba que una API privada autorizada no exista; queda pendiente obtener especificación y permiso aplicable a la cuenta. Sus términos limitan automatización indebida/extracción masiva. Se conserva actualización manual mediante CSV o ficha con origen/fecha. Referencias y alcance en [docs/CATALOGO_PRODUCTOS.md](docs/CATALOGO_PRODUCTOS.md).
+
+**Seguridad y límites:** no hubo llamada real al proveedor, gasto, compra, pedido, mensaje ni publicación. Datos demo existentes conservados. No se alteró el presupuesto (COP 130.000 iniciales, 0 gastados).
+
+**Prueba real controlada pendiente:** después de comprobar el CSV y revisar sus datos, seleccionar referencias sin información personal en Productos, marcar una o varias fichas y pulsar **Analizar selección con la Reina** una sola vez. El flujo puede usar hasta cuatro llamadas gratuitas disponibles; OmniRoute debe estar conectado a un modelo que el propietario haya confirmado gratis. Si falla, no repetir hasta revisar el huevo y su historial. Una respuesta IA no valida proveedor, disponibilidad ni demanda; la aprobación corresponde al propietario.
+
+**Pruebas:** `npm.cmd run check` aprobado. `npm.cmd test`: **56/56** aprobadas, incluidas pruebas nuevas de CSV (plantilla, comillas y fórmulas), alta/edición con historial, persistencia del catálogo, utilidad parcial y sensibilidad, cero COP, supuestos de rechazo, antigüedad/fuentes, bloqueo HTTP de PII antes del proveedor y coordinación de las cuatro etapas con cálculos locales. `git diff --check` terminó sin errores de whitespace (Git mostró solo avisos LF→CRLF de Windows). Se comprobaron rutas HTTP y guardado; no se hizo solicitud OmniRoute/Gemini. La confirmación real de análisis de catálogo sigue pendiente del propietario.
+
+**Archivos principales:** `server/catalog.mjs`, `server/core.mjs`, `server/index.mjs`, `server/providers/omniroute.mjs`, `app/index.html`, `app/app.js`, `app/styles.css`, `test/catalog.test.mjs`, `test/omniroute-provider.test.mjs`, `docs/CATALOGO_PRODUCTOS.md`, `README.md`, `CHANGELOG.md`, `ESTADO_PROYECTO.md`, este reporte y `NOTAS/`.
+
+**Uso:** `node server\index.mjs`, abrir `http://127.0.0.1:4173`, crear/importar referencias en Productos. Para la evaluación IA se necesita OmniRoute local activo, modelo gratuito vigente autorizado por el propietario, y pulsar **Actualizar conexión**; seleccionar ficha(s) y usar **Analizar selección con la Reina** una sola vez. El resultado puede consumir hasta cuatro llamadas de la cuota del modelo. Sin modelo, no se simula un resultado real; se conserva el catálogo local.
+
+---
+
 ## Misión 2: coordinación multiagente de la Reina (2026-10-23)
 
 **Versión local:** `v0.1.0-preview.1` — no se avanzó a `preview.2` ni se modificó Git. El respaldo remoto y `C:\GitHub\general` no se tocaron.

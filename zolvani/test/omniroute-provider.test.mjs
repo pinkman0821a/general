@@ -119,6 +119,18 @@ test('OmniRoute entrega un plan estructurado para Reina sin aceptar tareas arbit
   assert.match(requests[0].messages[0].content, /Reina/);
 });
 
+test('Financiera puede interpretar el cálculo local de catálogo pero no afirmar validación comercial', async () => {
+  let requestBody;
+  const provider = new OmniRouteProvider({ model: freeModel.id, freeModelIds: [freeModel.id], fetchImpl: async (url, init) => {
+    if (String(url).endsWith('/models')) return response({ data:[freeModel] });
+    requestBody = JSON.parse(init.body);
+    return response({ model:freeModel.id, choices:[{message:{content:JSON.stringify({summary:'El cálculo local está disponible.',evidence:['No se confirma demanda ni disponibilidad.']})}}] });
+  } });
+  await provider.execute({ id:'HUEVO-finanzas', goalId:'OBJ-test', taskKind:'work', agentId:'financiera', title:'Interpretar ficha', details:'CÁLCULO DETERMINISTA DE ZOLVANI. {"profitCOP":18000}' });
+  assert.match(requestBody.messages[0].content, /resultados numéricos deterministas proporcionados por Zolvani/);
+  assert.match(requestBody.messages[0].content, /No inventes costos, precios, demanda/);
+});
+
 test('OmniRoute limita el endpoint a loopback y nunca usa auto-routing sin una ruta libre conocida', async () => {
   assert.throws(() => new OmniRouteProvider({ baseURL: 'https://example.com/v1' }), /localhost|loopback/i);
   const provider = new OmniRouteProvider({ freeModelIds: ['auto'], fetchImpl: async () => response({ data: [{ id: 'auto', owned_by: 'OmniRoute' }] }) });

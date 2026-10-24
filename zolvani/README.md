@@ -13,6 +13,10 @@ node server\index.mjs
 
 Abre <http://127.0.0.1:4173>. No requiere dependencias NPM. El modo predeterminado es demostración; las tareas simuladas no contactan modelos externos.
 
+## Catálogo local de productos
+
+En **Productos** registra referencias propias o autorizadas, consulta su trazabilidad y rentabilidad determinista, o importa la plantilla CSV desde la misma vista. Las fichas permanecen en `data/state.json` local. La importación, fuentes por campo, supuestos financieros y límites de la evaluación están documentados en [docs/CATALOGO_PRODUCTOS.md](docs/CATALOGO_PRODUCTOS.md). Para pedir evaluación IA, selecciona referencias y usa **Analizar selección con la Reina**; requiere un modelo gratuito habilitado y puede consumir hasta cuatro llamadas de su cuota.
+
 ## OmniRoute local
 
 OmniRoute necesita Node.js `>=22.22.2 <23` o `>=24 <27`. En este entorno Node `v24.21.0` cumple el requisito. La instalación aislada del proyecto se ubica en `.tools\omniroute-global`; no altera el PATH ni la instalación global del usuario. Iníciala en otra consola:

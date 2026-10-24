@@ -1,5 +1,17 @@
 # Diario de desarrollo
 
+## 2026-10-23 — Misión 3: catálogo e inteligencia comercial trazable
+
+- **Versión:** `v0.1.0-preview.1`; sin commit/tag/push. Se conserva la coordinación ya comprobada y no se modificaron respaldos.
+- **Objetivo:** aceptar datos de producto autorizados, calcular rentabilidad de forma determinista y dar contexto a Reina/Exploradora/Financiera/Inspectora.
+- **Tareas relacionadas:** Misión 3, catálogo CSV, motor multiagente de análisis; no se usó Beads por la prioridad del flujo funcional.
+- **Archivos:** `server/catalog.mjs`, `server/core.mjs`, `server/index.mjs`, `server/providers/omniroute.mjs`, `app/index.html`, `app/app.js`, `app/styles.css`, `test/catalog.test.mjs`, `test/omniroute-provider.test.mjs`, `package.json`, `README.md`, `CHANGELOG.md`, `ESTADO_PROYECTO.md`, `REPORTE_DESARROLLO.md`, `docs/CATALOGO_PRODUCTOS.md`, `NOTAS/Integraciones-futuras.md`, `NOTAS/Decisiones-tecnicas.md`, `NOTAS/Versiones-y-cambios.md` y este diario.
+- **Implementado:** fichas locales con fuente/fecha por valor, confirmación del propietario, edición con historial, importador CSV con plantilla, filtrado, Inspector, cálculos en COP entero, costos faltantes como desconocidos, margen/sensibilidad y supuesto opcional de devoluciones/rechazos. La selección de catálogo alimenta Reina→Exploradora→Financiera→Inspectora; Financiera recibe el cálculo del programa y no puede reportar cifras fuera de la ficha/cálculo.
+- **Pruebas:** `npm.cmd run check` aprobado. `npm.cmd test` aprobado, **56/56**. El flujo de Reina, persistencia y API se probaron con proveedor simulado; el bloqueo de datos personales ocurre antes de llamar al proveedor. Ninguna llamada real ni gasto externo.
+- **Dropi:** la web oficial presenta catálogo e integraciones; se halló `api.dropi.co`, cuya raíz pública no incluye documentación ni permisos/endpoints de lectura. No se sondearon rutas. Una API privada autorizada puede existir; uso manual hasta obtener documentación/permisos. Términos oficiales limitan automatización indebida/extracción masiva.
+- **Pendiente:** prueba única IA de evaluación de producto del propietario; aprobación manual de cada oportunidad; posible consulta autorizada a Dropi; revisar datos del CSV antes de enviarlos a un proveedor IA. No conectados pedidos, compra, canales ni Dropi.
+- **Commit:** ninguno; no se intentó escribir Git. Espacio/disponibilidad de disco no medido.
+
 ## 2026-10-23 — Misión 2: Reina y coordinación de tres hormigas
 
 - **Versión:** `v0.1.0-preview.1`; se conserva hasta la prueba real externa. Sin commit/push/tag.

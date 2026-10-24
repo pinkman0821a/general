@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { Hive } from './core.mjs';
 import { CodexExecProvider } from './providers/codex-exec.mjs';
 import { OmniRouteProvider } from './providers/omniroute.mjs';
+import { productsCsvTemplate } from './catalog.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const assets = path.join(root, 'app');
@@ -36,15 +37,28 @@ export function createServer({ stateFile = statePath, auto = true, delayMs = 200
       const pathname = url.pathname;
       if (pathname === '/api/state' && req.method === 'GET') return send(res, 200, hive.snapshot());
       if (pathname === '/api/provider/status' && req.method === 'GET') return send(res, 200, await hive.providerStatus());
+      if (pathname === '/api/products/template.csv' && req.method === 'GET') {
+        res.writeHead(200, { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="zolvani-productos-plantilla.csv"', 'X-Content-Type-Options': 'nosniff' });
+        return res.end(productsCsvTemplate());
+      }
       if (pathname.startsWith('/api/') && req.method === 'POST') {
         const origin = req.headers.origin;
         if (origin && new URL(origin).host !== req.headers.host) return send(res, 403, { error: 'Origen no autorizado' });
         let raw = '';
-        for await (const chunk of req) { raw += chunk; if (raw.length > 12_000) return send(res, 413, { error: 'Solicitud demasiado grande' }); }
+        const maxBody = pathname === '/api/products/import' ? 2_100_000 : 12_000;
+        for await (const chunk of req) { raw += chunk; if (raw.length > maxBody) return send(res, 413, { error: 'Solicitud demasiado grande' }); }
         let data;
         try { data = raw ? JSON.parse(raw) : {}; } catch { return send(res, 400, { error: 'JSON inválido' }); }
         if (!data || Array.isArray(data) || typeof data !== 'object') return send(res, 400, { error: 'Datos inválidos' });
         if (pathname === '/api/tasks') return send(res, 201, { task: hive.addTask(data) });
+        if (pathname === '/api/products') return send(res, 201, { product: hive.addProduct(data) });
+        if (pathname === '/api/products/import') {
+          if (typeof data.csv !== 'string') return send(res, 400, { error: 'Falta el contenido CSV de productos.' });
+          const imported = hive.importProductsCsv(data.csv);
+          return send(res, 201, { imported: imported.length, products: imported });
+        }
+        const productMatch = pathname.match(/^\/api\/products\/([\w-]+)$/);
+        if (productMatch) return send(res, 200, { product: hive.updateProduct(decodeURIComponent(productMatch[1]), data) });
         if (pathname === '/api/provider/select-model') {
           if (!hive.allowRealAI || typeof hive.provider?.selectModel !== 'function') return send(res, 503, { error: 'El proveedor activo no permite cambiar el modelo desde el panel.' });
           try {
@@ -93,11 +107,13 @@ export function createServer({ stateFile = statePath, auto = true, delayMs = 200
       if (req.method === 'HEAD') { res.end(); return; }
       fs.createReadStream(file).pipe(res);
     } catch (error) {
+      const notFound = /Producto no encontrado/i.test(error.message);
       const busy = /Ya hay un objetivo IA activo/i.test(error.message);
       const badInput = /incompletos|debe tener|clave de idempotencia|quita claves|credenciales|objetivo.*caracteres/i.test(error.message) || error.message.includes('inválido');
       const unavailable = /deshabilitada/i.test(error.message);
-      send(res, busy ? 409 : badInput ? 400 : unavailable ? 503 : 500, { error: busy || badInput || unavailable ? error.message : 'Error interno' });
-      if (!busy && !badInput && !unavailable) console.error('Error interno:', error);
+      const productInput = /fórmula|CSV|COP|duplicada|referencia|URL|fecha|fuente|importación|producto|datos personales/i.test(error.message);
+      send(res, notFound ? 404 : busy ? 409 : badInput || productInput ? 400 : unavailable ? 503 : 500, { error: busy || badInput || productInput || unavailable || notFound ? error.message : 'Error interno' });
+      if (!busy && !badInput && !productInput && !unavailable && !notFound) console.error('Error interno:', error);
     }
   });
   return { server, hive };
