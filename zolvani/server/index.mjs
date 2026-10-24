@@ -52,6 +52,13 @@ export function createServer({ stateFile = statePath, auto = true, delayMs = 200
             return send(res, 200, { model: model.id, provider: hive.provider.id });
           } catch (error) { return send(res, 400, { error: error.message }); }
         }
+        if (pathname === '/api/goals/real') {
+          if (!hive.allowRealAI) return send(res, 503, { error: 'IA real deshabilitada. Habilita OmniRoute local desde la consola del servidor.' });
+          const providerStatus = await hive.providerStatus();
+          if (!providerStatus.canExecute) return send(res, 503, { error: providerStatus.error || 'No hay un modelo gratuito listo para coordinar el objetivo.' });
+          const accepted = hive.addRealGoal(data);
+          return send(res, accepted.duplicate ? 200 : 202, { goal: accepted.goal, duplicate: accepted.duplicate });
+        }
         if (pathname === '/api/tasks/real') {
           if (!hive.allowRealAI) return send(res, 503, { error: 'IA real deshabilitada. Habilita OmniRoute local con ZOLVANI_ENABLE_OMNIROUTE=1 o selecciona Codex con ZOLVANI_AI_PROVIDER=codex-exec y ZOLVANI_ENABLE_CODEX=1.' });
           const providerStatus = await hive.providerStatus();
@@ -66,6 +73,8 @@ export function createServer({ stateFile = statePath, auto = true, delayMs = 200
         }
         const cancelMatch = pathname.match(/^\/api\/tasks\/([\w-]+)\/cancel$/);
         if (cancelMatch) return hive.cancelTask(cancelMatch[1]) ? send(res, 200, { cancelled: true }) : send(res, 409, { error: 'La tarea no existe o no puede cancelarse en su estado actual.' });
+        const cancelGoalMatch = pathname.match(/^\/api\/goals\/([\w-]+)\/cancel$/);
+        if (cancelGoalMatch) return hive.cancelGoal(cancelGoalMatch[1]) ? send(res, 200, { cancelled: true }) : send(res, 409, { error: 'El objetivo no existe o ya terminó.' });
         if (pathname === '/api/engine/pause') { hive.pause(); return send(res, 200, { paused: true }); }
         if (pathname === '/api/engine/resume') { hive.resume(); return send(res, 200, { paused: false }); }
         if (pathname === '/api/seed-demo') return send(res, 200, { created: hive.addDemo() });
@@ -84,10 +93,11 @@ export function createServer({ stateFile = statePath, auto = true, delayMs = 200
       if (req.method === 'HEAD') { res.end(); return; }
       fs.createReadStream(file).pipe(res);
     } catch (error) {
-      const badInput = /incompletos|debe tener|clave de idempotencia|quita claves|credenciales/i.test(error.message) || error.message.includes('inválido');
+      const busy = /Ya hay un objetivo IA activo/i.test(error.message);
+      const badInput = /incompletos|debe tener|clave de idempotencia|quita claves|credenciales|objetivo.*caracteres/i.test(error.message) || error.message.includes('inválido');
       const unavailable = /deshabilitada/i.test(error.message);
-      send(res, badInput ? 400 : unavailable ? 503 : 500, { error: badInput || unavailable ? error.message : 'Error interno' });
-      if (!badInput && !unavailable) console.error('Error interno:', error);
+      send(res, busy ? 409 : badInput ? 400 : unavailable ? 503 : 500, { error: busy || badInput || unavailable ? error.message : 'Error interno' });
+      if (!busy && !badInput && !unavailable) console.error('Error interno:', error);
     }
   });
   return { server, hive };

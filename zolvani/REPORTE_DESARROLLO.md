@@ -1,5 +1,21 @@
 # Reporte de desarrollo — OmniRoute en Zolvani
 
+## Misión 2: coordinación multiagente de la Reina (2026-10-23)
+
+**Versión local:** `v0.1.0-preview.1` — no se avanzó a `preview.2` ni se modificó Git. El respaldo remoto y `C:\GitHub\general` no se tocaron.
+
+**Implementado:** nuevo flujo local `POST /api/goals/real`, persistencia de objetivos en `data/state.json`, huevo de planificación de la Reina y tres huevos derivados (Exploradora → Financiera → Inspectora). El plan debe cumplir tipos permitidos, títulos/instrucciones acotados y dependencias exactas; IDs, asignaciones y ejecución los fija el programa, nunca el modelo. Cada hormiga dependiente recibe summary/evidence de sus precedentes con la marca de que la validación estructural no verifica hechos de mercado. La Financiera rechaza cantidades/porcentajes comerciales no verificados. Inspectora valida salida y proveedor; la Reina compone el informe final sin una quinta llamada.
+
+**Límites y controles:** máximo cuatro llamadas por objetivo (una planificación y tres etapas), cola serial de concurrencia uno, objetivo único activo, mismo modelo elegido fijado en todos los huevos, proveedor gratuito revalidado en cada solicitud y cero reintentos automáticos. Error, cuota, cancelación, salida inválida o reinicio detienen las dependencias. Entregas que parecen contener credenciales/datos personales se descartan. No hay herramientas, navegación, comandos ni acciones comerciales; presupuesto gastado permanece en cero y token usage solo se suma cuando el proveedor lo reporta.
+
+**Interfaz:** panel de Huevos permite escribir el objetivo, iniciar IA real solo si el proveedor está habilitado, ver el plan, huevos, hormigas, estados, dependencias, resultados, informe, historial y tokens reportados; se conserva el formulario de huevo IA individual. El mapa existente recibe los estados de tarea desde el motor.
+
+**Verificación:** `npm.cmd run check` aprobado; `npm.cmd test` **43/43 aprobadas**. Las pruebas con proveedor simulado cubren planificación estructurada, asignación, transferencia de contexto, dependencias, persistencia, cuatro llamadas seriales, resultado financiero conservador, rechazo de plan, error, cuota, cancelación, datos sensibles y recuperación sin repetir. No se ejecutó Gemini/OmniRoute real en este desarrollo.
+
+**Prueba externa pendiente:** confirmar con el propietario OmniRoute/Gemini y su modelo gratuito ya seleccionado. En Huevos, enviar una sola vez el objetivo de aceptación descrito en [docs/COORDINACION_REINA.md](docs/COORDINACION_REINA.md). El flujo puede consumir hasta cuatro llamadas del límite gratuito, aunque Zolvani no facture ni autorice gasto. Si alguna etapa falla/queda ambigua, no repetir automáticamente; conservar objetivo e historial.
+
+---
+
 ## Actualización: corrección del primer huevo IA (2026-10-23)
 
 **Versión:** `0.1.0-preview.1`; no se cambió versión ni se creó commit.
@@ -18,9 +34,9 @@ Fuentes técnicas: [traductor OpenAI-compatible de OmniRoute](https://github.com
 
 ---
 
-**Fecha:** 2026-10-23
-**Versión inicial y final:** `v0.1.0-preview.1` (sin versión nueva ni commit)
-**Último commit:** `7ce2907`
+**Fecha:** 2026-10-23  
+**Versión inicial y final:** `v0.1.0-preview.1` (sin versión nueva ni commit)  
+**Último commit:** `7ce2907`  
 **Resultado principal:** motor e interfaz conectados a un `OmniRouteProvider`, integración simulada probada; servicio real instalado pero no iniciado en este entorno y ninguna llamada a modelo real.
 
 ## Cambios implementados

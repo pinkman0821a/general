@@ -1,5 +1,17 @@
 # Diario de desarrollo
 
+## 2026-10-23 — Misión 2: Reina y coordinación de tres hormigas
+
+- **Versión:** `v0.1.0-preview.1`; se conserva hasta la prueba real externa. Sin commit/push/tag.
+- **Objetivo:** transformar huevos individuales en un objetivo IA compuesto con etapas dependientes y entrega conjunta.
+- **Beads:** no utilizado; prioridad explícita en funcionalidad.
+- **Archivos modificados:** `server/core.mjs`, `server/index.mjs`, `server/providers/omniroute.mjs`, `app/index.html`, `app/app.js`, `app/styles.css`, `test/core.test.mjs`, `test/omniroute-provider.test.mjs`, `CHANGELOG.md`, `ESTADO_PROYECTO.md`, `REPORTE_DESARROLLO.md`, `docs/COORDINACION_REINA.md` y este diario.
+- **Funcionalidad:** planificador estructurado Reina, validación de plan dependencias fija, huevos persistidos Exploradora → Financiera → Inspectora, contexto previo propagado, informe final local, pantalla de coordinación y consumo tokens reportado.
+- **Controles:** máximo cuatro llamadas, una activa, un objetivo activo, modelo fijado, errores/cancelación/reinicio detienen etapas, no reintentos; guardia contra valores comerciales inventados en Financiera y contra salida con PII/credenciales.
+- **Pruebas:** `npm.cmd run check` aprobado; `npm.cmd test` aprobado, 43/43. Incluye flujo end-to-end con proveedor simulado, esquema y plan estructurado, dependencias, persistencia, cuatro llamadas seriales, plan malicioso/inválido, cuota, cancelación, política financiera, privacidad, UI y recuperación sin reejecución.
+- **Pendiente:** prueba real única del propietario siguiendo `docs/COORDINACION_REINA.md`. No hubo llamada externa ni cambio al huevo histórico `HUEVO-84f23098`.
+- **Commit:** ninguno; respaldo remoto intacto.
+
 ## 2026-10-23 — Corrección del contrato JSON OmniRoute/Gemini
 
 - **Versión:** `v0.1.0-preview.1`; sin commit (no se solicitó trabajar Git y no se intentó escribirlo).

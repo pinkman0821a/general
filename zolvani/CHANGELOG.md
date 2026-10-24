@@ -1,5 +1,18 @@
 # Historial de cambios
 
+## Trabajo local sin publicar — coordinación de la Reina (2026-10-23)
+
+### Añadido
+- Objetivos IA persistidos con huevo de planificación de Reina y etapas deterministas para Exploradora, Financiera e Inspectora.
+- Dependencias explícitas que transfieren las entregas previas marcadas como no verificadas; Reina consolida el informe sin llamada adicional.
+- Plan estructurado con validación local estricta, límite de cuatro solicitudes por objetivo, cola serial, modelo fijado por objetivo, idempotencia, cancelación y detención ante errores.
+- Formulario para objetivo en panel, visualización de etapas, huevos, estados, resultados, dependencias, informe e historial.
+- Resguardo financiero que impide presentar importes o porcentajes no verificados y descarte de salidas con posibles credenciales/datos personales.
+
+### Verificación pendiente
+- Pruebas locales aprobadas: `npm.cmd run check`; `npm.cmd test` 43/43. Falta la prueba real de coordinación con Gemini desde el entorno del propietario.
+- Una ejecución real controlada, iniciada por el propietario con OmniRoute/Gemini seleccionados; no se cambió la versión ni el respaldo.
+
 ## Trabajo local sin publicar — OmniRoute (2026-10-23)
 
 ### Añadido

@@ -4,8 +4,8 @@ const $ = (selector) => document.querySelector(selector);
 const fmt = (date) => date ? new Date(date).toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' }) : '—';
 const cop = (amount) => '$' + new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(amount || 0);
 const escape = (value) => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
-const names = { pendiente: 'Pendiente', asignada: 'Asignada', en_progreso: 'En progreso · demo', ejecutando: 'Ejecutando IA', verificando: 'En verificación', completada: 'Terminada', bloqueada: 'Bloqueada', error: 'Error', pausada: 'Pausada', cancelada: 'Cancelada', necesita_intervencion: 'Necesita intervención', borrador_simulado: 'Borrador demo' };
-const tags = { pendiente: 'pending', asignada: 'pending', en_progreso: 'running', ejecutando: 'running', verificando: 'running', completada: '', bloqueada: 'block', error: 'block', necesita_intervencion: 'block' };
+const names = { pendiente: 'Pendiente', asignada: 'Asignada', en_progreso: 'En progreso · demo', ejecutando: 'Ejecutando IA', verificando: 'En verificación', completada: 'Terminada', bloqueada: 'Bloqueada', error: 'Error', pausada: 'Pausada', cancelada: 'Cancelada', necesita_intervencion: 'Necesita intervención', borrador_simulado: 'Borrador demo', planificando: 'Planificando', en_ejecucion: 'En ejecución', completado: 'Completado' };
+const tags = { pendiente: 'pending', asignada: 'pending', planificando: 'running', en_ejecucion: 'running', en_progreso: 'running', ejecutando: 'running', verificando: 'running', completada: '', completado: '', bloqueada: 'block', error: 'block', necesita_intervencion: 'block' };
 const agentIcon = { exploradora: '⌕', financiera: '$', creativa: '✎', vendedora: '◌', inspectora: '✓', guardiana: '◇' };
 let state = null, providerStatus = null, tab = 'panel', flashTimer;
 const hive = new Hive3D($('#hive3d'), agent => { if (agent) notice(`${agent.name}: ${agent.role} · ${agent.status}`); });
@@ -42,6 +42,19 @@ function taskTemplate(task, expanded = false) {
 function eventTemplate(event) {
   return `<div class="stack-item"><div class="item-icon">◷</div><div class="item-body"><div class="item-title">${escape(event.message)}</div><div class="item-detail">${fmt(event.at)}${event.taskId ? ' · ' + escape(event.taskId) : ''}</div></div></div>`;
 }
+function goalTemplate(goal) {
+  const taskById = new Map((state.tasks || []).map(task => [task.id, task]));
+  const stages = (goal.taskIds || []).map(id => taskById.get(id)).filter(Boolean).map(task => {
+    const dependencies = (task.dependsOn || []).map(id => taskById.get(id)?.title || id);
+    const detail = task.result ? `<p>${escape(task.result.summary)}</p><small>Resultado ${task.simulated ? 'simulado' : 'real'} · Inspectora: ${task.validation?.passed ? 'aprobado' : 'sin validar'} · modelo: ${escape(task.result.model || goal.model || 'no reportado')}</small>${task.result.evidence?.length ? `<ul>${task.result.evidence.map(item => `<li>${escape(item)}</li>`).join('')}</ul>` : ''}` : task.error ? `<p class="task-result">${escape(task.error)}</p>` : '';
+    return `<article class="goal-stage"><strong>${escape(state.agents.find(agent => agent.id === task.agentId)?.name || 'Reina')} · ${escape(task.title)}</strong><span class="state-tag ${tags[task.status] || ''}">${escape(names[task.status] || task.status)}</span><div class="goal-meta">Huevo ${escape(task.id)}${dependencies.length ? ` · Depende de: ${dependencies.map(escape).join(', ')}` : ' · Sin dependencias'}</div>${detail}</article>`;
+  }).join('');
+  const report = goal.report ? `<h4>Informe de la Reina</h4><p class="goal-report">${escape(goal.report.text)}</p><p class="goal-pending"><strong>Pendiente:</strong> ${goal.report.pending.map(escape).join(' ')}</p>` : '';
+  const input = goal.usage?.inputTokens ?? 's/d', output = goal.usage?.outputTokens ?? 's/d';
+  const history = goal.history?.length ? `<details><summary>Historial del objetivo (${goal.history.length})</summary><ol>${goal.history.map(item => `<li><strong>${escape(names[item.status] || item.status)}</strong> · ${fmt(item.at)} — ${escape(item.message)}</li>`).join('')}</ol></details>` : '';
+  const cancel = ['planificando', 'en_ejecucion'].includes(goal.status) ? `<button class="quiet" data-action="cancel-goal" data-goal-id="${escape(goal.id)}">Cancelar objetivo y sus etapas</button>` : '';
+  return `<article class="goal-card"><div class="goal-card-head"><div><div class="goal-meta">${escape(goal.id)} · IA REAL · ${escape(goal.providerId)} · ${fmt(goal.createdAt)}</div><h3>${escape(goal.objective)}</h3></div><span class="state-tag ${tags[goal.status] || ''}">${escape(names[goal.status] || goal.status)}</span></div><div class="goal-meta">Llamadas IA: ${goal.aiCalls}/${goal.maxAICalls} · tokens reportados entrada: ${input} · salida: ${output}</div>${stages ? `<div class="goal-stages">${stages}</div>` : '<p class="muted">La Reina está preparando y validando el plan.</p>'}${report}${history}${cancel}</article>`;
+}
 function setHtml(selector, items, renderItem, empty) { $(selector).innerHTML = items.length ? items.map(renderItem).join('') : `<div class="empty">${escape(empty)}</div>`; }
 function render() {
   if (!state) return;
@@ -62,6 +75,7 @@ function render() {
   $('#pause-button').textContent = state.engine?.paused ? 'Reanudar cola' : 'Pausar cola';
   $('#real-ai-button').disabled = !realEnabled;
   $('#new-real-task-button').disabled = !realEnabled;
+  $('#real-goal-submit').disabled = !realEnabled;
   $('#mode-disclaimer').textContent = realEnabled
     ? `La Reina asignará la tarea a una hormiga; ${providerName} usará el modelo indicado. ${providerStatus?.error || 'No se realizan acciones comerciales.'}`
     : providerStatus?.error || 'Inicia OmniRoute en localhost:20128, conecta una ruta gratuita y habilita el motor para ejecutar IA real.';
@@ -69,6 +83,7 @@ function render() {
   setHtml('#recent-tasks', state.tasks.slice(0, 3), task => taskTemplate(task), 'Sin huevos aún. Crea el primero o inicia la demostración.');
   setHtml('#recent-events', state.events.slice(0, 3), eventTemplate, 'Sin actividad todavía.');
   setHtml('#all-tasks', state.tasks, task => taskTemplate(task, true), 'No hay tareas. La primera se asignará automáticamente.');
+  setHtml('#goals-list', state.goals || [], goalTemplate, 'Aún no hay objetivos coordinados por la Reina.');
   setHtml('#all-events', state.events, eventTemplate, 'Aún no hay eventos.');
   setHtml('#all-products', state.products, product => `<article class="product-row"><div><h3>${escape(product.name)}</h3><p>Código: <strong>${escape(product.code)}</strong> · Costo ficticio: ${cop(product.costCOP)} · Precio ficticio: ${cop(product.priceCOP)}</p><small>Fuente: ${escape(product.source)} · Existencia real: NO VERIFICADA</small></div><span class="state-tag pending">FICTICIO</span></article>`, 'Sin productos de demostración. Prueba una tarea de Exploradora.');
   setHtml('#all-orders', state.orders, order => `<article class="order-row"><div><h3>${escape(order.id)} · ${escape(order.alias)}</h3><p>${escape(order.productCode)} · Cantidad ${order.quantity} · ${fmt(order.createdAt)}</p><small>Jamás enviado a Dropi. No usar datos personales reales.</small></div><span class="state-tag pending">DEMO</span></article>`, 'No hay celdillas de prueba. Puedes crear una sin registrar clientes reales.');
@@ -104,6 +119,7 @@ document.addEventListener('click', async event => {
     }
     if (action === 'toggle-pause') { const paused = state?.engine?.paused; await api(paused ? '/api/engine/resume' : '/api/engine/pause'); notice(paused ? 'Cola reanudada.' : 'Cola pausada; la tarea activa terminará.'); }
     if (action === 'cancel-task') { const id = event.target.closest('[data-task-id]')?.dataset.taskId; await api(`/api/tasks/${encodeURIComponent(id)}/cancel`); notice('Cancelación solicitada y registrada.'); switchTab('tareas'); }
+    if (action === 'cancel-goal') { const id = event.target.closest('[data-goal-id]')?.dataset.goalId; await api(`/api/goals/${encodeURIComponent(id)}/cancel`); notice('La Reina canceló el objetivo y detuvo sus etapas.'); }
     if (action === 'demo') { const result = await api('/api/seed-demo'); notice(result.created ? `${result.created} huevos demo creados. La Reina está trabajando.` : 'La demostración ya fue creada anteriormente.'); }
     if (action === 'product-demo') { await api('/api/tasks', { title: 'Investigar producto ficticio para catálogo', type: 'productos' }); notice('Huevo de investigación ficticia asignado.'); }
     await refresh();
@@ -120,6 +136,14 @@ $('#real-task-form').addEventListener('submit', async event => {
   data.idempotencyKey = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   try { const accepted = await api('/api/tasks/real', data); closeDialogs(); form.reset(); notice(`La Reina asignó el huevo real a ${state.agents.find(agent => agent.id === accepted.task.agentId)?.name || 'la hormiga especialista'}.`); switchTab('tareas'); await refresh(); }
   catch (error) { notice(error.message, true); }
+});
+$('#real-goal-form').addEventListener('submit', async event => {
+  event.preventDefault(); const form = event.currentTarget; const data = Object.fromEntries(new FormData(form));
+  data.idempotencyKey = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const submit = $('#real-goal-submit'); submit.disabled = true;
+  try { const accepted = await api('/api/goals/real', data); form.reset(); notice(accepted.duplicate ? 'Ese objetivo ya está registrado.' : 'La Reina recibió el objetivo y preparará tres etapas con IA real.'); await refresh(); }
+  catch (error) { notice(error.message, true); }
+  finally { submit.disabled = !providerStatus?.canExecute; }
 });
 $('#order-form').addEventListener('submit', async event => {
   event.preventDefault(); const form = event.currentTarget;

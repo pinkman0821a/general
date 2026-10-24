@@ -100,6 +100,25 @@ test('OmniRoute acepta contenido textual OpenAI en partes y objeto parsed, sin r
   }
 });
 
+test('OmniRoute entrega un plan estructurado para Reina sin aceptar tareas arbitrarias', async () => {
+  const plan = [
+    { type: 'productos', title: 'Explorar categoría', details: 'Compara hipótesis con cautela.', dependsOn: [] },
+    { type: 'precios', title: 'Analizar costos', details: 'Usa solo la entrega previa.', dependsOn: ['productos'] },
+    { type: 'calidad', title: 'Revisar consistencia', details: 'Verifica las dos entregas previas.', dependsOn: ['productos', 'precios'] },
+  ];
+  const requests = [];
+  const provider = new OmniRouteProvider({ model: freeModel.id, freeModelIds: [freeModel.id], fetchImpl: async (url, init) => {
+    if (String(url).endsWith('/models')) return response({ data: [freeModel] });
+    const body = JSON.parse(init.body); requests.push(body);
+    return response({ model: freeModel.id, provider: 'test-upstream', choices: [{ message: { content: JSON.stringify({ summary: 'Plan de tres etapas.', evidence: ['No hay búsqueda externa.'], tasks: plan }) } }] });
+  } });
+  const result = await provider.execute({ id: 'HUEVO-plan', taskKind: 'plan', agentId: 'reina', title: 'Planificar análisis', details: 'Objetivo de prueba.' });
+  assert.deepEqual(result.plan, plan);
+  const schema = requests[0].response_format.json_schema.schema;
+  assert.ok(schema.properties.tasks);
+  assert.match(requests[0].messages[0].content, /Reina/);
+});
+
 test('OmniRoute limita el endpoint a loopback y nunca usa auto-routing sin una ruta libre conocida', async () => {
   assert.throws(() => new OmniRouteProvider({ baseURL: 'https://example.com/v1' }), /localhost|loopback/i);
   const provider = new OmniRouteProvider({ freeModelIds: ['auto'], fetchImpl: async () => response({ data: [{ id: 'auto', owned_by: 'OmniRoute' }] }) });

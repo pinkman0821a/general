@@ -1,5 +1,16 @@
 # Estado del proyecto — ZOLVANI: LA COLONIA
 
+## Misión 2 — coordinación de Reina (implementada localmente)
+
+- `POST /api/goals/real` crea objetivo persistente e inicia un huevo real de planificación asignado a Reina.
+- Plan validado por programa y limitado a Exploradora (`productos`) → Financiera (`precios`) → Inspectora (`calidad`); dependencias y asignaciones no son decisión final del modelo.
+- Cada etapa recibe summary/evidence previas; todas permanecen marcadas como no verificadas comercialmente. Financiera no acepta importes ni porcentajes inventados; informe lista verificaciones pendientes.
+- Hasta 4 llamadas por objetivo, serie global de una tarea a la vez, modelo congelado por objetivo, no se encolan objetivos consecutivos y no hay reintento automático. Errores, cuota, cancelación o reinicio detienen el flujo sin reejecutar.
+- UI añade formulario propio de objetivo, lista de objetivos y visualización de plan, dependencias, etapas, resultados, estado, historial e tokens reportados; mantiene la creación de un huevo IA individual y el modo demostración.
+- Prueba simulada end-to-end aprobada en desarrollo: ver [REPORTE_DESARROLLO.md](REPORTE_DESARROLLO.md). La prueba OmniRoute/Gemini real de coordinación sigue pendiente; no se afirma coordinación real comprobada hasta esa ejecución.
+- Versión continúa `v0.1.0-preview.1`; no hubo commit, push ni cambio del respaldo/repositorio general.
+- Verificación de esta misión: `npm.cmd run check` aprobado; `npm.cmd test` 43/43 aprobadas con proveedores simulados. Ninguna solicitud de IA externa.
+
 ## Corrección más reciente — 2026-10-23
 
 - Causa del primer huevo IA fallido: Zolvani omitía `response_format` en la solicitud OpenAI-compatible y el lector solo manejaba una cadena JSON cruda de `choices[0].message.content`.
